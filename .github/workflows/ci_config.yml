@@ -1,0 +1,86 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@MarlonAngonese 
+playlinesdev
+/
+meu_site
+Public
+Code
+Issues
+Pull requests
+1
+Actions
+Projects
+Security
+Insights
+meu_site/.github/workflows/ci_config.yml
+@playlinesdev
+playlinesdev configuração de ci com github actions
+Latest commit cb16650 on 12 May 2020
+ History
+ 1 contributor
+44 lines (39 sloc)  1.06 KB
+
+name: Dart CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image:  google/dart:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: basic settings
+      run: |
+        apt update 
+        apt-get install curl -y
+        apt-get install git -y
+        apt-get install unzip -y
+        apt-get install zip -y
+        apt-get install xz-utils
+    - name: Mount flutter
+      run: git clone -b master https://github.com/flutter/flutter.git
+    - name: Show version
+      run: ./flutter/bin/flutter --version
+    - name: Install dependencies
+      run: flutter/bin/flutter packages get
+    - name: Enable web app
+      run: flutter/bin/flutter config --enable-web
+    - name: Run tests
+      run: flutter/bin/flutter test
+    - name: Build app
+      run: flutter/bin/flutter build web
+    - name: deploy hosting on firebase
+      uses: w9jds/firebase-action@master
+      with:
+        args: deploy --only hosting
+      env:
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+Footer
+© 2022 GitHub, Inc.
+Footer navigation
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
