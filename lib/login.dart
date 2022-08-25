@@ -8,10 +8,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  var _welcomeText = "Bem-vindo!";
-  var _welcomeSugestion = "Por favor, prossiga com seu login";
-  var _forgotPassword = "Esqueci minha senha";
-  var _loginText = "Login";
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
 
   void _voidForgotPassword() {
     print("Esqueci minha senha");
@@ -24,77 +22,138 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Image.asset("assets/images/head.png"),
-          // WELCOME TEXT
-          Padding(
-            padding: EdgeInsets.only(left: 0, top: 0),
-            child: Text(
-              _welcomeText,
-              style: const TextStyle(
-                  fontSize: 36,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "RobotoFlex"),
+        body: SafeArea(
+      child: SingleChildScrollView(
+        child: Container(
+          // padding: EdgeInsets.all(16),
+          child: Column(children: [
+            // Image
+            Padding(
+              padding: EdgeInsets.only(top: 0, bottom: 16),
+              child: Image.asset("assets/images/head.png"),
             ),
-          ),
-          // SECOND WELCOME TEXT
-          Padding(
-            padding: EdgeInsets.only(left: 0),
-            child: Text(
-              _welcomeSugestion,
-              style: const TextStyle(
-                  fontSize: 24,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: "RobotoFlex"),
-            ),
-          ),
-          // EMAIL
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'user123@eail.com',
+
+            // Welcome Text 1
+            Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 50),
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'Bem-vindo!',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      fontSize: 36,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "RobotoFlex"),
+                ),
               ),
             ),
-          ),
-          // PASSWORD
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: TextFormField(
-              decoration: const InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'user123@eail.com',
+
+            // Welcome Text 2
+            Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 12),
+              child: SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'Por favor, prossiga com seu login',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.normal,
+                      fontFamily: "RobotoFlex"),
+                ),
               ),
             ),
-          ),
-          // FORGOT PASSWORD
-          GestureDetector(
-            onTap: _voidForgotPassword,
-            child: Text(
-              _forgotPassword,
-              style: const TextStyle(
-                  color: Colors.green,
-                  fontSize: 20,
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.normal,
-                  fontFamily: "RobotoFlex"),
+
+            // Email
+            Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 55),
+              child: TextField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "user123@eail.com",
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                  ),
+                  prefixIcon: Icon(Icons.email, color: Colors.black),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                controller: _email,
+              ),
             ),
-          ),
-          // LOGIN
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 32, 90, 33), elevation: 2),
-              onPressed: _voidLogin,
-              child: Text(
-                _loginText,
-                style: TextStyle(fontSize: 25),
-              ))
-        ],
+
+            // Password
+            Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 35),
+              child: TextField(
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "**********",
+                  prefixIcon: Icon(Icons.lock, color: Colors.black),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                controller: _password,
+              ),
+            ),
+
+            // Forgot Password
+            Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+              child: GestureDetector(
+                onTap: _voidForgotPassword,
+                child: Text(
+                  "Esqueci minha senha",
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 27, 75, 27),
+                      fontSize: 20,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "RobotoFlex"),
+                ),
+              ),
+            ),
+
+            // Login
+            Padding(
+              padding: EdgeInsets.only(left: 32, right: 32, top: 25),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromARGB(255, 27, 75, 27),
+                  elevation: 2,
+                  fixedSize: Size(350, 59),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30), // <-- Radius
+                  ),
+                ),
+                onPressed: _voidLogin,
+                icon: Icon(
+                  Icons.send,
+                  size: 24.0,
+                ),
+                label:
+                    Text('Login', style: TextStyle(fontSize: 25)), // <-- Text
+              ),
+            )
+          ]),
+        ),
       ),
-    );
+    ));
   }
 }
