@@ -1,3 +1,5 @@
+import 'package:app_brigada_militar/forgotPassword.dart';
+import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -11,13 +13,14 @@ class _LoginState extends State<Login> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
 
-  void _voidForgotPassword() {
-    print("Esqueci minha senha");
-  }
+  // void _voidForgotPassword() {
+  //   print("Esqueci minha senha");
+  // }
 
-  void _voidLogin() {
-    print("Realizar login");
-  }
+  // void _voidLogin() {
+  //   print("_email: $_email");
+  //   print("_password: $_password");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +120,12 @@ class _LoginState extends State<Login> {
             Padding(
               padding: EdgeInsets.only(left: 32, right: 32, top: 30),
               child: GestureDetector(
-                onTap: _voidForgotPassword,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ForgotPassword()));
+                },
                 child: Text(
                   "Esqueci minha senha",
                   style: const TextStyle(
@@ -142,7 +150,10 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(30), // <-- Radius
                   ),
                 ),
-                onPressed: _voidLogin,
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeApp()));
+                },
                 icon: Icon(
                   Icons.send,
                   size: 24.0,
