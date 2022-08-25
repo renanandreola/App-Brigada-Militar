@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
               child: TextField(
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
-                  labelText: "user123@eail.com",
+                  labelText: "E-mail",
                   labelStyle: TextStyle(
                     color: Colors.black,
                   ),
@@ -99,7 +99,7 @@ class _LoginState extends State<Login> {
               child: TextField(
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
-                  labelText: "**********",
+                  labelText: "Senha",
                   prefixIcon: Icon(Icons.lock, color: Colors.black),
                   labelStyle: TextStyle(
                     color: Colors.black,
