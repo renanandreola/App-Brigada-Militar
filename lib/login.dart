@@ -13,6 +13,8 @@ class _LoginState extends State<Login> {
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   // void _voidForgotPassword() {
   //   print("Esqueci minha senha");
   // }
@@ -69,99 +71,126 @@ class _LoginState extends State<Login> {
                 ),
               ),
             ),
+            Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    // Email
+                    Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 55),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Preencha seu e-mail';
+                          }
+                          return null;
+                        },
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          labelText: "E-mail",
+                          labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 88, 88, 88),
+                          ),
+                          prefixIcon: Icon(Icons.email, color: Colors.black),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 88, 88, 88)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _email,
+                      ),
+                    ),
 
-            // Email
-            Padding(
-              padding: EdgeInsets.only(left: 32, right: 32, top: 55),
-              child: TextField(
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  labelText: "E-mail",
-                  labelStyle: TextStyle(
-                    color: Colors.black,
-                  ),
-                  prefixIcon: Icon(Icons.email, color: Colors.black),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                controller: _email,
-              ),
-            ),
+                    // Password
+                    Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 35),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Preencha sua senha';
+                          }
+                          return null;
+                        },
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          labelText: "Senha",
+                          prefixIcon: Icon(Icons.lock, color: Colors.black),
+                          labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 88, 88, 88),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 88, 88, 88)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                        keyboardType: TextInputType.visiblePassword,
+                        controller: _password,
+                      ),
+                    ),
 
-            // Password
-            Padding(
-              padding: EdgeInsets.only(left: 32, right: 32, top: 35),
-              child: TextField(
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  labelText: "Senha",
-                  prefixIcon: Icon(Icons.lock, color: Colors.black),
-                  labelStyle: TextStyle(
-                    color: Colors.black,
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                ),
-                keyboardType: TextInputType.visiblePassword,
-                controller: _password,
-              ),
-            ),
+                    // Forgot Password
+                    Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPassword()));
+                        },
+                        child: Text(
+                          "Esqueci minha senha",
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 27, 75, 27),
+                              fontSize: 20,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: "RobotoFlex"),
+                        ),
+                      ),
+                    ),
 
-            // Forgot Password
-            Padding(
-              padding: EdgeInsets.only(left: 32, right: 32, top: 30),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ForgotPassword()));
-                },
-                child: Text(
-                  "Esqueci minha senha",
-                  style: const TextStyle(
-                      color: Color.fromARGB(255, 27, 75, 27),
-                      fontSize: 20,
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                      fontFamily: "RobotoFlex"),
-                ),
-              ),
-            ),
-
-            // Login
-            Padding(
-              padding: EdgeInsets.only(left: 32, right: 32, top: 25),
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  primary: Color.fromARGB(255, 27, 75, 27),
-                  elevation: 2,
-                  fixedSize: Size(350, 59),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30), // <-- Radius
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeApp()));
-                },
-                icon: Icon(
-                  Icons.send,
-                  size: 24.0,
-                ),
-                label:
-                    Text('Login', style: TextStyle(fontSize: 25)), // <-- Text
-              ),
-            )
+                    // Login
+                    Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 25),
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 27, 75, 27),
+                          elevation: 2,
+                          fixedSize: Size(350, 59),
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(30), // <-- Radius
+                          ),
+                        ),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Entrando...')),
+                            );
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeApp()));
+                          }
+                        },
+                        icon: Icon(
+                          Icons.send,
+                          size: 24.0,
+                        ),
+                        label: Text('Login',
+                            style: TextStyle(fontSize: 25)), // <-- Text
+                      ),
+                    )
+                  ],
+                )),
           ]),
         ),
       ),
