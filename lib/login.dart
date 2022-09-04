@@ -77,7 +77,7 @@ class _LoginState extends State<Login> {
                   children: [
                     // Email
                     Padding(
-                      padding: EdgeInsets.only(left: 32, right: 32, top: 55),
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                       child: TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {

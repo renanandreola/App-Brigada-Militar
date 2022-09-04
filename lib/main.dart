@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import './login.dart';
+import 'initialPage.dart';
 
 void main(List<String> args) {
   runApp(MaterialApp(
-    home: Login(),
+    home: InitialPage(),
     debugShowCheckedModeBanner: false,
   ));
 }
