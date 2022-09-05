@@ -15,14 +15,21 @@ class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
 
-  // void _voidForgotPassword() {
-  //   print("Esqueci minha senha");
-  // }
+  void _forgotPassword() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ForgotPassword()));
+  }
 
-  // void _voidLogin() {
-  //   print("_email: $_email");
-  //   print("_password: $_password");
-  // }
+  void _voidLogin() {
+    String _nameUser = 'Renan Andreolla';
+    if (_formKey.currentState!.validate()) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Entrando...')),
+      // );
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomeApp(_nameUser)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,12 +146,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: EdgeInsets.only(left: 32, right: 32, top: 30),
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPassword()));
-                        },
+                        onTap: _forgotPassword,
                         child: Text(
                           "Esqueci minha senha",
                           style: const TextStyle(
@@ -170,17 +172,7 @@ class _LoginState extends State<Login> {
                                 BorderRadius.circular(30), // <-- Radius
                           ),
                         ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Entrando...')),
-                            );
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeApp()));
-                          }
-                        },
+                        onPressed: _voidLogin,
                         icon: Icon(
                           Icons.send,
                           size: 24.0,

@@ -11,16 +11,16 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   void _goToLoginPage() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Entrando...')),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(content: Text('Entrando...')),
+    // );
     Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
   }
 
   void _goToUpdate() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Entrando...')),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(content: Text('Entrando...')),
+    // );
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Update7ways()));
   }
