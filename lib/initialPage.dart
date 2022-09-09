@@ -41,7 +41,7 @@ class _InitialPageState extends State<InitialPage> {
 
             // Novo Rumo
             Padding(
-              padding: EdgeInsets.only(left: 0, right: 0, top: 40),
+              padding: EdgeInsets.only(left: 0, right: 0, top: 15),
               child: Image.asset('assets/images/logo-novo-rumo.png'),
             ),
 
@@ -52,7 +52,7 @@ class _InitialPageState extends State<InitialPage> {
                 'NOVO RUMO',
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 30,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.bold,
                     fontFamily: "RobotoFlex"),
@@ -66,7 +66,7 @@ class _InitialPageState extends State<InitialPage> {
                 child: Text(
                   'Fazer Login',
                   style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoFlex"),
@@ -74,7 +74,7 @@ class _InitialPageState extends State<InitialPage> {
                 style: ElevatedButton.styleFrom(
                   primary: Color.fromARGB(255, 27, 75, 27),
                   elevation: 2,
-                  fixedSize: Size(350, 59),
+                  fixedSize: Size(330, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -90,7 +90,7 @@ class _InitialPageState extends State<InitialPage> {
                 child: Text(
                   'Atualizar 7ways',
                   style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w600,
                       fontFamily: "RobotoFlex",
@@ -99,7 +99,7 @@ class _InitialPageState extends State<InitialPage> {
                 style: ElevatedButton.styleFrom(
                   primary: Color.fromARGB(255, 255, 255, 255),
                   elevation: 2,
-                  fixedSize: Size(350, 59),
+                  fixedSize: Size(330, 50),
                   side: BorderSide(
                       width: 2.0, color: Color.fromARGB(255, 27, 75, 27)),
                   shape: RoundedRectangleBorder(
