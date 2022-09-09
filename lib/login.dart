@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
                   'Bem-vindo!',
                   textAlign: TextAlign.start,
                   style: TextStyle(
-                      fontSize: 36,
+                      fontSize: 30,
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.bold,
                       fontFamily: "RobotoFlex"),
@@ -71,7 +71,7 @@ class _LoginState extends State<Login> {
                   'Por favor, prossiga com seu login',
                   textAlign: TextAlign.start,
                   style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 18,
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.normal,
                       fontFamily: "RobotoFlex"),
@@ -114,7 +114,7 @@ class _LoginState extends State<Login> {
 
                     // Password
                     Padding(
-                      padding: EdgeInsets.only(left: 32, right: 32, top: 35),
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 15),
                       child: TextFormField(
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -151,7 +151,7 @@ class _LoginState extends State<Login> {
                           "Esqueci minha senha",
                           style: const TextStyle(
                               color: Color.fromARGB(255, 27, 75, 27),
-                              fontSize: 20,
+                              fontSize: 18,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.w400,
                               fontFamily: "RobotoFlex"),
@@ -166,7 +166,7 @@ class _LoginState extends State<Login> {
                         style: ElevatedButton.styleFrom(
                           primary: Color.fromARGB(255, 27, 75, 27),
                           elevation: 2,
-                          fixedSize: Size(350, 59),
+                          fixedSize: Size(330, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.circular(30), // <-- Radius
@@ -178,7 +178,7 @@ class _LoginState extends State<Login> {
                           size: 24.0,
                         ),
                         label: Text('Login',
-                            style: TextStyle(fontSize: 25)), // <-- Text
+                            style: TextStyle(fontSize: 20)), // <-- Text
                       ),
                     )
                   ],

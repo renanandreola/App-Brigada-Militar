@@ -74,39 +74,45 @@ class _HomeAppState extends State<HomeApp> {
               //   ),
               // ),
               Image.asset('assets/images/rectangle.png'),
+
+              // User Name
               Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 12),
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                   child: Row(
                     children: [
                       Text("Olá, ",
                           style: TextStyle(
-                              fontSize: 30,
+                              fontSize: 20,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.normal,
                               fontFamily: "RobotoFlex")),
                       Text(widget.userName,
                           style: TextStyle(
-                              fontSize: 30,
+                              fontSize: 20,
                               fontStyle: FontStyle.normal,
                               fontWeight: FontWeight.bold,
                               fontFamily: "RobotoFlex"))
                     ],
                   )),
+
+              // Text info
               Padding(
-                padding: EdgeInsets.only(left: 32, right: 32, top: 12),
+                padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                 child: SizedBox(
                   width: double.infinity,
                   child: Text(
                     'Escolha entre os serviços abaixo:',
                     textAlign: TextAlign.start,
                     style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.normal,
                         fontFamily: "RobotoFlex"),
                   ),
                 ),
               ),
+
+              // Image 1 and 2
               Padding(
                 padding: EdgeInsets.only(top: 32),
                 child: Row(
@@ -123,6 +129,8 @@ class _HomeAppState extends State<HomeApp> {
                       )
                     ]),
               ),
+
+              // Image 3 and 4
               Padding(
                 padding: EdgeInsets.only(top: 32),
                 child: Row(
@@ -139,6 +147,8 @@ class _HomeAppState extends State<HomeApp> {
                       )
                     ]),
               ),
+
+              // Image 5 and 6
               Padding(
                 padding: EdgeInsets.only(top: 32),
                 child: Row(
