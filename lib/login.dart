@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:app_brigada_militar/forgotPassword.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -22,6 +25,8 @@ class _LoginState extends State<Login> {
 
   void _voidLogin() {
     String _nameUser = 'Renan Andreolla';
+    // var request = sendLogin(_email, _password);
+    // print("REQUEST: ${request}");
     if (_formKey.currentState!.validate()) {
       // ScaffoldMessenger.of(context).showSnackBar(
       //   const SnackBar(content: Text('Entrando...')),
@@ -30,6 +35,40 @@ class _LoginState extends State<Login> {
           context, MaterialPageRoute(builder: (context) => HomeApp(_nameUser)));
     }
   }
+
+  // Future<http.Response> sendLogin(_email, _password) async {
+  //   // var url = Uri.parse('bm-erechim-api.herokuapp.com/api/users/login');
+  //   var response = await http.post(
+  //     Uri.parse('https://bm-erechim-api.herokuapp.com/api/users/login'),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json; charset=UTF-8',
+  //     },
+  //     body: jsonEncode(<String, String>{
+  //       'email': 'rodrigo@mucilon.com',
+  //       'password': 'mucilon',
+  //     }),
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     print("RENANN" + response.body);
+  //     // return jsonDecode(utf8.decode(response.bodyBytes));
+  //     return jsonDecode(response.body);
+  //   } else {
+  //     throw Exception("Erro ao fazer login");
+  //   }
+  // }
+
+  // Future<http.Response> pegarUsuarios() async {
+  //   var url = Uri.parse('http://bm-erechim-api.herokuapp.com/api/users');
+  //   var response = await http.get(url);
+
+  //   if (response.statusCode == 200) {
+  //     print("RENANN" + response.body);
+  //     return jsonDecode(utf8.decode(response.bodyBytes));
+  //   } else {
+  //     throw Exception("Erro ao carregar dados");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
