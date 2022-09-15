@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/update7ways.dart';
 import 'package:app_brigada_militar/login.dart';
+import 'database/db.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({Key? key}) : super(key: key);
@@ -10,6 +11,8 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
+  final db = DB.instance.database;
+
   void _goToLoginPage() {
     // ScaffoldMessenger.of(context).showSnackBar(
     //   const SnackBar(content: Text('Entrando...')),
