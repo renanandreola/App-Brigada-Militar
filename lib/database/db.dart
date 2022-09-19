@@ -33,7 +33,7 @@ class DB {
     return await openDatabase(
       join("/storage/emulated/0/Download", 'defaultdb.db'),
       version: 1,
-      onCreate: CopyAPIDatabase().executeAll,
+      onCreate: copyAPIDatabase,
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_bcrypt/flutter_bcrypt.dart';
-import 'package:collection/collection.dart';
 
 class User {
   int? id = null;
@@ -54,37 +53,37 @@ class User {
       return false;
     }
   }
+}
 
-  /**
-   * Authenticate User
-   * 
-   * @return bool user authenticated
-   */
-  Future<bool> authenticate() async {
-    try {
-      final db = await DB.instance.database;
+/**
+ * Authenticate User
+ * 
+ * @return bool user authenticated
+ */
+Future<bool> authenticate(String email, String password) async {
+  try {
+    final db = await DB.instance.database;
 
-      // First check for a user using same email
-      var user = await db.query(
-        'users',
-        columns: ['email', 'password'],
-        where: 'email = "${this.email}"',
-        limit: 1,
-      );
+    // First check for a user using same email
+    var user = await db.query(
+      'users',
+      columns: ['email', 'password'],
+      where: 'email = "${email}"',
+      limit: 1,
+    );
 
-      // User email found
-      if (user.length > 0) {
-        bool checkPassword = await FlutterBcrypt.verify(
-            password: this.password, hash: user[0]['password']);
+    // User email found
+    if (user.length > 0) {
+      bool checkPassword = await FlutterBcrypt.verify(
+          password: password, hash: user[0]['password']);
 
-        return checkPassword;
-      }
-
-      return false;
-    } catch (err) {
-      print(err);
-      return false;
+      return checkPassword;
     }
+
+    return false;
+  } catch (err) {
+    print(err);
+    return false;
   }
 }
 
@@ -93,7 +92,14 @@ class User {
  * 
  * Searchs for one or multiple users in the database
  */
-Future<dynamic> searchUser({String? id, String? name, String? email}) async {
+Future<dynamic> searchUser({
+  String? id,
+  String? name,
+  String? email,
+  int limit = 50,
+  String order = 'DESC',
+  int page = 1,
+}) async {
   try {
     var db = await DB.instance.database;
 
@@ -105,8 +111,13 @@ Future<dynamic> searchUser({String? id, String? name, String? email}) async {
     String? whereParams =
         (params.length > 0) ? _createWhereParams(params) : null;
 
-    List<Map> users = await db.query('users', where: whereParams);
-    return users;
+    return await db.query(
+      'users',
+      where: whereParams,
+      limit: limit,
+      orderBy: "users.email ${order}",
+      offset: (page - 1) * limit,
+    );
   } catch (err) {
     print(err);
     return false;
