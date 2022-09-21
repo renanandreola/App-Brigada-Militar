@@ -1,14 +1,19 @@
 import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/database/utils/createWhereParams.dart';
+import 'package:app_brigada_militar/database/utils/datetimeToStr.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_bcrypt/flutter_bcrypt.dart';
 
+/**
+ * User Entity class
+ */
 class User {
   String? id = null;
   String? name = null;
   String email;
   String password;
-  DateTime? createdAt = null;
-  DateTime? updatedAt = null;
+  String? createdAt;
+  String? updatedAt;
 
   User({
     this.id,
@@ -25,26 +30,33 @@ class User {
    */
   Map<String, dynamic> toMap() {
     return {
-      '_id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      '_id': this.id,
+      'name': this.name,
+      'email': this.email,
+      'password': this.password,
+      'createdAt': this.createdAt,
+      'updatedAt': this.updatedAt,
     };
   }
 
   /**
-   * Inserts or updates a database User
+   * Inserts a database User
    */
-  Future<bool> save() async {
+  Future<bool> save({var transaction = null}) async {
     try {
-      final db = await DB.instance.database;
+      final db =
+          (transaction != null) ? transaction : await DB.instance.database;
 
       // Encrypt password using bcrypt
       var salt = await FlutterBcrypt.saltWithRounds(rounds: 10);
       this.password =
           await FlutterBcrypt.hashPw(password: this.password, salt: salt);
+
+      final DateTime now = DateTime.now();
+      String datetimeStr = datetimeToStr(now);
+
+      this.createdAt = datetimeStr;
+      this.updatedAt = datetimeStr;
 
       await db.insert(
         'users',
@@ -55,16 +67,17 @@ class User {
     } catch (err) {
       print(err);
 
-      return false;
+      throw err;
     }
   }
 
   /**
    * Updates a database User
    */
-  Future<bool> update() async {
+  Future<bool> update({var transaction = null}) async {
     try {
-      final db = await DB.instance.database;
+      final db =
+          (transaction != null) ? transaction : await DB.instance.database;
 
       // Check Entity
       if (this.id == null) throw "Você não pode atualizar um usuário novo";
@@ -79,6 +92,11 @@ class User {
         this.password =
             await FlutterBcrypt.hashPw(password: this.password, salt: salt);
       }
+
+      final DateTime now = DateTime.now();
+      String datetimeStr = datetimeToStr(now);
+
+      this.updatedAt = datetimeStr;
 
       await db.update(
         'users',
@@ -98,9 +116,10 @@ class User {
   /**
    * Deletes a User
    */
-  Future<bool> delete() async {
+  Future<bool> delete({var transaction = null}) async {
     try {
-      final db = await DB.instance.database;
+      final db =
+          (transaction != null) ? transaction : await DB.instance.database;
 
       // Check Entity
       if (this.id == null)
@@ -133,10 +152,11 @@ class UsersTable {
     String? email,
     int limit = 50,
     String order = 'DESC',
+    String orderField = 'email',
     int page = 1,
   }) async {
     try {
-      var db = await DB.instance.database;
+      final db = await DB.instance.database;
 
       Map<String, dynamic> params = {'_id': id, 'name': name, 'email': email};
 
@@ -144,13 +164,13 @@ class UsersTable {
       params.removeWhere((key, value) => value == null);
 
       String? whereParams =
-          (params.length > 0) ? _createWhereParams(params) : null;
+          (params.length > 0) ? createWhereParams(params) : null;
 
       List<Map> queryUsers = await db.query(
         'users',
         where: whereParams,
         limit: limit,
-        orderBy: "users.email ${order}",
+        orderBy: "users.${orderField} ${order}",
         offset: (page - 1) * limit,
       );
 
@@ -206,15 +226,5 @@ class UsersTable {
 
       throw err;
     }
-  }
-
-  String _createWhereParams(Map<String, dynamic> params) {
-    String queryParams = '';
-
-    params.forEach((key, param) {
-      queryParams += ' OR ${key} = "${param}"';
-    });
-
-    return queryParams.substring(4);
   }
 }

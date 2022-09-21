@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:flutter/material.dart';
 import 'initialPage.dart';
 

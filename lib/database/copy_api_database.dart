@@ -114,7 +114,7 @@ String get _properties => '''
     has_gun_local BOOLEAN,
     gun_local_description TEXT,
     qty_agricultural_defensives INT,
-    oservations TEXT,
+    observations TEXT,
     fk_owner_id VARCHAR(255),
     fk_property_type_id VARCHAR(255),
     createdAt DATETIME,
