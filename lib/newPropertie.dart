@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 class NewPropertie extends StatefulWidget {
@@ -64,8 +66,11 @@ class _NewPropertieState extends State<NewPropertie> {
                     decoration: InputDecoration(
                       labelText: "Nome do Responsável",
                       labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 88, 88, 88),
-                      ),
+                          color: Color.fromARGB(255, 88, 88, 88),
+                          fontSize: 20,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "RobotoFlex"),
                       enabledBorder: UnderlineInputBorder(
                         borderSide:
                             BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
@@ -93,8 +98,11 @@ class _NewPropertieState extends State<NewPropertie> {
                     decoration: InputDecoration(
                       labelText: "Quantidade de residentes",
                       labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 88, 88, 88),
-                      ),
+                          color: Color.fromARGB(255, 88, 88, 88),
+                          fontSize: 20,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "RobotoFlex"),
                       enabledBorder: UnderlineInputBorder(
                         borderSide:
                             BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
@@ -108,19 +116,35 @@ class _NewPropertieState extends State<NewPropertie> {
                   ),
                 ),
 
-                // Quantity of peoples
+                // Type of Home
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: DropdownButton(
-                      hint: _dropDownValue == null
-                          ? Text('Dropdown')
+                      hint: _dropDownValue == null || _dropDownValue == ""
+                          ? Text('Tipo de propriedade',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "RobotoFlex"))
                           : Text(
                               _dropDownValue,
-                              style: TextStyle(color: Colors.black),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "RobotoFlex"),
                             ),
                       isExpanded: true,
                       iconSize: 30.0,
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "RobotoFlex"),
                       items: ['Sítio', 'Chácara', 'Casa'].map(
                         (val) {
                           return DropdownMenuItem<String>(
