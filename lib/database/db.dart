@@ -30,10 +30,11 @@ class DB {
    * Start a database or create one if not exists
    */
   _initDatabase() async {
+    // await deleteDatabase(join("/storage/emulated/0/Download", 'defaultdb.db'));
     return await openDatabase(
       join("/storage/emulated/0/Download", 'defaultdb.db'),
       version: 1,
-      onCreate: CopyAPIDatabase().executeAll,
+      onCreate: copyAPIDatabase,
     );
   }
 }
