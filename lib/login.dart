@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:app_brigada_militar/forgotPassword.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
@@ -23,17 +24,25 @@ class _LoginState extends State<Login> {
         context, MaterialPageRoute(builder: (context) => ForgotPassword()));
   }
 
-  void _voidLogin() {
-    String _nameUser = 'Renan Andreolla';
-    // var request = sendLogin(_email, _password);
-    // print("REQUEST: ${request}");
-    if (_formKey.currentState!.validate()) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('Entrando...')),
-      // );
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomeApp(_nameUser)));
+  void _voidLogin() async {
+    // execute just on the first acess on database;
+    // User new_user = new User(email: "renan@gmail.com", password: '123');
+    // await new_user.save();
+    // print(_email.text);
+    // print(_password.text);
+
+    // Will return true or false
+    final response =
+        await UsersTable().authenticate(_email.text, _password.text);
+    if (response) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => HomeApp(_email.text)));
+      return;
     }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Login inválido')),
+    );
   }
 
   // Future<http.Response> sendLogin(_email, _password) async {
