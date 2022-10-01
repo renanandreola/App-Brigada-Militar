@@ -1,36 +1,34 @@
-import 'package:app_brigada_militar/placeDescription.dart';
+import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:flutter/material.dart';
 
-class Machines extends StatefulWidget {
-  const Machines({Key? key}) : super(key: key);
+class Vehicle extends StatefulWidget {
+  const Vehicle({Key? key}) : super(key: key);
 
   @override
-  State<Machines> createState() => _MachinesState();
+  State<Vehicle> createState() => _VehicleState();
 }
 
-class _MachinesState extends State<Machines> {
-  // String _machineType0 = '';
-
-  String _machineType1 = '';
+class _VehicleState extends State<Vehicle> {
+  String _vehicleType1 = '';
   int numberMachines = 0;
 
-  void addNewMachine() {
+  void addNewVehicle() {
     setState(() {
       numberMachines += 1;
     });
   }
 
-  void _goToPlaceDescription() {
+  void _goToAditionalInfo() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => PlaceDescription()));
+        context, MaterialPageRoute(builder: (context) => AditionalInfo()));
   }
 
-  Widget machineType1() {
+  Widget vehicleType1() {
     List<DropdownButtonFormField> filhos = [];
     for (int i = 1; i <= numberMachines; i++) {
       filhos.add(DropdownButtonFormField(
-        hint: _machineType1 == null || _machineType1 == ""
-            ? Text('Máquina Agrícola ${i}',
+        hint: _vehicleType1 == null || _vehicleType1 == ""
+            ? Text('Veículo ${i}',
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -38,7 +36,7 @@ class _MachinesState extends State<Machines> {
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"))
             : Text(
-                _machineType1,
+                _vehicleType1,
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -49,7 +47,7 @@ class _MachinesState extends State<Machines> {
         decoration: InputDecoration(
             // filled: true,
             fillColor: Colors.black,
-            labelText: 'Máquina Agrícola ${i}'),
+            labelText: 'Veículo ${i}'),
         isExpanded: true,
         iconSize: 30.0,
         style: TextStyle(
@@ -58,11 +56,7 @@ class _MachinesState extends State<Machines> {
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w400,
             fontFamily: "RobotoFlex"),
-        items: [
-          'MF4707 - Massey Ferguson 1',
-          'MF4707 - Massey Ferguson 2',
-          'MF4707 - Massey Ferguson 3'
-        ].map(
+        items: ['Gol', 'Fusca', 'Jetta'].map(
           (val) {
             return DropdownMenuItem<String>(
               value: val,
@@ -73,7 +67,7 @@ class _MachinesState extends State<Machines> {
         onChanged: (val) {
           setState(
             () {
-              _machineType1 = val.toString();
+              _vehicleType1 = val.toString();
             },
           );
         },
@@ -82,53 +76,6 @@ class _MachinesState extends State<Machines> {
     return Column(
       children: filhos,
     );
-
-    // return DropdownButton(
-    //   hint: _machineType1 == null || _machineType1 == ""
-    //       ? Text('Máquina Agrícola 1',
-    //           style: TextStyle(
-    //               color: Color.fromARGB(255, 0, 0, 1),
-    //               fontSize: 15,
-    //               fontStyle: FontStyle.normal,
-    //               fontWeight: FontWeight.w400,
-    //               fontFamily: "RobotoFlex"))
-    //       : Text(
-    //           _machineType1,
-    //           style: TextStyle(
-    //               color: Color.fromARGB(255, 0, 0, 1),
-    //               fontSize: 15,
-    //               fontStyle: FontStyle.normal,
-    //               fontWeight: FontWeight.w400,
-    //               fontFamily: "RobotoFlex"),
-    //         ),
-    //   isExpanded: true,
-    //   iconSize: 30.0,
-    //   style: TextStyle(
-    //       color: Color.fromARGB(255, 0, 0, 1),
-    //       fontSize: 15,
-    //       fontStyle: FontStyle.normal,
-    //       fontWeight: FontWeight.w400,
-    //       fontFamily: "RobotoFlex"),
-    //   items: [
-    //     'MF4707 - Massey Ferguson 1',
-    //     'MF4707 - Massey Ferguson 2',
-    //     'MF4707 - Massey Ferguson 3'
-    //   ].map(
-    //     (val) {
-    //       return DropdownMenuItem<String>(
-    //         value: val,
-    //         child: Text(val),
-    //       );
-    //     },
-    //   ).toList(),
-    //   onChanged: (val) {
-    //     setState(
-    //       () {
-    //         _machineType1 = val.toString();
-    //       },
-    //     );
-    //   },
-    // );
   }
 
   @override
@@ -159,7 +106,7 @@ class _MachinesState extends State<Machines> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Máquinas Agrícolas",
+                        Text("Veículos",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
@@ -168,22 +115,22 @@ class _MachinesState extends State<Machines> {
                       ],
                     )),
 
-                // Type of machines
+                // Type of vehicle
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
-                    child: machineType1()),
+                    child: vehicleType1()),
 
-                // Add new machine
+                // Add new vehicle
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 30),
                   child: GestureDetector(
                     onTap: () {
-                      addNewMachine();
+                      addNewVehicle();
                     },
                     child: SizedBox(
                       width: double.infinity,
                       child: Text(
-                        '+ Máquina Agrícola',
+                        '+ Veículo',
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             color: Color.fromARGB(255, 27, 75, 27),
@@ -216,7 +163,7 @@ class _MachinesState extends State<Machines> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    onPressed: _goToPlaceDescription,
+                    onPressed: _goToAditionalInfo,
                   ),
                 ),
               ],
