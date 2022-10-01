@@ -1,30 +1,22 @@
-import 'package:app_brigada_militar/aditionalInfo.dart';
-import 'package:app_brigada_militar/vehicle.dart';
+import 'package:app_brigada_militar/initialPage.dart';
 import 'package:flutter/material.dart';
 
-class PlaceDescription extends StatefulWidget {
-  const PlaceDescription({Key? key}) : super(key: key);
+class AditionalInfo extends StatefulWidget {
+  const AditionalInfo({Key? key}) : super(key: key);
 
   @override
-  State<PlaceDescription> createState() => _PlaceDescriptionState();
+  State<AditionalInfo> createState() => _AditionalInfoState();
 }
 
-class _PlaceDescriptionState extends State<PlaceDescription> {
-  TextEditingController _quantityDefensive = TextEditingController();
+class _AditionalInfoState extends State<AditionalInfo> {
+  TextEditingController _department = TextEditingController();
 
-  bool _hasDefensive = false;
-  bool _hasGun = false;
-  bool _hasGunPlace = false;
-  bool _hasVehicle = false;
+  bool _usedProgram = false;
+  bool _usedProgramSuccess = false;
 
-  void _goToAdditionalInfoOrVehicle() {
-    if (_hasVehicle) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Vehicle()));
-    } else {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AditionalInfo()));
-    }
+  void _savePropertie() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => InitialPage()));
   }
 
   @override
@@ -55,7 +47,7 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Descrição do Local",
+                        Text("Informações Adicionais",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
@@ -64,35 +56,36 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                       ],
                     )),
 
-                // Mantém defensivo(s) agrícola(s)
+                // Já usou o programa para alguma urgência / emergência?
                 Padding(
                     padding: EdgeInsets.only(left: 5, right: 32, top: 5),
                     child: CheckboxListTile(
-                      title: Text("Mantém defensivo(s) agrícola(s)"),
+                      title: Text(
+                          "Já usou o programa para alguma urgência / emergência?"),
                       activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasDefensive,
+                      value: _usedProgram,
                       onChanged: (newValue) {
                         setState(() {
-                          _hasDefensive = newValue!;
+                          _usedProgram = newValue!;
                         });
                       },
                       controlAffinity: ListTileControlAffinity
                           .leading, //  <-- leading Checkbox
                     )),
 
-                // Quantity of peoples
+                // Department
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Preencha o número de defensivos agrícolas';
+                        return 'Preencha o órgão solicitado';
                       }
                       return null;
                     },
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
-                      labelText: "Quantidade de defensivos agrícolas",
+                      labelText: "Órgão solicitado",
                       labelStyle: TextStyle(
                           color: Color.fromARGB(255, 0, 0, 1),
                           fontSize: 15,
@@ -109,47 +102,30 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                       ),
                     ),
                     keyboardType: TextInputType.name,
-                    controller: _quantityDefensive,
+                    controller: _department,
                   ),
                 ),
 
-                // Mantém arma de fogo na residência
+                // Já usou o programa para alguma urgência / emergência?
                 Padding(
                     padding: EdgeInsets.only(left: 5, right: 32, top: 5),
                     child: CheckboxListTile(
-                      title: Text("Mantém arma de fogo na residência"),
+                      title: Text("Obteve êxito na solicitação"),
                       activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasGun,
+                      value: _usedProgramSuccess,
                       onChanged: (newValue) {
                         setState(() {
-                          _hasGun = newValue!;
+                          _usedProgramSuccess = newValue!;
                         });
                       },
                       controlAffinity: ListTileControlAffinity
                           .leading, //  <-- leading Checkbox
                     )),
 
-                // Possui local adequado para  armazenar a arma de fogo
-                Padding(
-                    padding: EdgeInsets.only(left: 5, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text(
-                          "Possui local adequado para  armazenar a arma de fogo"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasGunPlace,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _hasGunPlace = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
-                    )),
-
-                // Descrição do local onde a arma está armazenada
+                // History
                 Padding(
                   padding: EdgeInsets.only(left: 20, right: 32, top: 5),
-                  child: Text("Descrição do local onde a arma está armazenada",
+                  child: Text("Histórico",
                       style: TextStyle(
                           fontSize: 15,
                           fontStyle: FontStyle.normal,
@@ -175,27 +151,12 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                   ),
                 ),
 
-                // Possui veículo
-                Padding(
-                    padding: EdgeInsets.only(left: 5, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text("Possui veículo"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasVehicle,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _hasVehicle = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
-                    )),
-                // Next
+                // Save
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 35),
                   child: ElevatedButton(
                     child: Text(
-                      'Próximo',
+                      'Salvar Propriedade',
                       style: TextStyle(
                           fontSize: 20,
                           fontStyle: FontStyle.normal,
@@ -210,7 +171,7 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    onPressed: _goToAdditionalInfoOrVehicle,
+                    onPressed: _savePropertie,
                   ),
                 ),
               ],

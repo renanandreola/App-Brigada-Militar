@@ -164,7 +164,8 @@ class _NewPropertieState extends State<NewPropertie> {
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           fontFamily: "RobotoFlex"),
-                      items: ['Sítio', 'Chácara', 'Casa'].map(
+                      items: ['Casa de Campo', 'Chácara', 'Sítio', 'Residência']
+                          .map(
                         (val) {
                           return DropdownMenuItem<String>(
                             value: val,
@@ -266,7 +267,7 @@ class _NewPropertieState extends State<NewPropertie> {
                   padding: EdgeInsets.only(left: 32, right: 32, top: 35),
                   child: ElevatedButton(
                     child: Text(
-                      'Fazer Login',
+                      'Próximo',
                       style: TextStyle(
                           fontSize: 20,
                           fontStyle: FontStyle.normal,
