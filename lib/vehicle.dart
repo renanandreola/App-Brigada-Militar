@@ -10,11 +10,11 @@ class Vehicle extends StatefulWidget {
 
 class _VehicleState extends State<Vehicle> {
   String _vehicleType1 = '';
-  int numberMachines = 0;
+  int numberVehicles = 1;
 
   void addNewVehicle() {
     setState(() {
-      numberMachines += 1;
+      numberVehicles += 1;
     });
   }
 
@@ -25,7 +25,7 @@ class _VehicleState extends State<Vehicle> {
 
   Widget vehicleType1() {
     List<DropdownButtonFormField> filhos = [];
-    for (int i = 1; i <= numberMachines; i++) {
+    for (int i = 1; i <= numberVehicles; i++) {
       filhos.add(DropdownButtonFormField(
         hint: _vehicleType1 == null || _vehicleType1 == ""
             ? Text('Veículo ${i}',

@@ -13,10 +13,74 @@ class _AditionalInfoState extends State<AditionalInfo> {
 
   bool _usedProgram = false;
   bool _usedProgramSuccess = false;
+  int numberServices = 0;
 
+  // Save propertie
   void _savePropertie() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => InitialPage()));
+  }
+
+  // show departments info when select 'Já usou o programa para alguma urgência / emergência?'
+  Widget servicesInfo() {
+    List<Column> filhos = [];
+    for (int i = 1; i <= numberServices; i++) {
+      filhos.add(Column(
+        children: [
+          // Department
+          Padding(
+            padding: EdgeInsets.only(left: 30, right: 32, top: 5),
+            child: TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Preencha o órgão solicitado';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                labelText: "Órgão solicitado",
+                labelStyle: TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 1),
+                    fontSize: 15,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "RobotoFlex"),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                ),
+              ),
+              keyboardType: TextInputType.name,
+              controller: _department,
+            ),
+          ),
+
+          // Obteve êxito na solicitação
+          Padding(
+              padding: EdgeInsets.only(left: 0, right: 32, top: 5),
+              child: CheckboxListTile(
+                title: Text("Obteve êxito na solicitação"),
+                activeColor: Color.fromARGB(255, 27, 75, 27),
+                value: _usedProgramSuccess,
+                onChanged: (newValue) {
+                  setState(() {
+                    _usedProgramSuccess = newValue!;
+                  });
+                },
+                controlAffinity:
+                    ListTileControlAffinity.leading, //  <-- leading Checkbox
+              )),
+        ],
+      ));
+    }
+    return Column(
+      children: filhos,
+    );
   }
 
   @override
@@ -67,71 +131,36 @@ class _AditionalInfoState extends State<AditionalInfo> {
                       onChanged: (newValue) {
                         setState(() {
                           _usedProgram = newValue!;
+                          _usedProgram
+                              ? numberServices = 1
+                              : numberServices = 0;
                         });
                       },
                       controlAffinity: ListTileControlAffinity
                           .leading, //  <-- leading Checkbox
                     )),
 
-                // Department
+                // Department infos
                 Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o órgão solicitado';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Órgão solicitado",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    controller: _department,
-                  ),
-                ),
-
-                // Já usou o programa para alguma urgência / emergência?
-                Padding(
-                    padding: EdgeInsets.only(left: 5, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text("Obteve êxito na solicitação"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _usedProgramSuccess,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _usedProgramSuccess = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
-                    )),
+                    padding: EdgeInsets.only(left: 0, right: 32, top: 5),
+                    child: servicesInfo()),
 
                 // History
                 Padding(
-                  padding: EdgeInsets.only(left: 20, right: 32, top: 5),
-                  child: Text("Histórico",
+                  padding: EdgeInsets.only(left: 30, right: 32, top: 5),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'Histórico',
+                      textAlign: TextAlign.start,
                       style: TextStyle(
                           fontSize: 15,
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w400,
                           color: Color.fromARGB(255, 120, 120, 120),
-                          fontFamily: "RobotoFlex")),
+                          fontFamily: "RobotoFlex"),
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 10),
@@ -151,7 +180,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
                   ),
                 ),
 
-                // Save
+                // Save propertie
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 35),
                   child: ElevatedButton(

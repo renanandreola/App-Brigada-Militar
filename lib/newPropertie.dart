@@ -130,7 +130,7 @@ class _NewPropertieState extends State<NewPropertie> {
                             color: Color.fromARGB(255, 177, 177, 177)),
                       ),
                     ),
-                    keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.number,
                     controller: _quantityResidents,
                   ),
                 ),
