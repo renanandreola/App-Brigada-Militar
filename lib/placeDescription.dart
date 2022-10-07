@@ -16,6 +16,8 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
   bool _hasGun = false;
   bool _hasGunPlace = false;
   bool _hasVehicle = false;
+  int numberDefensives = 0;
+  int numberGun = 0;
 
   void _goToAdditionalInfoOrVehicle() {
     if (_hasVehicle) {
@@ -25,6 +27,101 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => AditionalInfo()));
     }
+  }
+
+  Widget qtdDefensives() {
+    List<TextFormField> filhos = [];
+    for (int i = 1; i <= numberDefensives; i++) {
+      filhos.add(
+        TextFormField(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Preencha o número de defensivos agrícolas';
+            }
+            return null;
+          },
+          cursorColor: Colors.black,
+          decoration: InputDecoration(
+            labelText: "Quantidade de defensivos agrícolas",
+            labelStyle: TextStyle(
+                color: Color.fromARGB(255, 0, 0, 1),
+                fontSize: 15,
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w400,
+                fontFamily: "RobotoFlex"),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+            ),
+          ),
+          keyboardType: TextInputType.number,
+          controller: _quantityDefensive,
+        ),
+      );
+    }
+    return Column(
+      children: filhos,
+    );
+  }
+
+  Widget gunInfos() {
+    List<Column> filhos = [];
+    for (int i = 1; i <= numberGun; i++) {
+      filhos.add(Column(
+        children: [
+          // Possui local adequado para  armazenar a arma de fogo
+          Padding(
+              padding: EdgeInsets.only(left: 5, right: 32, top: 5),
+              child: CheckboxListTile(
+                title: Text(
+                    "Possui local adequado para  armazenar a arma de fogo"),
+                activeColor: Color.fromARGB(255, 27, 75, 27),
+                value: _hasGunPlace,
+                onChanged: (newValue) {
+                  setState(() {
+                    _hasGunPlace = newValue!;
+                  });
+                },
+                controlAffinity:
+                    ListTileControlAffinity.leading, //  <-- leading Checkbox
+              )),
+
+          // Descrição do local onde a arma está armazenada
+          Padding(
+            padding: EdgeInsets.only(left: 30, right: 32, top: 5),
+            child: Text("Descrição do local onde a arma está armazenada",
+                style: TextStyle(
+                    fontSize: 15,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromARGB(255, 120, 120, 120),
+                    fontFamily: "RobotoFlex")),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 30, right: 32, top: 10),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(
+                      color: Colors.black,
+                      width: 1.0,
+                      style: BorderStyle.solid)),
+              child: TextField(
+                keyboardType: TextInputType.multiline,
+                textInputAction: TextInputAction.newline,
+                minLines: 5,
+                maxLines: 5,
+              ),
+            ),
+          ),
+        ],
+      ));
+    }
+    return Column(
+      children: filhos,
+    );
   }
 
   @override
@@ -74,44 +171,19 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                       onChanged: (newValue) {
                         setState(() {
                           _hasDefensive = newValue!;
+                          _hasDefensive
+                              ? numberDefensives = 1
+                              : numberDefensives = 0;
                         });
                       },
                       controlAffinity: ListTileControlAffinity
                           .leading, //  <-- leading Checkbox
                     )),
 
-                // Quantity of peoples
+                // Show defensives
                 Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o número de defensivos agrícolas';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Quantidade de defensivos agrícolas",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    controller: _quantityDefensive,
-                  ),
-                ),
+                    padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                    child: qtdDefensives()),
 
                 // Mantém arma de fogo na residência
                 Padding(
@@ -123,57 +195,17 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                       onChanged: (newValue) {
                         setState(() {
                           _hasGun = newValue!;
+                          _hasGun ? numberGun = 1 : numberGun = 0;
                         });
                       },
                       controlAffinity: ListTileControlAffinity
                           .leading, //  <-- leading Checkbox
                     )),
 
-                // Possui local adequado para  armazenar a arma de fogo
+                // Show gun infos
                 Padding(
-                    padding: EdgeInsets.only(left: 5, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text(
-                          "Possui local adequado para  armazenar a arma de fogo"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasGunPlace,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _hasGunPlace = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
-                    )),
-
-                // Descrição do local onde a arma está armazenada
-                Padding(
-                  padding: EdgeInsets.only(left: 20, right: 32, top: 5),
-                  child: Text("Descrição do local onde a arma está armazenada",
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromARGB(255, 120, 120, 120),
-                          fontFamily: "RobotoFlex")),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(
-                            color: Colors.black,
-                            width: 1.0,
-                            style: BorderStyle.solid)),
-                    child: TextField(
-                      keyboardType: TextInputType.multiline,
-                      textInputAction: TextInputAction.newline,
-                      minLines: 5,
-                      maxLines: 5,
-                    ),
-                  ),
-                ),
+                    padding: EdgeInsets.only(left: 0, right: 32, top: 5),
+                    child: gunInfos()),
 
                 // Possui veículo
                 Padding(

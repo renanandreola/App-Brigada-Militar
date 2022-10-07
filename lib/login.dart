@@ -191,21 +191,21 @@ class _LoginState extends State<Login> {
                     ),
 
                     // Forgot Password
-                    Padding(
-                      padding: EdgeInsets.only(left: 32, right: 32, top: 30),
-                      child: GestureDetector(
-                        onTap: _forgotPassword,
-                        child: Text(
-                          "Esqueci minha senha",
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 27, 75, 27),
-                              fontSize: 18,
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: "RobotoFlex"),
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+                    //   child: GestureDetector(
+                    //     onTap: _forgotPassword,
+                    //     child: Text(
+                    //       "Esqueci minha senha",
+                    //       style: const TextStyle(
+                    //           color: Color.fromARGB(255, 27, 75, 27),
+                    //           fontSize: 18,
+                    //           fontStyle: FontStyle.normal,
+                    //           fontWeight: FontWeight.w400,
+                    //           fontFamily: "RobotoFlex"),
+                    //     ),
+                    //   ),
+                    // ),
 
                     // Login
                     Padding(
