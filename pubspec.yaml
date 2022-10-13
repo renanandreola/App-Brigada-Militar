@@ -38,6 +38,7 @@ dependencies:
   flutter_bcrypt: ^1.0.7
   http: ^0.13.5
   intl:
+  flutter_session_manager: ^1.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 
 datetimeToStr(DateTime date) {
-  final DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+  date = date.toUtc();
+  final DateFormat formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
   return formatter.format(date);
 }

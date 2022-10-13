@@ -65,8 +65,6 @@ class User {
 
       return true;
     } catch (err) {
-      print(err);
-
       throw err;
     }
   }
