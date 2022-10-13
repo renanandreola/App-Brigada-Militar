@@ -1,3 +1,4 @@
+import 'package:app_brigada_militar/database/sync/sync.dart';
 import 'package:flutter/material.dart';
 
 class Sync extends StatefulWidget {
@@ -8,6 +9,16 @@ class Sync extends StatefulWidget {
 }
 
 class _SyncState extends State<Sync> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Load new registers
+    updateSyncAll();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

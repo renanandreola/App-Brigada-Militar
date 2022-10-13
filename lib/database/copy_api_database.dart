@@ -1,3 +1,8 @@
+import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/database/sync/sync.dart';
+import 'package:app_brigada_militar/database/sync/syncUsers.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
+
 /**
  * Manages the tables and inserts needed to start the database
  */
@@ -15,6 +20,10 @@ void copyAPIDatabase(db, version) async {
   await db.execute(_property_visits);
   await db.execute(_vehicles);
   await db.execute(_property_vehicles);
+  await db.execute(_sync);
+  await db.execute(_sync_insert);
+  await db.execute(_garbages);
+  await db.execute(_databaseUpdates);
   await db.execute(_userIdTrigger);
   await db.execute(_visitIdTrigger);
   await db.execute(_userVisitIdTrigger);
@@ -27,8 +36,8 @@ void copyAPIDatabase(db, version) async {
   await db.execute(_propertyVisitIdTrigger);
   await db.execute(_vehicleIdTrigger);
   await db.execute(_propertyVehicleIdTrigger);
+  await syncAll(db);
 }
-
 /**
  * Create Users Table
  */
@@ -36,10 +45,10 @@ String get _users => '''
   CREATE TABLE users (
     _id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME
+    updatedAt DATETIME NOT NULL
   );
 ''';
 
@@ -50,11 +59,11 @@ String get _visits => '''
   CREATE TABLE visits (
     _id VARCHAR(255) PRIMARY KEY,
     car VARCHAR(255) NOT NULL,
-    latitude VARCHAR(255) NOT NULL,
-    longitude VARCHAR(255) NOT NULL,
+    latitude VARCHAR(255),
+    longitude VARCHAR(255),
     visit_date DATETIME NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME
+    updatedAt DATETIME NOT NULL
   );
 ''';
 
@@ -64,10 +73,10 @@ String get _visits => '''
 String get _user_visits => '''
   CREATE TABLE user_visits (
     _id VARCHAR(255) PRIMARY KEY,
-    fk_user_id VARCHAR(255),
-    fk_visit_id VARCHAR,
+    fk_user_id VARCHAR(255) NOT NULL,
+    fk_visit_id VARCHAR NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME,
+    updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_user_id) REFERENCES Users (_id),
     FOREIGN KEY (fk_visit_id) REFERENCES Visits (_id)
   );
@@ -82,7 +91,7 @@ String get _owners => '''
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME
+    updatedAt DATETIME NOT NULL
   );
 ''';
 
@@ -94,7 +103,7 @@ String get _property_types => '''
     _id VARCHAR(255) PRIMARY KEY,
     name VARCHAR (255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME
+    updatedAt DATETIME NOT NULL
   );
 ''';
 
@@ -115,10 +124,10 @@ String get _properties => '''
     gun_local_description TEXT,
     qty_agricultural_defensives INT,
     observations TEXT,
-    fk_owner_id VARCHAR(255),
+    fk_owner_id VARCHAR(255) NOT NULL,
     fk_property_type_id VARCHAR(255),
     createdAt DATETIME,
-    updatedAt DATETIME,
+    updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_owner_id) REFERENCES Owners (_id),
     FOREIGN KEY (fk_property_type_id) REFERENCES Property_types (_id)
   );
@@ -131,10 +140,10 @@ String get _requests => '''
   CREATE TABLE requests (
     _id VARCHAR(255) PRIMARY KEY,
     agency VARCHAR(255) NOT NULL,
-    has_success BOOL NOT NULL DEFAULT FALSE,
-    fk_property_id VARCHAR(255),
+    has_success BOOL NOT NULL,
+    fk_property_id VARCHAR(255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME,
+    updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id)
   );
 ''';
@@ -145,10 +154,10 @@ String get _requests => '''
 String get _agricultural_machines => '''
   CREATE TABLE agricultural_machines (
     _id VARCHAR (255) PRIMARY KEY,
-    name VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
     brand VARCHAR(255),
     createdAt DATETIME,
-    updatedAt DATETIME
+    updatedAt DATETIME NOT NULL
   );
 ''';
 
@@ -158,12 +167,10 @@ String get _agricultural_machines => '''
 String get _property_agricultural_machines => '''
   CREATE TABLE property_agricultural_machines (
     _id VARCHAR(255) PRIMARY KEY,
-    other_machine VARCHAR(255),
-    other_machine_brand VARCHAR (255),
-    fk_property_id VARCHAR(255),
-    fk_agricultural_machine_id VARCHAR(255),
+    fk_property_id VARCHAR(255) NOT NULL,
+    fk_agricultural_machine_id VARCHAR(255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME,
+    updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id),
     FOREIGN KEY (fk_agricultural_machine_id) REFERENCES Agricultural_machines (_id)
   );
@@ -175,10 +182,10 @@ String get _property_agricultural_machines => '''
 String get _property_visits => '''
   CREATE TABLE property_visits (
     _id VARCHAR(255) PRIMARY KEY,
-    fk_property_id VARCHAR(255),
-    fk_visit_id VARCHAR(255),
+    fk_property_id VARCHAR(255) NOT NULL,
+    fk_visit_id VARCHAR(255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME,
+    updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id),
     FOREIGN KEY (fk_visit_id) REFERENCES Visits (_id)
   );
@@ -191,9 +198,9 @@ String get _vehicles => '''
   CREATE TABLE vehicles (
     _id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    brand VARCHAR(255) NOT NULL,
+    brand VARCHAR(255),
     createdAt DATETIME,
-    updatedAt DATETIME
+    updatedAt DATETIME NOT NULL
   );
 ''';
 
@@ -203,15 +210,50 @@ String get _vehicles => '''
 String get _property_vehicles => '''
   CREATE TABLE property_vehicles (
     _id VARCHAR(255) PRIMARY KEY,
-    other_vehicles VARCHAR(255),
-    other_vehicle_brand VARCHAR(255),
-    color VARCHAR(255) NOT NULL,
-    fk_vehicle_id VARCHAR(255),
-    fk_property_id VARCHAR(255),
+    color VARCHAR(255),
+    fk_vehicle_id VARCHAR(255) NOT NULL,
+    fk_property_id VARCHAR(255) NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME,
+    updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_vehicle_id) REFERENCES Vehicles (_id),
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id)
+  );
+''';
+
+/**
+ * Create sync Table
+ */
+String get _sync => '''
+  CREATE TABLE sync (
+    last_sync DATETIME
+  );
+''';
+
+/**
+ * Sync table unique insert
+ */
+String get _sync_insert => '''
+  INSERT INTO sync VALUES
+  (null);
+''';
+
+/**
+ * Garbage table
+ */
+String get _garbages => '''
+  CREATE TABLE garbages (
+    reference_table VARCHAR(255) NOT NULL,
+    deleted_id VARCHAR(255) NOT NULL
+  );
+''';
+
+/**
+ * Database updates table
+ */
+String get _databaseUpdates => '''
+  CREATE TABLE database_updates (
+    reference_table VARCHAR(255) NOT NULL,
+    updated_id VARCHAR(255) NOT NULL
   );
 ''';
 

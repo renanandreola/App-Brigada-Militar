@@ -1,3 +1,5 @@
+import 'package:app_brigada_militar/database/sync/apiToken.dart';
+import 'package:app_brigada_militar/database/sync/syncUsers.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/update7ways.dart';
 import 'package:app_brigada_militar/login.dart';
@@ -12,6 +14,12 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   final db = DB.instance.database;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   void _goToLoginPage() {
     // ScaffoldMessenger.of(context).showSnackBar(
