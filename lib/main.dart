@@ -10,13 +10,12 @@ void main(List<String> args) {
   // debugDatabaseBeforeApp();
 
   runApp(MaterialApp(
-    home: HomeApp("Marlon"),
+    home: InitialPage(),
     debugShowCheckedModeBanner: false,
   ));
 }
 
 void debugDatabaseBeforeApp() async {
-  
   // var renan = new User(email: "renan@gmail.com", password: "senhateste123", name: "Renan Andreolla");
   // var marlon = new User(email: "marlon@gmail.com", password: "senhateste123", name: "Marlon Angonese");
   // var rodrigo = new User(email: "rodrigo@gmail.com", password: "senhateste123", name: "Rodrigo Muntini");
@@ -34,13 +33,9 @@ void debugDatabaseBeforeApp() async {
   users = await UsersTable().find(email: "marlon@gmail.com");
   var usermarlon = users[0];
 
-  await db.insert(
-    "garbages",
-    {
-      'reference_table': 'users',
-      'deleted_id': usermarlon.id,
-    }
-  );
+  await db.insert("garbages", {
+    'reference_table': 'users',
+    'deleted_id': usermarlon.id,
+  });
   usermarlon.delete();
-
 }
