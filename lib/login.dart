@@ -35,8 +35,10 @@ class _LoginState extends State<Login> {
     final response =
         await UsersTable().authenticate(_email.text, _password.text);
     if (response) {
+      final users = await UsersTable().find(email: _email.text);
+      User user = users[0];
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomeApp(_email.text)));
+          MaterialPageRoute(builder: (context) => HomeApp(user.name!)));
       return;
     }
 

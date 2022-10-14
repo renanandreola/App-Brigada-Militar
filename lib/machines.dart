@@ -11,8 +11,9 @@ class Machines extends StatefulWidget {
 class _MachinesState extends State<Machines> {
   // String _machineType0 = '';
 
-  String _machineType1 = '';
-  int numberMachines = 1;
+  // String _machineType1 = '';
+  List _machineType = [];
+  int numberMachines = 0;
 
   // Increments the number of machines on click '+ Máquinas Agrícolas'
   void addNewMachine() {
@@ -30,9 +31,12 @@ class _MachinesState extends State<Machines> {
   // Show the dropdown on click '+ Máquinas Agrícolas'
   Widget machineType1() {
     List<DropdownButtonFormField> filhos = [];
-    for (int i = 1; i <= numberMachines; i++) {
+    for (int i = 0; i <= numberMachines; i++) {
+      if (_machineType.length - 1 < i) {
+        _machineType.add("");
+      }
       filhos.add(DropdownButtonFormField(
-        hint: _machineType1 == null || _machineType1 == ""
+        hint: _machineType[i] == null || _machineType[i] == ""
             ? Text('Máquina Agrícola ${i}',
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
@@ -41,7 +45,7 @@ class _MachinesState extends State<Machines> {
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"))
             : Text(
-                _machineType1,
+                _machineType[i],
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -76,7 +80,7 @@ class _MachinesState extends State<Machines> {
         onChanged: (val) {
           setState(
             () {
-              _machineType1 = val.toString();
+              _machineType[i] = val.toString();
             },
           );
         },
