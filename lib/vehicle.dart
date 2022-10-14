@@ -10,7 +10,8 @@ class Vehicle extends StatefulWidget {
 
 class _VehicleState extends State<Vehicle> {
   String _vehicleType1 = '';
-  int numberVehicles = 1;
+  List _vehicleType = [];
+  int numberVehicles = 0;
 
   void addNewVehicle() {
     setState(() {
@@ -25,9 +26,12 @@ class _VehicleState extends State<Vehicle> {
 
   Widget vehicleType1() {
     List<DropdownButtonFormField> filhos = [];
-    for (int i = 1; i <= numberVehicles; i++) {
+    for (int i = 0; i <= numberVehicles; i++) {
+      if (_vehicleType.length - 1 < i) {
+        _vehicleType.add("");
+      }
       filhos.add(DropdownButtonFormField(
-        hint: _vehicleType1 == null || _vehicleType1 == ""
+        hint: _vehicleType[i] == null || _vehicleType[i] == ""
             ? Text('Veículo ${i}',
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
@@ -36,7 +40,7 @@ class _VehicleState extends State<Vehicle> {
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"))
             : Text(
-                _vehicleType1,
+                _vehicleType[i],
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -67,7 +71,7 @@ class _VehicleState extends State<Vehicle> {
         onChanged: (val) {
           setState(
             () {
-              _vehicleType1 = val.toString();
+              _vehicleType[i] = val.toString();
             },
           );
         },
