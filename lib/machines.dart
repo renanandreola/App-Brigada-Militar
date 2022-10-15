@@ -2,7 +2,9 @@ import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
 
 class Machines extends StatefulWidget {
-  const Machines({Key? key}) : super(key: key);
+  // const Machines({Key? key}) : super(key: key);
+  Map formData;
+  Machines(this.formData);
 
   @override
   State<Machines> createState() => _MachinesState();
@@ -25,7 +27,7 @@ class _MachinesState extends State<Machines> {
   // Go to page that have the description of the place
   void _goToPlaceDescription() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => PlaceDescription()));
+        context, MaterialPageRoute(builder: (context) => PlaceDescription(widget.formData)));
   }
 
   // Show the dropdown on click '+ Máquinas Agrícolas'
