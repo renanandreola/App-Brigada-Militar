@@ -38,7 +38,7 @@ class Owner {
   /**
    * Inserts a database Property Owner
    */
-  Future<bool> save({var transaction = null}) async {
+  Future<dynamic> save({var transaction = null}) async {
     try {
       final db =
           (transaction != null) ? transaction : await DB.instance.database;
@@ -54,7 +54,22 @@ class Owner {
         this.toMap(),
       );
 
-      return true;
+      var owners = await db.query(
+        'owners',
+        where: "firstname = '${this.firstname}' and lastname = '${this.lastname}'"
+      );
+
+      var owner = owners[0];
+
+      await db.insert(
+        'database_updates',
+        {
+          'reference_table': 'owners',
+          'updated_id': owner["_id"]
+        }
+      );
+
+      return owner["_id"];
     } catch (err) {
       print(err);
 

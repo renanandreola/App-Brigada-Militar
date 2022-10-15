@@ -2,7 +2,9 @@ import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:flutter/material.dart';
 
 class Vehicle extends StatefulWidget {
-  const Vehicle({Key? key}) : super(key: key);
+  // const Vehicle({Key? key}) : super(key: key);
+  Map formData;
+  Vehicle(this.formData);
 
   @override
   State<Vehicle> createState() => _VehicleState();
@@ -21,7 +23,7 @@ class _VehicleState extends State<Vehicle> {
 
   void _goToAditionalInfo() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AditionalInfo()));
+        context, MaterialPageRoute(builder: (context) => AditionalInfo(widget.formData)));
   }
 
   Widget vehicleType1() {

@@ -1,9 +1,12 @@
 import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/vehicle.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 
 class PlaceDescription extends StatefulWidget {
-  const PlaceDescription({Key? key}) : super(key: key);
+  // const PlaceDescription({Key? key}) : super(key: key);
+  Map formData;
+  PlaceDescription(this.formData);
 
   @override
   State<PlaceDescription> createState() => _PlaceDescriptionState();
@@ -11,6 +14,7 @@ class PlaceDescription extends StatefulWidget {
 
 class _PlaceDescriptionState extends State<PlaceDescription> {
   TextEditingController _quantityDefensive = TextEditingController();
+  TextEditingController _gunPlaceDescription = TextEditingController();
 
   bool _hasDefensive = false;
   bool _hasGun = false;
@@ -20,12 +24,26 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
   int numberGun = 0;
 
   void _goToAdditionalInfoOrVehicle() {
+    // Retrieve form data
+    Map formData = widget.formData;
+
+    // Set new form data
+    Map pageFormData = {
+      'qty_agricultural_defensives': numberDefensives,
+      'has_gun': _hasGun,
+      'has_gun_local': _hasGunPlace,
+      'gun_local_description': _gunPlaceDescription.text,
+    };
+
+    // Merge form
+    formData.addAll(pageFormData);
+
     if (_hasVehicle) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Vehicle()));
+          context, MaterialPageRoute(builder: (context) => Vehicle(formData)));
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AditionalInfo()));
+          context, MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
     }
   }
 
@@ -113,6 +131,7 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                 textInputAction: TextInputAction.newline,
                 minLines: 5,
                 maxLines: 5,
+                controller: _gunPlaceDescription,
               ),
             ),
           ),

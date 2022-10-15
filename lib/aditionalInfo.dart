@@ -1,8 +1,16 @@
-import 'package:app_brigada_militar/initialPage.dart';
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/database/models/Owner.dart';
+import 'package:app_brigada_militar/database/models/Property.dart';
+import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
 
 class AditionalInfo extends StatefulWidget {
-  const AditionalInfo({Key? key}) : super(key: key);
+  // const AditionalInfo({Key? key}) : super(key: key);
+  Map formData;
+  AditionalInfo(this.formData);
 
   @override
   State<AditionalInfo> createState() => _AditionalInfoState();
@@ -16,9 +24,31 @@ class _AditionalInfoState extends State<AditionalInfo> {
   int numberServices = 0;
 
   // Save propertie
-  void _savePropertie() {
+  void _savePropertie() async {
+    // Retrieve form data
+    Map formData = widget.formData;
+
+    // // Set new form data information
+    // Map pageFormData = {
+    // };
+
+    // // Merge form
+    // formData.addAll(pageFormData);
+
+    inspect(formData);
+    
+    //Create a transaction to avoid atomicity errors
+    final db = await DB.instance.database;
+
+    await db.transaction((txn) async {
+      // First add the owner
+      Owner owner = new Owner(firstname: formData["firstname"], lastname: formData["lastname"]);
+      var owner_id = await owner.save(transaction: txn);
+    });
+
+
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => InitialPage()));
+        context, MaterialPageRoute(builder: (context) => HomeApp("Pega o nome do usuário renan")));
   }
 
   // show departments info when select 'Já usou o programa para alguma urgência / emergência?'
