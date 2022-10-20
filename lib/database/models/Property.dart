@@ -71,7 +71,7 @@ class Property {
   /**
    * Inserts a database Property
    */
-  Future<bool> save({var transaction = null}) async {
+  Future<dynamic> save({var transaction = null}) async {
     try {
       final db =
           (transaction != null) ? transaction : await DB.instance.database;
@@ -87,7 +87,23 @@ class Property {
         this.toMap(),
       );
 
-      return true;
+      var properties = await db.query(
+        'properties',
+        orderBy: "createdAt DESC",
+        limit: 1
+      );
+
+      var property = properties[0];
+
+      await db.insert(
+        'database_updates',
+        {
+          'reference_table': 'properties',
+          'updated_id': property["_id"]
+        }
+      );
+
+      return property["_id"];
     } catch (err) {
       print(err);
 

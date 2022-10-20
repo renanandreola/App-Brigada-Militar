@@ -132,9 +132,14 @@ class PropertyTypesTable {
     int limit = 50,
     String order = 'DESC',
     int page = 1,
+    var transaction
   }) async {
     try {
-      final db = await DB.instance.database;
+      var db = await DB.instance.database;
+
+      if (transaction != null) {
+        db = transaction;
+      }
 
       Map<String, dynamic> params = {
         '_id': id,

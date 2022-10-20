@@ -30,8 +30,9 @@ class _NewPropertieState extends State<NewPropertie> {
       'qty_people': _quantityResidents.text,
       'has_geo_board': _hasSign,
       'has_cams': _hasCams,
-      'has_phone_singal': _hasPhoneSignal,
+      'has_phone_signal': _hasPhoneSignal,
       'has_internet': _hasNetwork,
+      'property_type': _dropDownValue,
     };
 
     if (_hasMachines) {
