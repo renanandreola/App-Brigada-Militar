@@ -16,7 +16,13 @@ class _SyncState extends State<Sync> {
     super.initState();
 
     // Load new registers
-    updateSyncAll();
+    updateSyncAll().then((updated) {
+      if (updated) {
+        print("Banco atualizou com sucesso!");
+      } else {
+        print("Houve um erro ao atualizar o banco");
+      }
+    });
   }
 
   @override
