@@ -35,24 +35,29 @@ syncAll(var db) async {
   });
 }
 
-updateSyncAll() async {
-  final db = await DB.instance.database;
+Future<bool> updateSyncAll() async {
+  try {
+    final db = await DB.instance.database;
 
-  await db.transaction((txn) async {
-    await updateUsers(txn);
-    print("Usuários sincronizados!");
+    await db.transaction((txn) async {
+      await updateUsers(txn);
+      print("Usuários sincronizados!");
 
-    await updateOwners(txn);
-    print("Proprietários sincronizados!");
+      await updateOwners(txn);
+      print("Proprietários sincronizados!");
 
-    await updatePropertyTypes(txn);
-    print("Tipos de Propriedades atualizadas");
+      await updatePropertyTypes(txn);
+      print("Tipos de Propriedades atualizadas");
 
-    await updateProperties(txn);
-    print("Propriedades atualizadas");
+      await updateProperties(txn);
+      print("Propriedades atualizadas");
 
-    txn.execute(await lastSyncUpdate());
-    print("Última sincronização atualizada!");
-  });
+      txn.execute(await lastSyncUpdate());
+      print("Última sincronização atualizada!");
+    });
 
+    return true;
+  } catch (err) {
+    return false;
+  }
 }
