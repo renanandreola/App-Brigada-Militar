@@ -166,6 +166,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: EdgeInsets.only(left: 32, right: 32, top: 15),
                       child: TextFormField(
+                        obscureText: true,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Preencha sua senha';
