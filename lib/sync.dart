@@ -50,7 +50,7 @@ class _SyncState extends State<Sync> {
           // Spinner
           Padding(
             padding: EdgeInsets.only(left: 0, right: 0, top: 0),
-            child: Image.asset('assets/images/spinner-sync.png'),
+            child: Image.asset('assets/images/spinner.gif'),
           ),
 
           // Text sync
@@ -59,6 +59,7 @@ class _SyncState extends State<Sync> {
               child: Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 0),
                 child: Text("Sincronizando, por favor aguarde",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                         fontSize: 30,
                         fontStyle: FontStyle.normal,
@@ -87,6 +88,7 @@ class _SyncState extends State<Sync> {
               child: Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 20),
                 child: Text("Banco de Dados sincronizado com sucesso!",
+                    textAlign: TextAlign.start,
                     style: TextStyle(
                         fontSize: 30,
                         fontStyle: FontStyle.normal,
@@ -115,6 +117,7 @@ class _SyncState extends State<Sync> {
               child: Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 20),
                 child: Text("Houve uma falha ao sincronizar o banco de dados.",
+                    textAlign: TextAlign.start,
                     style: TextStyle(
                         fontSize: 30,
                         fontStyle: FontStyle.normal,
@@ -131,6 +134,7 @@ class _SyncState extends State<Sync> {
               child: Padding(
                 padding: EdgeInsets.only(left: 0, right: 0, top: 30),
                 child: Text("Por favor, tente mais tarde.",
+                    textAlign: TextAlign.start,
                     style: TextStyle(
                         fontSize: 30,
                         fontStyle: FontStyle.normal,
@@ -172,9 +176,11 @@ class _SyncState extends State<Sync> {
 
                 // Spinner
                 Padding(
-                  padding: EdgeInsets.only(left: 59, right: 59, top: 100),
-                  child: statusSync(),
-                ),
+                    padding: EdgeInsets.only(left: 59, right: 59, top: 100),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: statusSync(),
+                    )),
               ],
             ),
           ),
