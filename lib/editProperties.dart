@@ -1,6 +1,14 @@
 import 'package:app_brigada_militar/editMachines.dart';
 import 'package:app_brigada_militar/editPlaceDescription.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/database/models/Owner.dart';
+import 'package:app_brigada_militar/database/models/Property.dart';
+import 'package:app_brigada_militar/database/models/PropertyType.dart';
+import 'package:app_brigada_militar/home.dart';
 
 class EditProperties extends StatefulWidget {
   const EditProperties({Key? key}) : super(key: key);

@@ -1,3 +1,7 @@
+// import 'dart:js_util';
+
+import 'package:app_brigada_militar/editAditionalInfo.dart';
+import 'package:app_brigada_militar/editVehicles.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
 
@@ -36,14 +40,18 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
     // Merge form
     formData.addAll(pageFormData);
 
-    // if (_hasVehicle) {
-    //   Navigator.push(
-    //       context, MaterialPageRoute(builder: (context) => Vehicle(formData)));
-    // } else {
-    //   Navigator.push(context,
-    //       MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
-    // }
+    if (_hasVehicle) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => EditVehicles(formData)));
+    } else {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => EditAditionalInfo(formData)));
+    }
   }
+
+  // void _getDataPropertie() async {
+  //   final data = await getProperty(o, name)
+  // }
 
   Widget qtdDefensives() {
     List<TextFormField> filhos = [];
