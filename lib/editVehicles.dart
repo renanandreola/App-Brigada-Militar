@@ -1,47 +1,42 @@
-import 'package:app_brigada_militar/editPlaceDescription.dart';
+import 'package:app_brigada_militar/editAditionalInfo.dart';
 import 'package:flutter/material.dart';
 
-class EditMachines extends StatefulWidget {
-  // const EditMachines({Key? key}) : super(key: key);
+class EditVehicles extends StatefulWidget {
+  // const EditVehicles({Key? key}) : super(key: key);
   Map formData;
-  EditMachines(this.formData);
+  EditVehicles(this.formData);
 
   @override
-  State<EditMachines> createState() => _EditMachinesState();
+  State<EditVehicles> createState() => _EditVehiclesState();
 }
 
-class _EditMachinesState extends State<EditMachines> {
-  // String _machineType0 = '';
+class _EditVehiclesState extends State<EditVehicles> {
+  String _vehicleType1 = '';
+  List _vehicleType = [];
+  int numberVehicles = 0;
 
-  // String _machineType1 = '';
-  List _machineType = [];
-  int numberMachines = 0;
-
-  // Increments the number of machines on click '+ Máquinas Agrícolas'
-  void addNewMachine() {
+  void addNewVehicle() {
     setState(() {
-      numberMachines += 1;
+      numberVehicles += 1;
     });
   }
 
-  // Go to page that have the description of the place
-  void _goToPlaceDescription() {
+  void _goToAditionalInfo() {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditPlaceDescription(widget.formData)));
+            builder: (context) => EditAditionalInfo(widget.formData)));
   }
 
-  // Show the dropdown on click '+ Máquinas Agrícolas'
-  Widget machineType1() {
+  Widget vehicleType1() {
     List<DropdownButtonFormField> filhos = [];
-    for (int i = 0; i <= numberMachines; i++) {
-      if (_machineType.length - 1 < i) {
-        _machineType.add("");
+    for (int i = 0; i <= numberVehicles; i++) {
+      if (_vehicleType.length - 1 < i) {
+        _vehicleType.add("");
       }
       filhos.add(DropdownButtonFormField(
-        hint: _machineType[i] == null || _machineType[i] == ""
-            ? Text('Máquina Agrícola ${i}',
+        hint: _vehicleType[i] == null || _vehicleType[i] == ""
+            ? Text('Veículo ${i}',
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -49,7 +44,7 @@ class _EditMachinesState extends State<EditMachines> {
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"))
             : Text(
-                _machineType[i],
+                _vehicleType[i],
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -60,7 +55,7 @@ class _EditMachinesState extends State<EditMachines> {
         decoration: InputDecoration(
             // filled: true,
             fillColor: Colors.black,
-            labelText: 'Máquina Agrícola ${i}'),
+            labelText: 'Veículo ${i}'),
         isExpanded: true,
         iconSize: 30.0,
         style: TextStyle(
@@ -69,11 +64,7 @@ class _EditMachinesState extends State<EditMachines> {
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w400,
             fontFamily: "RobotoFlex"),
-        items: [
-          'MF4707 - Massey Ferguson 1',
-          'MF4707 - Massey Ferguson 2',
-          'MF4707 - Massey Ferguson 3'
-        ].map(
+        items: ['Gol', 'Fusca', 'Jetta'].map(
           (val) {
             return DropdownMenuItem<String>(
               value: val,
@@ -84,7 +75,7 @@ class _EditMachinesState extends State<EditMachines> {
         onChanged: (val) {
           setState(
             () {
-              _machineType[i] = val.toString();
+              _vehicleType[i] = val.toString();
             },
           );
         },
@@ -101,12 +92,12 @@ class _EditMachinesState extends State<EditMachines> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Editar propriedade"),
+        title: Text("Nova propriedade"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},
           child: Icon(
-            Icons.menu,
+            Icons.menu, // add custom icons also
           ),
         ),
       ),
@@ -123,7 +114,7 @@ class _EditMachinesState extends State<EditMachines> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Editar Máquinas Agrícolas",
+                        Text("Editar Veículos",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
@@ -132,22 +123,22 @@ class _EditMachinesState extends State<EditMachines> {
                       ],
                     )),
 
-                // Type of machines
+                // Type of vehicle
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
-                    child: machineType1()),
+                    child: vehicleType1()),
 
-                // Add new machine
+                // Add new vehicle
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 30),
                   child: GestureDetector(
                     onTap: () {
-                      addNewMachine();
+                      addNewVehicle();
                     },
                     child: SizedBox(
                       width: double.infinity,
                       child: Text(
-                        '+ Máquina Agrícola',
+                        '+ Veículo',
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             color: Color.fromARGB(255, 27, 75, 27),
@@ -160,7 +151,7 @@ class _EditMachinesState extends State<EditMachines> {
                   ),
                 ),
 
-                // Next Page
+                // Next
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 35),
                   child: ElevatedButton(
@@ -180,7 +171,7 @@ class _EditMachinesState extends State<EditMachines> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    onPressed: _goToPlaceDescription,
+                    onPressed: _goToAditionalInfo,
                   ),
                 ),
               ],

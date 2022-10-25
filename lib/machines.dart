@@ -27,7 +27,9 @@ class _MachinesState extends State<Machines> {
   // Go to page that have the description of the place
   void _goToPlaceDescription() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => PlaceDescription(widget.formData)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => PlaceDescription(widget.formData)));
   }
 
   // Show the dropdown on click '+ Máquinas Agrícolas'
