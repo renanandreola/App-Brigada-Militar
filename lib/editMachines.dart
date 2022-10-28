@@ -24,6 +24,13 @@ class _EditMachinesState extends State<EditMachines> {
     });
   }
 
+  // Remove all machines
+  void removeMachines() {
+    setState(() {
+      numberMachines -= 1;
+    });
+  }
+
   // Go to page that have the description of the place
   void _goToPlaceDescription() {
     Navigator.push(
@@ -148,6 +155,29 @@ class _EditMachinesState extends State<EditMachines> {
                       width: double.infinity,
                       child: Text(
                         '+ Máquina Agrícola',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 27, 75, 27),
+                            fontSize: 18,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "RobotoFlex"),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Remove machines
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+                  child: GestureDetector(
+                    onTap: () {
+                      removeMachines();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '- Remover Máquinas',
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             color: Color.fromARGB(255, 27, 75, 27),

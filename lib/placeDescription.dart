@@ -42,8 +42,8 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => Vehicle(formData)));
     } else {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
     }
   }
 
