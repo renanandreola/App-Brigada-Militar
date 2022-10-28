@@ -39,6 +39,7 @@ dependencies:
   http: ^0.13.5
   intl:
   flutter_session_manager: ^1.0.3
+  dropdown_search: ^5.0.3
 
 dev_dependencies:
   flutter_test:
