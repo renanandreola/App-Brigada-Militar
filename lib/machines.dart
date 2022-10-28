@@ -27,12 +27,11 @@ class _MachinesState extends State<Machines> {
     });
   }
 
-  // Remove machine
-  void _removeMachine() {
-    // setState(() {
-    //   filhos.removeAt(i);
-    //   numberMachines -= 1;
-    // });
+  // Remove all machines
+  void removeMachines() {
+    setState(() {
+      numberMachines -= 1;
+    });
   }
 
   // Go to page that have the description of the place
@@ -53,7 +52,7 @@ class _MachinesState extends State<Machines> {
       filhos.add(Row(
         children: [
           Container(
-              width: MediaQuery.of(context).size.width * 0.7,
+              width: MediaQuery.of(context).size.width * 0.8,
               child: DropdownButtonFormField(
                 hint: _machineType[i] == null || _machineType[i] == ""
                     ? Text('Máquina Agrícola ${i}',
@@ -104,20 +103,20 @@ class _MachinesState extends State<Machines> {
                   );
                 },
               )),
-          Padding(
-            padding: EdgeInsets.only(left: 30, top: 30),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  for (int j = i; j < filhos.length - 1; j++) {
-                    filhos[j] = filhos[j + 1];
-                  }
-                  numberMachines -= 1;
-                });
-              },
-              child: Image.asset('assets/images/red-trash.png'),
-            ),
-          )
+          // Padding(
+          //   padding: EdgeInsets.only(left: 30, top: 30),
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       setState(() {
+          //         for (int j = i; j < filhos.length - 1; j++) {
+          //           filhos[j] = filhos[j + 1];
+          //         }
+          //         numberMachines -= 1;
+          //       });
+          //     },
+          //     child: Image.asset('assets/images/red-trash.png'),
+          //   ),
+          // )
         ],
       ));
     }
@@ -179,6 +178,29 @@ class _MachinesState extends State<Machines> {
                       width: double.infinity,
                       child: Text(
                         '+ Máquina Agrícola',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 27, 75, 27),
+                            fontSize: 18,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "RobotoFlex"),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Remove machines
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+                  child: GestureDetector(
+                    onTap: () {
+                      removeMachines();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '- Remover Máquinas',
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             color: Color.fromARGB(255, 27, 75, 27),

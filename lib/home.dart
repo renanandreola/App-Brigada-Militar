@@ -1,5 +1,6 @@
+import 'package:app_brigada_militar/garrison.dart';
 import 'package:flutter/material.dart';
-import 'package:app_brigada_militar/configuration.dart';
+import 'package:app_brigada_militar/logout.dart';
 import 'package:app_brigada_militar/editProperties.dart';
 import 'package:app_brigada_militar/newPropertie.dart';
 import 'package:app_brigada_militar/properties.dart';
@@ -21,6 +22,11 @@ class _HomeAppState extends State<HomeApp> {
         context, MaterialPageRoute(builder: (context) => Properties()));
   }
 
+  void _editGarrison() {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => Garrison(widget.userName)));
+  }
+
   void _editPropertie() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => EditProperties()));
@@ -40,9 +46,8 @@ class _HomeAppState extends State<HomeApp> {
         context, MaterialPageRoute(builder: (context) => Update7waysMenu()));
   }
 
-  void _openConfiguration() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Configuration()));
+  void _openLogOut() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => LogOut()));
   }
 
   @override
@@ -119,13 +124,13 @@ class _HomeAppState extends State<HomeApp> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        child: Image.asset('assets/images/propriedades.png'),
+                        child: Image.asset(
+                            'assets/images/new-icon-properties.png'),
                         onTap: _openProperties,
                       ),
                       GestureDetector(
-                        child:
-                            Image.asset('assets/images/editar-propriedade.png'),
-                        onTap: _editPropertie,
+                        child: Image.asset('assets/images/new-icon-visit.png'),
+                        onTap: _newPropertie,
                       )
                     ]),
               ),
@@ -138,11 +143,11 @@ class _HomeAppState extends State<HomeApp> {
                     children: [
                       GestureDetector(
                         child:
-                            Image.asset('assets/images/nova-propriedade.png'),
-                        onTap: _newPropertie,
+                            Image.asset('assets/images/new-icon-garrison.png'),
+                        onTap: _editGarrison,
                       ),
                       GestureDetector(
-                        child: Image.asset('assets/images/sincronizar.png'),
+                        child: Image.asset('assets/images/new-icon-sync.png'),
                         onTap: _openSync,
                       )
                     ]),
@@ -155,13 +160,12 @@ class _HomeAppState extends State<HomeApp> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        child:
-                            Image.asset('assets/images/atualizacao-7ways.png'),
+                        child: Image.asset('assets/images/new-icon-7ways.png'),
                         onTap: _update7ways,
                       ),
                       GestureDetector(
-                        child: Image.asset('assets/images/configuracao.png'),
-                        onTap: _openConfiguration,
+                        child: Image.asset('assets/images/new-icon-logout.png'),
+                        onTap: _openLogOut,
                       )
                     ]),
               ),
