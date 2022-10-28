@@ -15,15 +15,25 @@ class _VehicleState extends State<Vehicle> {
   List _vehicleType = [];
   int numberVehicles = 0;
 
+  // Add new vehicle
   void addNewVehicle() {
     setState(() {
       numberVehicles += 1;
     });
   }
 
+  // Remove all machines
+  void removeVehicles() {
+    setState(() {
+      numberVehicles -= 1;
+    });
+  }
+
   void _goToAditionalInfo() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AditionalInfo(widget.formData)));
+        context,
+        MaterialPageRoute(
+            builder: (context) => AditionalInfo(widget.formData)));
   }
 
   Widget vehicleType1() {
@@ -137,6 +147,29 @@ class _VehicleState extends State<Vehicle> {
                       width: double.infinity,
                       child: Text(
                         '+ Veículo',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 27, 75, 27),
+                            fontSize: 18,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "RobotoFlex"),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Remove vehicles
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+                  child: GestureDetector(
+                    onTap: () {
+                      removeVehicles();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '- Remover Veículos',
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             color: Color.fromARGB(255, 27, 75, 27),

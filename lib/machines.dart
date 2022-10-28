@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:ui';
+
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +27,13 @@ class _MachinesState extends State<Machines> {
     });
   }
 
+  // Remove all machines
+  void removeMachines() {
+    setState(() {
+      numberMachines -= 1;
+    });
+  }
+
   // Go to page that have the description of the place
   void _goToPlaceDescription() {
     Navigator.push(
@@ -34,60 +44,80 @@ class _MachinesState extends State<Machines> {
 
   // Show the dropdown on click '+ Máquinas Agrícolas'
   Widget machineType1() {
-    List<DropdownButtonFormField> filhos = [];
+    List<Row> filhos = [];
     for (int i = 0; i <= numberMachines; i++) {
       if (_machineType.length - 1 < i) {
         _machineType.add("");
       }
-      filhos.add(DropdownButtonFormField(
-        hint: _machineType[i] == null || _machineType[i] == ""
-            ? Text('Máquina Agrícola ${i}',
-                style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 1),
-                    fontSize: 15,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "RobotoFlex"))
-            : Text(
-                _machineType[i],
+      filhos.add(Row(
+        children: [
+          Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: DropdownButtonFormField(
+                hint: _machineType[i] == null || _machineType[i] == ""
+                    ? Text('Máquina Agrícola ${i}',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 1),
+                            fontSize: 15,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "RobotoFlex"))
+                    : Text(
+                        _machineType[i],
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 1),
+                            fontSize: 15,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: "RobotoFlex"),
+                      ),
+                decoration: InputDecoration(
+                    // filled: true,
+                    fillColor: Colors.black,
+                    labelText: 'Máquina Agrícola ${i}'),
+                isExpanded: true,
+                iconSize: 30.0,
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"),
-              ),
-        decoration: InputDecoration(
-            // filled: true,
-            fillColor: Colors.black,
-            labelText: 'Máquina Agrícola ${i}'),
-        isExpanded: true,
-        iconSize: 30.0,
-        style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 1),
-            fontSize: 15,
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.w400,
-            fontFamily: "RobotoFlex"),
-        items: [
-          'MF4707 - Massey Ferguson 1',
-          'MF4707 - Massey Ferguson 2',
-          'MF4707 - Massey Ferguson 3'
-        ].map(
-          (val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
-          },
-        ).toList(),
-        onChanged: (val) {
-          setState(
-            () {
-              _machineType[i] = val.toString();
-            },
-          );
-        },
+                items: [
+                  'MF4707 - Massey Ferguson 1',
+                  'MF4707 - Massey Ferguson 2',
+                  'MF4707 - Massey Ferguson 3'
+                ].map(
+                  (val) {
+                    return DropdownMenuItem<String>(
+                      value: val,
+                      child: Text(val),
+                    );
+                  },
+                ).toList(),
+                onChanged: (val) {
+                  setState(
+                    () {
+                      _machineType[i] = val.toString();
+                    },
+                  );
+                },
+              )),
+          // Padding(
+          //   padding: EdgeInsets.only(left: 30, top: 30),
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       setState(() {
+          //         for (int j = i; j < filhos.length - 1; j++) {
+          //           filhos[j] = filhos[j + 1];
+          //         }
+          //         numberMachines -= 1;
+          //       });
+          //     },
+          //     child: Image.asset('assets/images/red-trash.png'),
+          //   ),
+          // )
+        ],
       ));
     }
     return Column(
@@ -148,6 +178,29 @@ class _MachinesState extends State<Machines> {
                       width: double.infinity,
                       child: Text(
                         '+ Máquina Agrícola',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 27, 75, 27),
+                            fontSize: 18,
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "RobotoFlex"),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Remove machines
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 30),
+                  child: GestureDetector(
+                    onTap: () {
+                      removeMachines();
+                    },
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        '- Remover Máquinas',
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             color: Color.fromARGB(255, 27, 75, 27),

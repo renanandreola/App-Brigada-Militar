@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Update7waysMenu extends StatefulWidget {
-  const Update7waysMenu({Key? key}) : super(key: key);
+class LogOut extends StatefulWidget {
+  const LogOut({Key? key}) : super(key: key);
 
   @override
-  State<Update7waysMenu> createState() => _Update7waysMenuState();
+  State<LogOut> createState() => _LogOutState();
 }
 
-class _Update7waysMenuState extends State<Update7waysMenu> {
+class _LogOutState extends State<LogOut> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +41,7 @@ class _Update7waysMenuState extends State<Update7waysMenu> {
               // User Name
               Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: Text("Atualizar 7 ways",
+                  child: Text("Logout",
                       style: TextStyle(
                           fontSize: 20,
                           fontStyle: FontStyle.normal,
