@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Garrison extends StatefulWidget {
   // const Garrison({Key? key}) : super(key: key);
@@ -13,11 +18,36 @@ class Garrison extends StatefulWidget {
 class _GarrisonState extends State<Garrison> {
   TextEditingController _codeVTR = TextEditingController();
 
-  List _peopleType = [];
+  List<Map<String?, String?>> _peopleType = [];
   int numberPeople = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _getUserList();
+  }
+
+  List<Map<String?, String?>> usersInfo = [];
+  List<String> usersList = [];
+
+  _getUserList() async {
+    List<User> users = await UsersTable().find();
+
+    for (User user in users) {
+      usersInfo.add({"name": user.name, "key": user.id });
+      usersList.add(user.name!);
+    }
+  }
+
   // Go to initial menu
-  void gotoInitialMenu() {
+  void gotoInitialMenu() async {
+    // Save garrison in session
+    var garrison = jsonEncode(_peopleType);
+
+    await SessionManager().set('garrison', garrison);
+
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
   }
@@ -41,14 +71,14 @@ class _GarrisonState extends State<Garrison> {
     List<Row> filhos = [];
     for (int i = 0; i <= numberPeople; i++) {
       if (_peopleType.length - 1 < i) {
-        _peopleType.add("");
+        _peopleType.add({"name": "", "key": ""});
       }
       filhos.add(Row(
         children: [
           Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: DropdownButtonFormField(
-                hint: _peopleType[i] == null || _peopleType[i] == ""
+                hint: _peopleType[i]["name"] == null || _peopleType[i]["name"] == ""
                     ? Text('Servidor ${i}',
                         style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 1),
@@ -57,7 +87,7 @@ class _GarrisonState extends State<Garrison> {
                             fontWeight: FontWeight.w400,
                             fontFamily: "RobotoFlex"))
                     : Text(
-                        _peopleType[i],
+                        _peopleType[i]["name"]!,
                         style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 1),
                             fontSize: 15,
@@ -77,7 +107,7 @@ class _GarrisonState extends State<Garrison> {
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"),
-                items: ['Pessoa 1', 'Pessoa 2', 'Pessoa 3'].map(
+                items: usersList.map(
                   (val) {
                     return DropdownMenuItem<String>(
                       value: val,
@@ -88,7 +118,9 @@ class _GarrisonState extends State<Garrison> {
                 onChanged: (val) {
                   setState(
                     () {
-                      _peopleType[i] = val.toString();
+                      Map currentUser = usersInfo.where((element) => element["name"] == val.toString()).first;
+                      _peopleType[i]["name"] = val.toString();
+                      _peopleType[i]["key"] = currentUser["key"];
                     },
                   );
                 },

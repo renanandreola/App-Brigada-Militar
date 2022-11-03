@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:app_brigada_militar/database/sync/apiToken.dart';
 import 'package:app_brigada_militar/database/sync/syncUsers.dart';
+import 'package:app_brigada_militar/garrison.dart';
+import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/update7ways.dart';
 import 'package:app_brigada_militar/login.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'database/db.dart';
 
 class InitialPage extends StatefulWidget {
@@ -19,6 +24,33 @@ class _InitialPageState extends State<InitialPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _checkLogin();
+  }
+
+  _checkLogin() async {
+    var userLogged = await SessionManager().get('user');
+    var garrison = await SessionManager().get("garrison");
+
+    print(userLogged);
+    print(garrison);
+
+    if (userLogged != null) {
+      print("User already logged in");
+
+      if (garrison != null) {
+        print("Has garrison");
+
+        // Go home
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => HomeApp(userLogged["name"]!)));
+      } else {
+        print("Has not garrison");
+        // Go garrison page
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Garrison(userLogged["name"]!)));
+      }
+    }
   }
 
   void _goToLoginPage() {
