@@ -1,7 +1,7 @@
-import 'package:app_brigada_militar/database/db.dart';
-import 'package:app_brigada_militar/database/models/User.dart';
+import 'package:app_brigada_militar/home.dart';
+import 'package:app_brigada_militar/initialPage.dart';
+import 'package:app_brigada_militar/properties.dart';
 import 'package:flutter/material.dart';
-import 'initialPage.dart';
 
 void main(List<String> args) {
   // Test commands before start application

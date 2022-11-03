@@ -1,4 +1,6 @@
+import 'package:app_brigada_militar/initialPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class LogOut extends StatefulWidget {
   const LogOut({Key? key}) : super(key: key);
@@ -8,6 +10,22 @@ class LogOut extends StatefulWidget {
 }
 
 class _LogOutState extends State<LogOut> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _logout();
+  }
+
+  _logout() async {
+    await SessionManager().remove("user");
+    await SessionManager().remove("garrison");
+
+    Navigator.push(context,
+          MaterialPageRoute(builder: (context) => InitialPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
