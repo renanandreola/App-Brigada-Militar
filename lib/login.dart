@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:app_brigada_militar/forgotPassword.dart';
+import 'package:app_brigada_militar/garrison.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:http/http.dart' as http;
 
 class Login extends StatefulWidget {
@@ -25,20 +28,19 @@ class _LoginState extends State<Login> {
   }
 
   void _voidLogin() async {
-    // execute just on the first acess on database;
-    // User new_user = new User(email: "renan@gmail.com", password: '123');
-    // await new_user.save();
-    // print(_email.text);
-    // print(_password.text);
-
     // Will return true or false
     final response =
         await UsersTable().authenticate(_email.text, _password.text);
     if (response) {
       final users = await UsersTable().find(email: _email.text);
       User user = users[0];
+
+      String userJson = jsonEncode(user.toMap());
+
+      await SessionManager().set('user', userJson);
+
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => HomeApp(user.name!)));
+          MaterialPageRoute(builder: (context) => Garrison(user.name!)));
       return;
     }
 
