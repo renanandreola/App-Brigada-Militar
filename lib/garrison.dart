@@ -36,7 +36,7 @@ class _GarrisonState extends State<Garrison> {
     List<User> users = await UsersTable().find();
 
     for (User user in users) {
-      usersInfo.add({"name": user.name, "key": user.id });
+      usersInfo.add({"name": user.name, "key": user.id});
       usersList.add(user.name!);
     }
   }
@@ -45,8 +45,10 @@ class _GarrisonState extends State<Garrison> {
   void gotoInitialMenu() async {
     // Save garrison in session
     var garrison = jsonEncode(_peopleType);
+    var vtr = jsonEncode(_codeVTR.text);
 
     await SessionManager().set('garrison', garrison);
+    await SessionManager().set('vtr', vtr);
 
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
@@ -78,7 +80,8 @@ class _GarrisonState extends State<Garrison> {
           Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: DropdownButtonFormField(
-                hint: _peopleType[i]["name"] == null || _peopleType[i]["name"] == ""
+                hint: _peopleType[i]["name"] == null ||
+                        _peopleType[i]["name"] == ""
                     ? Text('Servidor ${i}',
                         style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 1),
@@ -118,7 +121,9 @@ class _GarrisonState extends State<Garrison> {
                 onChanged: (val) {
                   setState(
                     () {
-                      Map currentUser = usersInfo.where((element) => element["name"] == val.toString()).first;
+                      Map currentUser = usersInfo
+                          .where((element) => element["name"] == val.toString())
+                          .first;
                       _peopleType[i]["name"] = val.toString();
                       _peopleType[i]["key"] = currentUser["key"];
                     },
