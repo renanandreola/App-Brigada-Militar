@@ -59,8 +59,6 @@ String get _visits => '''
   CREATE TABLE visits (
     _id VARCHAR(255) PRIMARY KEY,
     car VARCHAR(255) NOT NULL,
-    latitude VARCHAR(255),
-    longitude VARCHAR(255),
     visit_date DATETIME NOT NULL,
     createdAt DATETIME,
     updatedAt DATETIME NOT NULL
@@ -124,6 +122,8 @@ String get _properties => '''
     gun_local_description TEXT,
     qty_agricultural_defensives INT,
     observations TEXT,
+    latitude VARCHAR(255),
+    longitude VARCHAR(255),
     fk_owner_id VARCHAR(255) NOT NULL,
     fk_property_type_id VARCHAR(255),
     createdAt DATETIME,

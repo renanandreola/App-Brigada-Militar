@@ -1,6 +1,4 @@
-import 'package:app_brigada_militar/home.dart';
 import 'package:app_brigada_militar/initialPage.dart';
-import 'package:app_brigada_militar/properties.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) {
@@ -14,5 +12,5 @@ void main(List<String> args) {
 }
 
 void debugDatabaseBeforeApp() async {
-
+  
 }

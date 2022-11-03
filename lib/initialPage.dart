@@ -1,7 +1,6 @@
 import 'dart:convert';
+import 'dart:developer';
 
-import 'package:app_brigada_militar/database/sync/apiToken.dart';
-import 'package:app_brigada_militar/database/sync/syncUsers.dart';
 import 'package:app_brigada_militar/garrison.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:app_brigada_militar/update7ways.dart';
 import 'package:app_brigada_militar/login.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'database/db.dart';
+import 'package:location/location.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({Key? key}) : super(key: key);
@@ -26,6 +26,34 @@ class _InitialPageState extends State<InitialPage> {
     super.initState();
 
     _checkLogin();
+    _getPosition();
+  }
+
+  _getPosition() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    inspect(_locationData);
   }
 
   _checkLogin() async {
