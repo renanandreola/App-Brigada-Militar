@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:app_brigada_militar/confirmVisit.dart';
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/database/models/Owner.dart';
 import 'package:app_brigada_militar/database/models/Property.dart';
@@ -37,34 +38,35 @@ class _AditionalInfoState extends State<AditionalInfo> {
     // formData.addAll(pageFormData);
 
     inspect(formData);
-    
+
     //Create a transaction to avoid atomicity errors
     final db = await DB.instance.database;
 
     await db.transaction((txn) async {
       // First add the owner
-      Owner owner = new Owner(firstname: formData["firstname"], lastname: formData["lastname"]);
+      Owner owner = new Owner(
+          firstname: formData["firstname"], lastname: formData["lastname"]);
       owner.id = await owner.save(transaction: txn);
 
       // Get property type
-      List<PropertyType> propertyTypes = await PropertyTypesTable().find(name: formData["property_type"], transaction: txn);
+      List<PropertyType> propertyTypes = await PropertyTypesTable()
+          .find(name: formData["property_type"], transaction: txn);
       PropertyType propertyType = propertyTypes[0];
 
       // Add the property
       Property property = new Property(
-        qty_people:  int.tryParse(formData["qty_people"]),
-        has_geo_board: formData["has_geo_board"] == 1,
-        has_cams: formData["has_cams"] == 1,
-        has_phone_signal: formData["has_phone_signal"] == 1,
-        has_internet: formData["has_internet"] == 1,
-        has_gun: formData["has_gun"] == 1,
-        has_gun_local: formData["has_gun_local"] == 1,
-        gun_local_description: formData["gun_local_description"],
-        qty_agricultural_defensives: formData["qty_agricultural_defensives"],
-        observations: formData["observations"],
-        fk_owner_id: owner.id!,
-        fk_property_type_id: propertyType.id!
-      );
+          qty_people: int.tryParse(formData["qty_people"]),
+          has_geo_board: formData["has_geo_board"] == 1,
+          has_cams: formData["has_cams"] == 1,
+          has_phone_signal: formData["has_phone_signal"] == 1,
+          has_internet: formData["has_internet"] == 1,
+          has_gun: formData["has_gun"] == 1,
+          has_gun_local: formData["has_gun_local"] == 1,
+          gun_local_description: formData["gun_local_description"],
+          qty_agricultural_defensives: formData["qty_agricultural_defensives"],
+          observations: formData["observations"],
+          fk_owner_id: owner.id!,
+          fk_property_type_id: propertyType.id!);
 
       property.id = await property.save(transaction: txn);
     });
@@ -72,7 +74,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
     print("Propriedade Salva com Sucesso!");
 
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomeApp("Nome do Usuário")));
+        context, MaterialPageRoute(builder: (context) => ConfirmVisit()));
   }
 
   // show departments info when select 'Já usou o programa para alguma urgência / emergência?'
@@ -239,7 +241,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
                   padding: EdgeInsets.only(left: 32, right: 32, top: 35),
                   child: ElevatedButton(
                     child: Text(
-                      'Salvar Propriedade',
+                      'Próximo',
                       style: TextStyle(
                           fontSize: 20,
                           fontStyle: FontStyle.normal,

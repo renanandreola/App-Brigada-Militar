@@ -1,4 +1,6 @@
+import 'package:app_brigada_militar/editGarrison.dart';
 import 'package:app_brigada_militar/garrison.dart';
+import 'package:app_brigada_militar/newVisit.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/logout.dart';
 import 'package:app_brigada_militar/editProperties.dart';
@@ -24,7 +26,7 @@ class _HomeAppState extends State<HomeApp> {
 
   void _editGarrison() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => Garrison(widget.userName)));
+        MaterialPageRoute(builder: (context) => EditGarrison(widget.userName)));
   }
 
   void _editPropertie() {
@@ -32,9 +34,9 @@ class _HomeAppState extends State<HomeApp> {
         context, MaterialPageRoute(builder: (context) => EditProperties()));
   }
 
-  void _newPropertie() {
+  void _newVisit() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => NewPropertie()));
+        context, MaterialPageRoute(builder: (context) => NewVisit()));
   }
 
   void _openSync() {
@@ -130,7 +132,7 @@ class _HomeAppState extends State<HomeApp> {
                       ),
                       GestureDetector(
                         child: Image.asset('assets/images/new-icon-visit.png'),
-                        onTap: _newPropertie,
+                        onTap: _newVisit,
                       )
                     ]),
               ),
