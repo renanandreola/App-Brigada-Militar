@@ -16,13 +16,13 @@ Future<String?> syncOwners () async {
 
   if (response.statusCode == 200) {
     
-    String query = "INSERT INTO owners (_id, firstname, lastname, createdAt, updatedAt) VALUES";
+    String query = "INSERT INTO owners (_id, firstname, lastname, cpf, phone1, phone2, createdAt, updatedAt) VALUES";
 
     var owners = jsonDecode(response.body);
 
     try {
       for (var owner in owners) {
-        String queryInsertLine = "\n('${owner["_id"].replaceAll("'", "''")}', '${owner["firstname"].replaceAll("'", "''")}', '${owner["lastname"].replaceAll("'", "''")}', '${owner["created_at"].replaceAll("'", "''")}', '${owner["updated_at"].replaceAll("'", "''")}'),";
+        String queryInsertLine = "\n('${owner["_id"].replaceAll("'", "''")}', '${owner["firstname"].replaceAll("'", "''")}', '${owner["lastname"].replaceAll("'", "''")}', '${owner["cpf"].replaceAll("'", "''")}', '${owner["phone1"].replaceAll("'", "''")}', '${owner["phone2"].replaceAll("'", "''")}', '${owner["created_at"].replaceAll("'", "''")}', '${owner["updated_at"].replaceAll("'", "''")}'),";
 
         query += queryInsertLine;
       }
@@ -74,7 +74,7 @@ receiveNewOwnerData(db) async {
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
-    String query = "INSERT INTO owners (_id, firstname, lastname, createdAt, updatedAt) VALUES";
+    String query = "INSERT INTO owners (_id, firstname, lastname, cpf, phone1, phone2, createdAt, updatedAt) VALUES";
 
     var responseBody = jsonDecode(response.body);
     var owners = responseBody["owners"];
@@ -94,6 +94,9 @@ receiveNewOwnerData(db) async {
           '_id': owner["_id"],
           'firstname':  owner["firstname"],
           'lastname': owner["lastname"],
+          'cpf': owner["cpf"],
+          'phone1': owner["phone1"],
+          'phone2': owner["phone2"],
           'createdAt': owner["created_at"],
           'updatedAt': owner["updated_at"],
         };
@@ -206,5 +209,5 @@ sendNewOwnerData(db) async {
     return true;
   }
 
-  throw Exception("Não foi possível sincronizar os usuários");
+  throw Exception("Não foi possível sincronizar os proprietários");
 }

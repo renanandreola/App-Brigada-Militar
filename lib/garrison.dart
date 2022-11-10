@@ -35,10 +35,19 @@ class _GarrisonState extends State<Garrison> {
   _getUserList() async {
     List<User> users = await UsersTable().find();
 
+    List<String> list = [];
     for (User user in users) {
       usersInfo.add({"name": user.name, "key": user.id});
-      usersList.add(user.name!);
+      list.add(user.name!);
     }
+    
+    Map user = await SessionManager().get('user');
+
+    setState(() {
+      _peopleType[0]["name"] = user["name"];
+      _peopleType[0]["key"] = user["_id"];
+      usersList = list;
+    });
   }
 
   // Go to initial menu
@@ -64,7 +73,10 @@ class _GarrisonState extends State<Garrison> {
   // Remove last people
   void removePeople() {
     setState(() {
-      numberPeople -= 1;
+      if (_peopleType.length > 1) {
+        _peopleType.removeLast();
+        numberPeople -= 1;
+      }
     });
   }
 
@@ -118,7 +130,7 @@ class _GarrisonState extends State<Garrison> {
                     );
                   },
                 ).toList(),
-                onChanged: (val) {
+                onChanged: i != 0 ? (val) {
                   setState(
                     () {
                       Map currentUser = usersInfo
@@ -128,7 +140,7 @@ class _GarrisonState extends State<Garrison> {
                       _peopleType[i]["key"] = currentUser["key"];
                     },
                   );
-                },
+                } : null,
               )),
         ],
       ));

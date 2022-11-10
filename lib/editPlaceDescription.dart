@@ -1,12 +1,11 @@
-// import 'dart:js_util';
-
-import 'package:app_brigada_militar/editAditionalInfo.dart';
-import 'package:app_brigada_militar/editVehicles.dart';
+import 'package:app_brigada_militar/aditionalInfo.dart';
+import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/vehicle.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class EditPlaceDescription extends StatefulWidget {
-  // const EditPlaceDescription({Key? key}) : super(key: key);
+  // const PlaceDescription({Key? key}) : super(key: key);
   Map formData;
   EditPlaceDescription(this.formData);
 
@@ -15,6 +14,31 @@ class EditPlaceDescription extends StatefulWidget {
 }
 
 class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    populate();
+  }
+
+  populate() async {
+    Map property = await SessionManager().get('edit_property');
+
+    final db = await DB.instance.database;
+    var property_id = property["_id"];
+    List<Map> property_vehicles = await db.query('property_vehicles', where: "fk_property_id = '${property_id}'");
+
+    setState(() {
+      _quantityDefensive.text = property["qty_agricultural_defensives"].toString();
+      numberDefensives = property["qty_agricultural_defensives"] == 0 ? 0 : 1;
+      _hasDefensive = property["qty_agricultural_defensives"] == 0 ? false : true;
+      _hasGun = property["has_gun"] == "true" ? true : false;
+      _hasGunPlace = property["has_gun_local"] == "true" ? true : false;
+      _hasVehicle =  !property_vehicles.isEmpty;
+    });
+  }
+
   TextEditingController _quantityDefensive = TextEditingController();
   TextEditingController _gunPlaceDescription = TextEditingController();
 
@@ -31,7 +55,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
     // Set new form data
     Map pageFormData = {
-      'qty_agricultural_defensives': numberDefensives,
+      'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
       'has_gun': _hasGun,
       'has_gun_local': _hasGunPlace,
       'gun_local_description': _gunPlaceDescription.text,
@@ -41,17 +65,13 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
     formData.addAll(pageFormData);
 
     if (_hasVehicle) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EditVehicles(formData)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Vehicle(formData)));
     } else {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EditAditionalInfo(formData)));
+          MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
     }
   }
-
-  // void _getDataPropertie() async {
-  //   final data = await getProperty(o, name)
-  // }
 
   Widget qtdDefensives() {
     List<TextFormField> filhos = [];
@@ -155,7 +175,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Editar Descrição do Local"),
+        title: Text("Descrição do Local"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},
@@ -177,7 +197,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Editar Descrição do Local",
+                        Text("Descrição do Local",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,

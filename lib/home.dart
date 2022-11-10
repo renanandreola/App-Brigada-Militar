@@ -1,13 +1,15 @@
+import 'dart:developer';
+
 import 'package:app_brigada_militar/editGarrison.dart';
 import 'package:app_brigada_militar/garrison.dart';
 import 'package:app_brigada_militar/newVisit.dart';
+import 'package:app_brigada_militar/update7ways.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/logout.dart';
-import 'package:app_brigada_militar/editProperties.dart';
-import 'package:app_brigada_militar/newPropertie.dart';
+import 'package:app_brigada_militar/newProperty.dart';
 import 'package:app_brigada_militar/properties.dart';
 import 'package:app_brigada_militar/sync.dart';
-import 'package:app_brigada_militar/update7waysMenu.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class HomeApp extends StatefulWidget {
   // const HomeApp({Key? key}) : super(key: key);
@@ -19,6 +21,28 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    cleanSession();
+  }
+
+  cleanSession() async {
+    //Vehicles
+    await SessionManager().remove('vehicles');
+    //AgriculturalMachines
+    await SessionManager().remove('agricultural_machines');
+    //Owner
+    await SessionManager().remove('owner');
+    //Edit Property
+    await SessionManager().remove('edit_property');
+    //Edit Owner
+    await SessionManager().remove('edit_owner');
+  }
+
   void _openProperties() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Properties()));
@@ -29,10 +53,10 @@ class _HomeAppState extends State<HomeApp> {
         MaterialPageRoute(builder: (context) => EditGarrison(widget.userName)));
   }
 
-  void _editPropertie() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => EditProperties()));
-  }
+  // void _editPropertie() {
+  //   Navigator.push(
+  //       context, MaterialPageRoute(builder: (context) => EditProperties()));
+  // }
 
   void _newVisit() {
     Navigator.push(
@@ -45,7 +69,7 @@ class _HomeAppState extends State<HomeApp> {
 
   void _update7ways() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Update7waysMenu()));
+        context, MaterialPageRoute(builder: (context) => Update7ways()));
   }
 
   void _openLogOut() {
@@ -126,14 +150,14 @@ class _HomeAppState extends State<HomeApp> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        child: Image.asset(
-                            'assets/images/new-icon-properties.png'),
-                        onTap: _openProperties,
-                      ),
-                      GestureDetector(
                         child: Image.asset('assets/images/new-icon-visit.png'),
                         onTap: _newVisit,
-                      )
+                      ),
+                      GestureDetector(
+                        child:
+                            Image.asset('assets/images/new-icon-garrison.png'),
+                        onTap: _editGarrison,
+                      ),
                     ]),
               ),
 
@@ -144,14 +168,13 @@ class _HomeAppState extends State<HomeApp> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        child:
-                            Image.asset('assets/images/new-icon-garrison.png'),
-                        onTap: _editGarrison,
-                      ),
-                      GestureDetector(
                         child: Image.asset('assets/images/new-icon-sync.png'),
                         onTap: _openSync,
-                      )
+                      ),
+                      GestureDetector(
+                        child: Image.asset('assets/images/new-icon-7ways.png'),
+                        onTap: _update7ways,
+                      ),
                     ]),
               ),
 
@@ -161,10 +184,6 @@ class _HomeAppState extends State<HomeApp> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      GestureDetector(
-                        child: Image.asset('assets/images/new-icon-7ways.png'),
-                        onTap: _update7ways,
-                      ),
                       GestureDetector(
                         child: Image.asset('assets/images/new-icon-logout.png'),
                         onTap: _openLogOut,

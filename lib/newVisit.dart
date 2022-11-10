@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:app_brigada_militar/database/db.dart';
-import 'package:app_brigada_militar/editProperties.dart';
-import 'package:app_brigada_militar/newPropertie.dart';
+import 'package:app_brigada_militar/database/models/Owner.dart';
+import 'package:app_brigada_militar/editOwner.dart';
+import 'package:app_brigada_militar/owner.dart' as OwnerPage;
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:sqflite/sqflite.dart';
 
 class NewVisit extends StatefulWidget {
@@ -38,12 +40,29 @@ class _NewVisitState extends State<NewVisit> {
 
   void _goToNextPage() async {
     if (_hasBoard) {
+      final db = await DB.instance.database;
+
+      // Get property
+      List<Map> properties = await db.query('properties',
+        where: "code = '${code}'",
+      );
+      Map property = properties[0];
+      await SessionManager().set('edit_property', jsonEncode(property));
+
+      // Get owner
+      var owner_id = property["fk_owner_id"];
+      List<Map> owners = await db.query('owners',
+        where: "_id = '${owner_id}'"
+      );
+      Map owner = owners[0];
+      await SessionManager().set('edit_owner', jsonEncode(owner));
+
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => EditProperties()));
+          context, MaterialPageRoute(builder: (context) => EditOwner()));
       return;
     }
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => NewPropertie()));
+        context, MaterialPageRoute(builder: (context) => OwnerPage.Owner()));
   }
 
   @override
@@ -52,6 +71,8 @@ class _NewVisitState extends State<NewVisit> {
     super.initState();
     _insertCodes();
   }
+
+  String? code = "";
 
   Widget _geoBoard() {
     List<DropdownSearch> componentes = [];
@@ -64,11 +85,15 @@ class _NewVisitState extends State<NewVisit> {
         items: _propertyCodes,
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            labelText: "Menu mode",
-            hintText: "country in menu mode",
+            labelText: "Código da Propriedade",
+            hintText: "",
           ),
         ),
-        onChanged: print,
+        onChanged: (val) {
+          setState(() {
+            code = val;
+          });
+        },
         //selectedItem: "Brazil",
       ));
     }

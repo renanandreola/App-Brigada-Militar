@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:app_brigada_militar/aditionalInfo.dart';
+import 'package:app_brigada_militar/database/db.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Vehicle extends StatefulWidget {
   // const Vehicle({Key? key}) : super(key: key);
@@ -10,7 +15,33 @@ class Vehicle extends StatefulWidget {
   State<Vehicle> createState() => _VehicleState();
 }
 
+List _carList = [];
+List<Map<String?, String?>> vehiclesInfo = [];
+
 class _VehicleState extends State<Vehicle> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getCarList();
+  }
+
+  _getCarList() async {
+    final db = await DB.instance.database;
+    List<Map> vehicles = await db.query('vehicles');
+
+    List list = [];
+    for (var vehicle in vehicles) {
+      list.add(vehicle["name"] + " - " + vehicle["brand"]);
+      vehiclesInfo.add({ "name": vehicle["name"] + " - " + vehicle["brand"], "key": vehicle["_id"] });
+    }
+
+    setState(() {
+      _carList = list;
+    });
+  }
+
+
   String _vehicleType1 = '';
   List _vehicleType = [];
   int numberVehicles = 0;
@@ -25,11 +56,14 @@ class _VehicleState extends State<Vehicle> {
   // Remove all machines
   void removeVehicles() {
     setState(() {
+      _vehicleType.removeLast();
       numberVehicles -= 1;
     });
   }
 
-  void _goToAditionalInfo() {
+  void _goToAditionalInfo() async {
+    await SessionManager().set('vehicles', jsonEncode(_vehicleType));
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -40,10 +74,10 @@ class _VehicleState extends State<Vehicle> {
     List<DropdownButtonFormField> filhos = [];
     for (int i = 0; i <= numberVehicles; i++) {
       if (_vehicleType.length - 1 < i) {
-        _vehicleType.add("");
+        _vehicleType.add({"name": "", "key": ""});
       }
       filhos.add(DropdownButtonFormField(
-        hint: _vehicleType[i] == null || _vehicleType[i] == ""
+        hint: _vehicleType[i]["name"] == null || _vehicleType[i]["name"] == ""
             ? Text('Veículo ${i}',
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
@@ -52,7 +86,7 @@ class _VehicleState extends State<Vehicle> {
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"))
             : Text(
-                _vehicleType[i],
+                _vehicleType[i]["name"],
                 style: TextStyle(
                     color: Color.fromARGB(255, 0, 0, 1),
                     fontSize: 15,
@@ -72,7 +106,7 @@ class _VehicleState extends State<Vehicle> {
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w400,
             fontFamily: "RobotoFlex"),
-        items: ['Gol', 'Fusca', 'Jetta'].map(
+        items: _carList.map(
           (val) {
             return DropdownMenuItem<String>(
               value: val,
@@ -83,7 +117,11 @@ class _VehicleState extends State<Vehicle> {
         onChanged: (val) {
           setState(
             () {
-              _vehicleType[i] = val.toString();
+              Map currentVehicle = vehiclesInfo
+                .where((element) => element["name"] == val.toString())
+                .first;
+              _vehicleType[i]["name"] = val.toString();
+              _vehicleType[i]["key"] = currentVehicle["key"];
             },
           );
         },

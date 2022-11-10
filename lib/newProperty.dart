@@ -1,55 +1,91 @@
-import 'package:app_brigada_militar/editMachines.dart';
-import 'package:app_brigada_militar/editPlaceDescription.dart';
-import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:app_brigada_militar/database/db.dart';
-import 'package:app_brigada_militar/database/models/Owner.dart';
-import 'package:app_brigada_militar/database/models/Property.dart';
-import 'package:app_brigada_militar/database/models/PropertyType.dart';
-import 'package:app_brigada_militar/home.dart';
+import 'package:app_brigada_militar/machines.dart';
+import 'package:app_brigada_militar/placeDescription.dart';
+import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
-class EditProperties extends StatefulWidget {
-  const EditProperties({Key? key}) : super(key: key);
+class NewProperty extends StatefulWidget {
+  // const NewPropertie({Key? key}) : super(key: key);
+  Map formData;
+  NewProperty(this.formData);
 
   @override
-  State<EditProperties> createState() => _EditPropertiesState();
+  State<NewProperty> createState() => _NewPropertyState();
 }
 
-class _EditPropertiesState extends State<EditProperties> {
-  TextEditingController _respName = TextEditingController();
-  TextEditingController _respLastName = TextEditingController();
+class _NewPropertyState extends State<NewProperty> {
+  LocationData? _currentLocalData = null;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _getPosition();
+  }
+
+  _getPosition() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    inspect(_locationData);
+    _currentLocalData = _locationData;
+  }
+
   TextEditingController _quantityResidents = TextEditingController();
 
   String _dropDownValue = '';
-  bool _hasSign = false;
   bool _hasCams = false;
   bool _hasPhoneSignal = false;
   bool _hasNetwork = false;
   bool _hasMachines = false;
 
   void _goToMachinesOrPlaceDescription() {
-    // Create new form data
-    Map formData = {
-      'firstname': _respName.text,
-      'lastname': _respLastName.text,
+
+    Map formData = widget.formData;
+  
+    // Set new form data
+    Map pageFormData = {
       'qty_people': _quantityResidents.text,
-      'has_geo_board': _hasSign,
+      'has_geo_board': false,
       'has_cams': _hasCams,
       'has_phone_signal': _hasPhoneSignal,
       'has_internet': _hasNetwork,
       'property_type': _dropDownValue,
+      'latitude': _currentLocalData!.latitude.toString(),
+      'longitude': _currentLocalData!.longitude.toString()
     };
 
+    // Merge form
+    formData.addAll(pageFormData);
+
     if (_hasMachines) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EditMachines(formData)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Machines(formData)));
     } else {
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => EditPlaceDescription(formData)));
+          context, MaterialPageRoute(builder: (context) => PlaceDescription(formData)));
     }
   }
 
@@ -59,7 +95,7 @@ class _EditPropertiesState extends State<EditProperties> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Editar propriedade"),
+        title: Text("Nova propriedade"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},
@@ -81,7 +117,7 @@ class _EditPropertiesState extends State<EditProperties> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Editar Propriedade",
+                        Text("Nova Propriedade",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
@@ -89,72 +125,6 @@ class _EditPropertiesState extends State<EditProperties> {
                                 fontFamily: "RobotoFlex")),
                       ],
                     )),
-
-                // ResponsibleName
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o nome do responsável';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Nome do Responsável",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    controller: _respName,
-                  ),
-                ),
-
-                // ResponsibleLastname
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o sobrenome do responsável';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Sobrenome do Responsável",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    controller: _respLastName,
-                  ),
-                ),
 
                 // Quantity of peoples
                 Padding(
@@ -192,9 +162,13 @@ class _EditPropertiesState extends State<EditProperties> {
                 // Type of Home
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                    child: DropdownButton(
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        // filled: true,
+                        fillColor: Colors.black,
+                        labelText: 'Tipo de Propriedade'),
                       hint: _dropDownValue == null || _dropDownValue == ""
-                          ? Text('Tipo de propriedade',
+                          ? Text('',
                               style: TextStyle(
                                   color: Color.fromARGB(255, 0, 0, 1),
                                   fontSize: 15,
@@ -234,22 +208,6 @@ class _EditPropertiesState extends State<EditProperties> {
                           },
                         );
                       },
-                    )),
-
-                // Sign Home
-                Padding(
-                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text("Possui placa de georreferenciamento"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasSign,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _hasSign = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
                     )),
 
                 // Has cams

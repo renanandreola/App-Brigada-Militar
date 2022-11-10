@@ -10,6 +10,9 @@ class Owner {
   String? id;
   String firstname;
   String lastname;
+  String cpf;
+  String phone1;
+  String? phone2;
   String? createdAt;
   String? updatedAt;
 
@@ -17,6 +20,9 @@ class Owner {
     this.id,
     required this.firstname,
     required this.lastname,
+    required this.cpf,
+    required this.phone1,
+    this.phone2,
     this.createdAt,
     this.updatedAt,
   });
@@ -30,6 +36,9 @@ class Owner {
       '_id': this.id,
       'firstname': this.firstname,
       'lastname': this.lastname,
+      'cpf': this.cpf,
+      'phone1': this.phone1,
+      'phone2': this.phone2,
       'createdAt': this.createdAt,
       'updatedAt': this.updatedAt,
     };
@@ -181,6 +190,9 @@ class OwnersTable {
           id: queryOwner['_id'],
           firstname: queryOwner['firstname'],
           lastname: queryOwner['lastname'],
+          phone1: queryOwner["phone1"],
+          phone2: queryOwner["phone2"],
+          cpf: queryOwner["cpf"],
           createdAt: queryOwner['createdAt'],
           updatedAt: queryOwner['updatedAt'],
         ));

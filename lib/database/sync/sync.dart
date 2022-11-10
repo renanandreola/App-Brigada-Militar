@@ -1,9 +1,16 @@
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/database/sync/lastSyncUpdate.dart';
+import 'package:app_brigada_militar/database/sync/syncAgriculturalMachines.dart';
 import 'package:app_brigada_militar/database/sync/syncProperties.dart';
 import 'package:app_brigada_militar/database/sync/syncOwners.dart';
+import 'package:app_brigada_militar/database/sync/syncPropertyAgriculturalMachines.dart';
 import 'package:app_brigada_militar/database/sync/syncPropertyTypes.dart';
+import 'package:app_brigada_militar/database/sync/syncPropertyVehicles.dart';
+import 'package:app_brigada_militar/database/sync/syncRequests.dart';
+import 'package:app_brigada_militar/database/sync/syncUserVisits.dart';
 import 'package:app_brigada_militar/database/sync/syncUsers.dart';
+import 'package:app_brigada_militar/database/sync/syncVehicles.dart';
+import 'package:app_brigada_militar/database/sync/syncVisits.dart';
 
 syncAll(var db) async {
   await db.transaction((txn) async {
@@ -12,26 +19,89 @@ syncAll(var db) async {
     if (query != null) {
       txn.execute(query);
     }
+    print("Usuários Sincronizados!");
 
     // Sync Owners
     query = await syncOwners();
     if (query != null) {
       txn.execute(query);
     }
+    print("Proprietários Sincronizados!");
 
     // Sync PropertyTypes
     query = await syncPropertyTypes();
     if (query != null) {
       txn.execute(query);
     }
+    print("Tipos de Propriedades Sincronizadas!");
+
 
     // Sync Properties
     query = await syncProperties();
     if (query != null) {
       txn.execute(query);
     }
+    print("Propriedades Sincronizadas!");
+
+
+    // Sync Vehicles
+    query = await syncVehicles();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Veículos de Propriedades Sincronizadas!");
+
+
+    // Sync Agricultural Machines
+    query = await syncAgriculturalMachines();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Máquinas Agrícolas de Propriedades Sincronizadas!");
+
+
+    // Sync Visits
+    query = await syncVisits();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Visitas Sincronizadas!");
+
+
+    // Sync User Visits
+    query = await syncUserVisits();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Visitas de Usuários Sincronizadas!");
+
+
+    // Sync Requests
+    query = await syncRequests();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Solicitações Sincronizadas!");
+
+    // Sync Property Vehicles
+    query = await syncPropertyVehicles();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Veículos das Propriedades Sincronizadas!");
+
+
+    // Sync Property Agricultural Machines
+    query = await syncPropertyAgriculturalMachines();
+    if (query != null) {
+      txn.execute(query);
+    }
+    print("Máquinas Agrícolas das Propriedades Sincronizadas!");
+
 
     txn.execute(await lastSyncUpdate());
+
+    print("Banco sincronizado com sucesso!");
   });
 }
 
@@ -52,12 +122,34 @@ Future<bool> updateSyncAll() async {
       await updateProperties(txn);
       print("Propriedades atualizadas");
 
+      await updateVehicles(txn);
+      print("Veículos atualizados");
+
+      await updateAgriculturalMachines(txn);
+      print("Máquinas Agrícolas atualizadas");
+
+      await updateVisits(txn);
+      print("Visitas atualizadas");
+
+      await updateUserVisits(txn);
+      print("Visitas dos Usuários atualizadas");
+
+      await updateRequests(txn);
+      print("Solicitações atualizadas");
+
+      await updatePropertyVehicles(txn);
+      print("Veículos das Propriedades atualizados");
+
+      await updatePropertyAgriculturalMachines(txn);
+      print("Máquinas Agrícolas das Propriedades atualizados");
+
       txn.execute(await lastSyncUpdate());
       print("Última sincronização atualizada!");
     });
 
     return true;
   } catch (err) {
+    print(err);
     return false;
   }
 }
