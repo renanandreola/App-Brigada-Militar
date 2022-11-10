@@ -1,66 +1,63 @@
 import 'dart:developer';
 
+import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/editPlaceDescription.dart';
 import 'package:app_brigada_militar/machines.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:location/location.dart';
 
-class NewPropertie extends StatefulWidget {
+class EditProperty extends StatefulWidget {
   // const NewPropertie({Key? key}) : super(key: key);
   Map formData;
-  NewPropertie(this.formData);
+  EditProperty(this.formData);
 
   @override
-  State<NewPropertie> createState() => _NewPropertieState();
+  State<EditProperty> createState() => _EditPropertyState();
 }
 
-class _NewPropertieState extends State<NewPropertie> {
-  LocationData? _currentLocalData = null;
-
+class _EditPropertyState extends State<EditProperty> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    _getPosition();
+    populate();
   }
 
-  _getPosition() async {
-    Location location = new Location();
+  populate() async {
+    Map property = await SessionManager().get('edit_property');
+    final db = await DB.instance.database;
 
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-    LocationData _locationData;
+    String property_type_id = property["fk_property_type_id"];
+    List<Map> property_types = await db.query('property_types', where: "_id = '${property_type_id}'");
+    Map property_type = property_types[0];
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return;
-      }
-    }
-
-    _locationData = await location.getLocation();
-    inspect(_locationData);
-    _currentLocalData = _locationData;
+    setState(() {
+      _lat = property["latitude"];
+      _lng = property["longitude"];
+      _quantityResidents.text = property["qty_people"].toString();
+      _hasGeoBoard = true;
+      _hasCams = property["has_cams"] == 'true' ? true : false;
+      _hasPhoneSignal = property["has_phone_signal"] == 'true' ? true : false;
+      _hasNetwork = property["has_internet"] == 'true' ? true : false;
+      _dropDownValue = property_type["name"];
+    });
   }
+
+  LocationData? _currentLocalData = null;
 
   TextEditingController _quantityResidents = TextEditingController();
 
   String _dropDownValue = '';
-  bool _hasSign = false;
   bool _hasCams = false;
   bool _hasPhoneSignal = false;
   bool _hasNetwork = false;
   bool _hasMachines = false;
+  bool _hasGeoBoard = false;
+
+  String _lat = "";
+  String _lng = "";
 
   void _goToMachinesOrPlaceDescription() {
 
@@ -69,13 +66,13 @@ class _NewPropertieState extends State<NewPropertie> {
     // Set new form data
     Map pageFormData = {
       'qty_people': _quantityResidents.text,
-      'has_geo_board': _hasSign,
+      'has_geo_board': false,
       'has_cams': _hasCams,
       'has_phone_signal': _hasPhoneSignal,
       'has_internet': _hasNetwork,
       'property_type': _dropDownValue,
-      'latitude': _currentLocalData!.latitude.toString(),
-      'longitude': _currentLocalData!.longitude.toString()
+      'latitude': _currentLocalData != null ? _currentLocalData!.latitude.toString() : _lat,
+      'longitude': _currentLocalData != null ? _currentLocalData!.longitude.toString() : _lng,
     };
 
     // Merge form
@@ -86,7 +83,7 @@ class _NewPropertieState extends State<NewPropertie> {
           context, MaterialPageRoute(builder: (context) => Machines(formData)));
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PlaceDescription(formData)));
+          context, MaterialPageRoute(builder: (context) => EditPlaceDescription(formData)));
     }
   }
 
@@ -163,9 +160,13 @@ class _NewPropertieState extends State<NewPropertie> {
                 // Type of Home
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                    child: DropdownButton(
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(
+                        // filled: true,
+                        fillColor: Colors.black,
+                        labelText: 'Tipo de Propriedade'),
                       hint: _dropDownValue == null || _dropDownValue == ""
-                          ? Text('Tipo de propriedade',
+                          ? Text('',
                               style: TextStyle(
                                   color: Color.fromARGB(255, 0, 0, 1),
                                   fontSize: 15,
@@ -205,22 +206,6 @@ class _NewPropertieState extends State<NewPropertie> {
                           },
                         );
                       },
-                    )),
-
-                // Sign Home
-                Padding(
-                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text("Possui placa de georreferenciamento"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasSign,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _hasSign = newValue!;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
                     )),
 
                 // Has cams

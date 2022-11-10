@@ -6,7 +6,7 @@ import 'package:app_brigada_militar/newVisit.dart';
 import 'package:app_brigada_militar/update7ways.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/logout.dart';
-import 'package:app_brigada_militar/newPropertie.dart';
+import 'package:app_brigada_militar/newProperty.dart';
 import 'package:app_brigada_militar/properties.dart';
 import 'package:app_brigada_militar/sync.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -37,6 +37,10 @@ class _HomeAppState extends State<HomeApp> {
     await SessionManager().remove('agricultural_machines');
     //Owner
     await SessionManager().remove('owner');
+    //Edit Property
+    await SessionManager().remove('edit_property');
+    //Edit Owner
+    await SessionManager().remove('edit_owner');
   }
 
   void _openProperties() {

@@ -1,16 +1,39 @@
 import 'dart:developer';
 
+import 'package:app_brigada_militar/editProperty.dart';
 import 'package:app_brigada_militar/newProperty.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
-class Owner extends StatefulWidget {
-  const Owner({super.key});
+class EditOwner extends StatefulWidget {
+  const EditOwner({super.key});
 
   @override
-  State<Owner> createState() => _OwnerState();
+  State<EditOwner> createState() => _EditOwnerState();
 }
 
-class _OwnerState extends State<Owner> {
+class _EditOwnerState extends State<EditOwner> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    populate();
+  }
+
+  populate() async {
+    Map owner = await SessionManager().get('edit_owner');
+
+    setState(() {
+      _respName.text = owner["firstname"];
+      _respLastName.text = owner["lastname"];
+      _respCPF.text = owner["cpf"];
+      _respPhone1.text = owner["phone1"];
+      if (owner["phone2"] != null ) {
+        _respPhone2!.text = owner["phone2"];
+      }
+    });
+  }
 
   TextEditingController _respName = TextEditingController();
   TextEditingController _respLastName = TextEditingController();
@@ -31,7 +54,7 @@ class _OwnerState extends State<Owner> {
       inspect(formData);
 
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NewProperty(formData)));
+          context, MaterialPageRoute(builder: (context) => EditProperty(formData)));
 
   }
 
@@ -41,7 +64,7 @@ class _OwnerState extends State<Owner> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Novo Proprietário"),
+        title: Text("Alterar Proprietário"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},
@@ -63,7 +86,7 @@ class _OwnerState extends State<Owner> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Novo Proprietário",
+                        Text("Alterar Proprietário",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,
