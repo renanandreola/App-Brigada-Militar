@@ -3,7 +3,7 @@ import 'package:app_brigada_militar/database/sync/apiToken.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 
-Future<String?> syncOwners () async {
+Future<String?> syncVehicles () async {
 
   var token = await getToken();
 
@@ -11,23 +11,23 @@ Future<String?> syncOwners () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/owners";
+  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/vehicles";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
     
-    String query = "INSERT INTO owners (_id, firstname, lastname, createdAt, updatedAt) VALUES";
+    String query = "INSERT INTO vehicles (_id, name, brand, createdAt, updatedAt) VALUES";
 
-    var owners = jsonDecode(response.body);
+    var vehicles = jsonDecode(response.body);
 
     try {
-      for (var owner in owners) {
-        String queryInsertLine = "\n('${owner["_id"].replaceAll("'", "''")}', '${owner["firstname"].replaceAll("'", "''")}', '${owner["lastname"].replaceAll("'", "''")}', '${owner["created_at"].replaceAll("'", "''")}', '${owner["updated_at"].replaceAll("'", "''")}'),";
+      for (var vehicle in vehicles) {
+        String queryInsertLine = "\n('${vehicle["_id"].replaceAll("'", "''")}', '${vehicle["name"].replaceAll("'", "''")}', '${vehicle["brand"].replaceAll("'", "''")}', '${vehicle["created_at"].replaceAll("'", "''")}', '${vehicle["updated_at"].replaceAll("'", "''")}'),";
 
         query += queryInsertLine;
       }
 
-      if (owners.length > 0) {
+      if (vehicles.length > 0) {
         query = query.substring(0, query.length - 1) + ";";
 
         return query;
@@ -41,18 +41,18 @@ Future<String?> syncOwners () async {
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
-    return syncOwners();
+    return syncVehicles();
   }
 
   throw Exception("Request error");
 }
 
-updateOwners(db) async {
-  await sendNewOwnerData(db);
-  await receiveNewOwnerData(db);
+updateVehicles(db) async {
+  await sendNewVehicleData(db);
+  await receiveNewVehicleData(db);
 }
 
-receiveNewOwnerData(db) async {
+receiveNewVehicleData(db) async {
   var lastSyncDate = await db.query(
     'sync',
     limit: 1
@@ -70,48 +70,48 @@ receiveNewOwnerData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/owners?last_date=${lastSyncDate}";
+  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/vehicles?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
-    String query = "INSERT INTO owners (_id, firstname, lastname, createdAt, updatedAt) VALUES";
+    String query = "INSERT INTO vehicles (_id, name, brand, createdAt, updatedAt) VALUES";
 
     var responseBody = jsonDecode(response.body);
-    var owners = responseBody["owners"];
+    var vehicles = responseBody["vehicles"];
     var deleted = responseBody["deleted"];
 
     try {
-      for (var owner in owners) {
+      for (var vehicle in vehicles) {
         // Check if entity is in the Sqlite database
-        var current_owner = await db.query(
-          'owners',
-          where: "_id = '${owner["_id"]}'",
+        var current_vehicle = await db.query(
+          'vehicles',
+          where: "_id = '${vehicle["_id"]}'",
           limit: 1
         );
 
         // Convert to sqlite table format
-        Map<String, dynamic> ownerSqlite = {
-          '_id': owner["_id"],
-          'firstname':  owner["firstname"],
-          'lastname': owner["lastname"],
-          'createdAt': owner["created_at"],
-          'updatedAt': owner["updated_at"],
+        Map<String, dynamic> vehicleSqlite = {
+          '_id': vehicle["_id"],
+          'name':  vehicle["name"],
+          'brand': vehicle["brand"],
+          'createdAt': vehicle["created_at"],
+          'updatedAt': vehicle["updated_at"],
         };
 
         // If entity is in the database, do the update
-        if (current_owner.length > 0) {
+        if (current_vehicle.length > 0) {
 
           await db.update(
-            'owners',
-            ownerSqlite,
-            where: "_id = '${current_owner[0]["_id"]}'",
+            'vehicles',
+            vehicleSqlite,
+            where: "_id = '${current_vehicle[0]["_id"]}'",
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
 
         } else { // Do insert
           await db.insert(
-            'owners',
-            ownerSqlite,
+            'vehicles',
+            vehicleSqlite,
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
         }
@@ -119,15 +119,15 @@ receiveNewOwnerData(db) async {
 
 
       for (var del in deleted) {
-        var current_owner = await db.query(
-          'owners',
+        var current_vehicle = await db.query(
+          'vehicles',
           where: "_id = '${del["_id"]}'",
           limit: 1
         );
 
-        if (current_owner.length > 0) {
+        if (current_vehicle.length > 0) {
           await db.delete(
-            'owners',
+            'vehicles',
             where: "_id = '${del["deleted_id"]}'",
           );
         }
@@ -142,13 +142,13 @@ receiveNewOwnerData(db) async {
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
-    return receiveNewOwnerData(db);
+    return receiveNewVehicleData(db);
   }
 
   throw Exception("Request error");
 }
 
-sendNewOwnerData(db) async {
+sendNewVehicleData(db) async {
   var token = await getToken();
 
   if (token == null) {
@@ -158,53 +158,40 @@ sendNewOwnerData(db) async {
   // Check if database has updated
   var updates = await db.query(
     'database_updates',
-    where: "reference_table = 'owners'",
+    where: "reference_table = 'vehicles'",
   );
 
-  List<Map> ownerChanges = [];
+  List<Map> vehicleChanges = [];
 
   for (var update in updates) {
-    List<Map> owners = await db.query(
-      'owners',
+    List<Map> vehicles = await db.query(
+      'vehicles',
       where: "_id = '${update["updated_id"]}'",
       limit: 1,
     );
 
-    Map owner = owners[0];
+    Map vehicle = vehicles[0];
 
-    ownerChanges.add(owner);
+    vehicleChanges.add(vehicle);
   }
 
-  // Check if database has deleted
-  var deleted = await db.query(
-    'garbages',
-    where: "reference_table = 'owners'",
-  );
+  var allChanges = {'vehicles': vehicleChanges };
 
-  List ownerDeletes = [];
+  String vehiclesJson = jsonEncode(allChanges);
 
-  for (var del in deleted) {
-    ownerDeletes.add(del["deleted_id"]);
-  }
-
-  var allChanges = {'owners': ownerChanges, 'deleted': ownerDeletes };
-
-  String ownersJson = jsonEncode(allChanges);
-
-  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/owners";
-  final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: ownersJson);
+  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/vehicles";
+  final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: vehiclesJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
-    return sendNewOwnerData(db);
+    return sendNewVehicleData(db);
   }
 
   if (response.statusCode == 201 && jsonDecode(response.body).containsKey("updated")) {
-    await db.rawDelete("DELETE FROM database_updates WHERE reference_table = 'owners'");
-    await db.rawDelete("DELETE FROM garbages WHERE reference_table = 'owners'");
+    await db.rawDelete("DELETE FROM database_updates WHERE reference_table = 'vehicles'");
   
     return true;
   }
 
-  throw Exception("Não foi possível sincronizar os proprietários");
+  throw Exception("Não foi possível sincronizar os veículos");
 }

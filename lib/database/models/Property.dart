@@ -19,6 +19,8 @@ class Property {
   String? gun_local_description;
   int? qty_agricultural_defensives;
   String? observations;
+  String latitude;
+  String longitude;
   String? createdAt;
   String? updatedAt;
   String fk_owner_id;
@@ -37,6 +39,8 @@ class Property {
     this.gun_local_description,
     this.qty_agricultural_defensives,
     this.observations,
+    required this.latitude,
+    required this.longitude,
     this.createdAt,
     this.updatedAt,
     required this.fk_owner_id,
@@ -60,6 +64,8 @@ class Property {
       'has_gun_local': this.has_gun_local,
       'gun_local_description': this.gun_local_description,
       'qty_agricultural_defensives': this.qty_agricultural_defensives,
+      'latitude': this.latitude,
+      'longitude': this.longitude,
       'observations': this.observations,
       'createdAt': this.createdAt,
       'updatedAt': this.updatedAt,
@@ -239,8 +245,9 @@ class PropertyTable {
           has_gun: queryProperty['has_gun'],
           has_gun_local: queryProperty['has_gun_local'],
           gun_local_description: queryProperty['gun_local_description'],
-          qty_agricultural_defensives:
-              queryProperty['qty_agricultural_defensives'],
+          qty_agricultural_defensives: queryProperty['qty_agricultural_defensives'],
+          latitude: queryProperty['latitude'],
+          longitude: queryProperty['longitude'],
           observations: queryProperty['observations'],
           createdAt: queryProperty['createdAt'],
           updatedAt: queryProperty['updatedAt'],

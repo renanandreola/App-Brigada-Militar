@@ -55,14 +55,16 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
       // Add the property
       Property property = new Property(
           qty_people: int.tryParse(formData["qty_people"]),
-          has_geo_board: formData["has_geo_board"] == 1,
-          has_cams: formData["has_cams"] == 1,
-          has_phone_signal: formData["has_phone_signal"] == 1,
-          has_internet: formData["has_internet"] == 1,
-          has_gun: formData["has_gun"] == 1,
-          has_gun_local: formData["has_gun_local"] == 1,
+          has_geo_board: formData["has_geo_board"],
+          has_cams: formData["has_cams"],
+          has_phone_signal: formData["has_phone_signal"],
+          has_internet: formData["has_internet"],
+          has_gun: formData["has_gun"],
+          has_gun_local: formData["has_gun_local"],
           gun_local_description: formData["gun_local_description"],
           qty_agricultural_defensives: formData["qty_agricultural_defensives"],
+          latitude: formData["latitude"],
+          longitude: formData["longitude"],
           observations: formData["observations"],
           fk_owner_id: owner.id!,
           fk_property_type_id: propertyType.id!);

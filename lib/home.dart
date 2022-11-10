@@ -1,13 +1,16 @@
+import 'dart:developer';
+
 import 'package:app_brigada_militar/editGarrison.dart';
 import 'package:app_brigada_militar/garrison.dart';
 import 'package:app_brigada_militar/newVisit.dart';
+import 'package:app_brigada_militar/update7ways.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/logout.dart';
 import 'package:app_brigada_militar/editProperties.dart';
 import 'package:app_brigada_militar/newPropertie.dart';
 import 'package:app_brigada_militar/properties.dart';
 import 'package:app_brigada_militar/sync.dart';
-import 'package:app_brigada_militar/update7waysMenu.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class HomeApp extends StatefulWidget {
   // const HomeApp({Key? key}) : super(key: key);
@@ -19,6 +22,20 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    cleanSession();
+  }
+
+  cleanSession() async {
+    //Vehicles
+    await SessionManager().remove('vehicles');
+  }
+
   void _openProperties() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Properties()));
@@ -45,7 +62,7 @@ class _HomeAppState extends State<HomeApp> {
 
   void _update7ways() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Update7waysMenu()));
+        context, MaterialPageRoute(builder: (context) => Update7ways()));
   }
 
   void _openLogOut() {

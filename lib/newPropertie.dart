@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:app_brigada_militar/machines.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 
 class NewPropertie extends StatefulWidget {
   const NewPropertie({Key? key}) : super(key: key);
@@ -10,6 +13,44 @@ class NewPropertie extends StatefulWidget {
 }
 
 class _NewPropertieState extends State<NewPropertie> {
+  LocationData? _currentLocalData = null;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _getPosition();
+  }
+
+  _getPosition() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+    LocationData _locationData;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    _locationData = await location.getLocation();
+    inspect(_locationData);
+    _currentLocalData = _locationData;
+  }
+
   TextEditingController _respName = TextEditingController();
   TextEditingController _respLastName = TextEditingController();
   TextEditingController _quantityResidents = TextEditingController();
@@ -33,6 +74,8 @@ class _NewPropertieState extends State<NewPropertie> {
       'has_phone_signal': _hasPhoneSignal,
       'has_internet': _hasNetwork,
       'property_type': _dropDownValue,
+      'latitude': _currentLocalData!.latitude.toString(),
+      'longitude': _currentLocalData!.longitude.toString()
     };
 
     if (_hasMachines) {

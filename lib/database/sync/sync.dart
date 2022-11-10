@@ -4,6 +4,7 @@ import 'package:app_brigada_militar/database/sync/syncProperties.dart';
 import 'package:app_brigada_militar/database/sync/syncOwners.dart';
 import 'package:app_brigada_militar/database/sync/syncPropertyTypes.dart';
 import 'package:app_brigada_militar/database/sync/syncUsers.dart';
+import 'package:app_brigada_militar/database/sync/syncVehicles.dart';
 
 syncAll(var db) async {
   await db.transaction((txn) async {
@@ -31,6 +32,12 @@ syncAll(var db) async {
       txn.execute(query);
     }
 
+    // Sync Vehicles
+    query = await syncVehicles();
+    if (query != null) {
+      txn.execute(query);
+    }
+
     txn.execute(await lastSyncUpdate());
   });
 }
@@ -51,6 +58,9 @@ Future<bool> updateSyncAll() async {
 
       await updateProperties(txn);
       print("Propriedades atualizadas");
+
+      await updateVehicles(txn);
+      print("Veículos atualizados");
 
       txn.execute(await lastSyncUpdate());
       print("Última sincronização atualizada!");

@@ -17,7 +17,6 @@ void copyAPIDatabase(db, version) async {
   await db.execute(_requests);
   await db.execute(_agricultural_machines);
   await db.execute(_property_agricultural_machines);
-  await db.execute(_property_visits);
   await db.execute(_vehicles);
   await db.execute(_property_vehicles);
   await db.execute(_sync);
@@ -33,7 +32,6 @@ void copyAPIDatabase(db, version) async {
   await db.execute(_requestIdTrigger);
   await db.execute(_agriculturalMachineIdTrigger);
   await db.execute(_propertyAgriculturalMachineIdTrigger);
-  await db.execute(_propertyVisitIdTrigger);
   await db.execute(_vehicleIdTrigger);
   await db.execute(_propertyVehicleIdTrigger);
   await syncAll(db);
@@ -59,9 +57,11 @@ String get _visits => '''
   CREATE TABLE visits (
     _id VARCHAR(255) PRIMARY KEY,
     car VARCHAR(255) NOT NULL,
-    visit_date DATETIME NOT NULL,
+    date DATETIME NOT NULL,
+    fk_property_id VARCHAR NOT NULL,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL
+    updatedAt DATETIME NOT NULL,
+    FOREIGN KEY (fk_property_id) REFERENCES Properties (_id)
   );
 ''';
 
@@ -173,21 +173,6 @@ String get _property_agricultural_machines => '''
     updatedAt DATETIME NOT NULL,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id),
     FOREIGN KEY (fk_agricultural_machine_id) REFERENCES Agricultural_machines (_id)
-  );
-''';
-
-/**
- * Create Property Visits Table
- */
-String get _property_visits => '''
-  CREATE TABLE property_visits (
-    _id VARCHAR(255) PRIMARY KEY,
-    fk_property_id VARCHAR(255) NOT NULL,
-    fk_visit_id VARCHAR(255) NOT NULL,
-    createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
-    FOREIGN KEY (fk_property_id) REFERENCES Properties (_id),
-    FOREIGN KEY (fk_visit_id) REFERENCES Visits (_id)
   );
 ''';
 
