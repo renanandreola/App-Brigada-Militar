@@ -143,8 +143,6 @@ Future<bool> updateSyncAll() async {
       await updatePropertyAgriculturalMachines(txn);
       print("Máquinas Agrícolas das Propriedades atualizados");
 
-      // return false;
-
       txn.execute(await lastSyncUpdate());
       print("Última sincronização atualizada!");
     });

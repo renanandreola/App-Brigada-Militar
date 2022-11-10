@@ -182,7 +182,7 @@ sendNewUserVisitData(db) async {
   String uri = "http://novo-rumo-api.herokuapp.com/api/sync/user-visits";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: user_visitsJson);
 
-  if (jsonDecode is Map && jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
+  if (jsonDecode(response.body) is Map && jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
     return sendNewUserVisitData(db);
   }
@@ -193,5 +193,5 @@ sendNewUserVisitData(db) async {
     return true;
   }
 
-  throw Exception("Não foi possível sincronizar os veículos");
+  throw Exception("Não foi possível sincronizar as Visitas dos");
 }
