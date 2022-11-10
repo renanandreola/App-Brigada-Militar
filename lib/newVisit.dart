@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:app_brigada_militar/database/db.dart';
-import 'package:app_brigada_militar/editProperties.dart';
+import 'package:app_brigada_militar/database/models/Owner.dart';
+import 'package:app_brigada_militar/owner.dart' as OwnerPage;
 import 'package:app_brigada_militar/newPropertie.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -38,12 +39,12 @@ class _NewVisitState extends State<NewVisit> {
 
   void _goToNextPage() async {
     if (_hasBoard) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => EditProperties()));
-      return;
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => EditProperties()));
+      // return;
     }
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => NewPropertie()));
+        context, MaterialPageRoute(builder: (context) => OwnerPage.Owner()));
   }
 
   @override

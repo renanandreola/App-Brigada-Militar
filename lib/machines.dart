@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class Machines extends StatefulWidget {
   // const Machines({Key? key}) : super(key: key);
@@ -13,10 +16,32 @@ class Machines extends StatefulWidget {
   State<Machines> createState() => _MachinesState();
 }
 
-class _MachinesState extends State<Machines> {
-  // String _machineType0 = '';
+List _machineList = [];
+List<Map<String?, String?>> machinesInfo = [];
 
-  // String _machineType1 = '';
+class _MachinesState extends State<Machines> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getMachineList();
+  }
+
+  _getMachineList() async {
+    final db = await DB.instance.database;
+    List<Map> machines = await db.query('agricultural_machines');
+
+    List list = [];
+    for (var machine in machines) {
+      list.add(machine["name"]);
+      machinesInfo.add({ "name": machine["name"], "key": machine["_id"] });
+    }
+
+    setState(() {
+      _machineList = list;
+    });
+  }
+
   List _machineType = [];
   int numberMachines = 0;
 
@@ -30,12 +55,15 @@ class _MachinesState extends State<Machines> {
   // Remove all machines
   void removeMachines() {
     setState(() {
+      _machineType.removeLast();
       numberMachines -= 1;
     });
   }
 
   // Go to page that have the description of the place
-  void _goToPlaceDescription() {
+  void _goToPlaceDescription() async {
+    await SessionManager().set('machines', jsonEncode(_machineType));
+
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -47,14 +75,14 @@ class _MachinesState extends State<Machines> {
     List<Row> filhos = [];
     for (int i = 0; i <= numberMachines; i++) {
       if (_machineType.length - 1 < i) {
-        _machineType.add("");
+        _machineType.add({"name": "", "key": ""});
       }
       filhos.add(Row(
         children: [
           Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: DropdownButtonFormField(
-                hint: _machineType[i] == null || _machineType[i] == ""
+                hint: _machineType[i]["name"] == null || _machineType[i]["name"] == ""
                     ? Text('Máquina Agrícola ${i}',
                         style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 1),
@@ -63,7 +91,7 @@ class _MachinesState extends State<Machines> {
                             fontWeight: FontWeight.w400,
                             fontFamily: "RobotoFlex"))
                     : Text(
-                        _machineType[i],
+                        _machineType[i]["name"],
                         style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 1),
                             fontSize: 15,
@@ -83,11 +111,7 @@ class _MachinesState extends State<Machines> {
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
                     fontFamily: "RobotoFlex"),
-                items: [
-                  'MF4707 - Massey Ferguson 1',
-                  'MF4707 - Massey Ferguson 2',
-                  'MF4707 - Massey Ferguson 3'
-                ].map(
+                items: _machineList.map(
                   (val) {
                     return DropdownMenuItem<String>(
                       value: val,
@@ -98,25 +122,14 @@ class _MachinesState extends State<Machines> {
                 onChanged: (val) {
                   setState(
                     () {
-                      _machineType[i] = val.toString();
+                      Map currentMachine = machinesInfo.where((element) => element["name"] == val.toString()).first;
+                      
+                      _machineType[i]["name"] = val.toString();
+                      _machineType[i]["key"] = currentMachine["key"];
                     },
                   );
                 },
               )),
-          // Padding(
-          //   padding: EdgeInsets.only(left: 30, top: 30),
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       setState(() {
-          //         for (int j = i; j < filhos.length - 1; j++) {
-          //           filhos[j] = filhos[j + 1];
-          //         }
-          //         numberMachines -= 1;
-          //       });
-          //     },
-          //     child: Image.asset('assets/images/red-trash.png'),
-          //   ),
-          // )
         ],
       ));
     }

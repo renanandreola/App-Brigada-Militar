@@ -52,7 +52,12 @@ class _AditionalInfoState extends State<AditionalInfo> {
     await db.transaction((txn) async {
       // First add the owner
       Owner owner = new Owner(
-          firstname: formData["firstname"], lastname: formData["lastname"]);
+          firstname: formData["firstname"],
+          lastname: formData["lastname"],
+          cpf: formData["cpf"],
+          phone1: formData["phone1"],
+          phone2: formData["phone2"]
+      );
       owner.id = await owner.save(transaction: txn);
 
       // Get property type
@@ -98,6 +103,22 @@ class _AditionalInfoState extends State<AditionalInfo> {
           };
 
           txn.insert('property_vehicles', vehiclesMap);
+        }
+      }
+
+      //Agricultural Machines
+      var machines = await SessionManager().get('machines');
+
+      if (machines != null) {
+        for (var machine in machines) {
+          Map<String, dynamic> machinesMap = {
+            "fk_property_id": property_id,
+            "fk_agricultural_machine_id": machine["key"],
+            "updatedAt": datetimeStr,
+            "createdAt": datetimeStr
+          };
+
+          txn.insert('property_agricultural_machines', machinesMap);
         }
       }
 

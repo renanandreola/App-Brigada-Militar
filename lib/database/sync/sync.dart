@@ -1,5 +1,6 @@
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/database/sync/lastSyncUpdate.dart';
+import 'package:app_brigada_militar/database/sync/syncAgriculturalMachines.dart';
 import 'package:app_brigada_militar/database/sync/syncProperties.dart';
 import 'package:app_brigada_militar/database/sync/syncOwners.dart';
 import 'package:app_brigada_militar/database/sync/syncPropertyTypes.dart';
@@ -38,6 +39,12 @@ syncAll(var db) async {
       txn.execute(query);
     }
 
+    // Sync Agricultural Machines
+    query = await syncAgriculturalMachines();
+    if (query != null) {
+      txn.execute(query);
+    }
+
     txn.execute(await lastSyncUpdate());
   });
 }
@@ -61,6 +68,9 @@ Future<bool> updateSyncAll() async {
 
       await updateVehicles(txn);
       print("Veículos atualizados");
+
+      await updateAgriculturalMachines(txn);
+      print("Máquinas Agrícolas atualizadas");
 
       txn.execute(await lastSyncUpdate());
       print("Última sincronização atualizada!");

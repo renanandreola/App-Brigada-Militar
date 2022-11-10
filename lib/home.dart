@@ -6,7 +6,6 @@ import 'package:app_brigada_militar/newVisit.dart';
 import 'package:app_brigada_militar/update7ways.dart';
 import 'package:flutter/material.dart';
 import 'package:app_brigada_militar/logout.dart';
-import 'package:app_brigada_militar/editProperties.dart';
 import 'package:app_brigada_militar/newPropertie.dart';
 import 'package:app_brigada_militar/properties.dart';
 import 'package:app_brigada_militar/sync.dart';
@@ -34,6 +33,10 @@ class _HomeAppState extends State<HomeApp> {
   cleanSession() async {
     //Vehicles
     await SessionManager().remove('vehicles');
+    //AgriculturalMachines
+    await SessionManager().remove('agricultural_machines');
+    //Owner
+    await SessionManager().remove('owner');
   }
 
   void _openProperties() {
@@ -46,10 +49,10 @@ class _HomeAppState extends State<HomeApp> {
         MaterialPageRoute(builder: (context) => EditGarrison(widget.userName)));
   }
 
-  void _editPropertie() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => EditProperties()));
-  }
+  // void _editPropertie() {
+  //   Navigator.push(
+  //       context, MaterialPageRoute(builder: (context) => EditProperties()));
+  // }
 
   void _newVisit() {
     Navigator.push(

@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
 class NewPropertie extends StatefulWidget {
-  const NewPropertie({Key? key}) : super(key: key);
+  // const NewPropertie({Key? key}) : super(key: key);
+  Map formData;
+  NewPropertie(this.formData);
 
   @override
   State<NewPropertie> createState() => _NewPropertieState();
@@ -51,8 +53,6 @@ class _NewPropertieState extends State<NewPropertie> {
     _currentLocalData = _locationData;
   }
 
-  TextEditingController _respName = TextEditingController();
-  TextEditingController _respLastName = TextEditingController();
   TextEditingController _quantityResidents = TextEditingController();
 
   String _dropDownValue = '';
@@ -64,10 +64,10 @@ class _NewPropertieState extends State<NewPropertie> {
 
   void _goToMachinesOrPlaceDescription() {
 
-    // Create new form data
-    Map formData = {
-      'firstname': _respName.text,
-      'lastname': _respLastName.text,
+    Map formData = widget.formData;
+  
+    // Set new form data
+    Map pageFormData = {
       'qty_people': _quantityResidents.text,
       'has_geo_board': _hasSign,
       'has_cams': _hasCams,
@@ -77,6 +77,9 @@ class _NewPropertieState extends State<NewPropertie> {
       'latitude': _currentLocalData!.latitude.toString(),
       'longitude': _currentLocalData!.longitude.toString()
     };
+
+    // Merge form
+    formData.addAll(pageFormData);
 
     if (_hasMachines) {
       Navigator.push(
@@ -123,72 +126,6 @@ class _NewPropertieState extends State<NewPropertie> {
                                 fontFamily: "RobotoFlex")),
                       ],
                     )),
-
-                // ResponsibleName
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o nome do responsável';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Nome do Responsável",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    controller: _respName,
-                  ),
-                ),
-
-                // ResponsibleLastname
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o sobrenome do responsável';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Sobrenome do Responsável",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.name,
-                    controller: _respLastName,
-                  ),
-                ),
 
                 // Quantity of peoples
                 Padding(

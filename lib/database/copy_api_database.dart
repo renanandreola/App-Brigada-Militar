@@ -88,6 +88,9 @@ String get _owners => '''
     _id VARCHAR(255) PRIMARY KEY,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
+    cpf VARCHAR(15) NOT NULL,
+    phone1 VARCHAR(15) NOT NULL,
+    phone2 VARCHAR(15),
     createdAt DATETIME,
     updatedAt DATETIME NOT NULL
   );
