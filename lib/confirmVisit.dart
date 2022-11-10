@@ -51,7 +51,7 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
     await db.transaction((txn) async {
       final DateTime now = DateTime.now();
       String datetimeStr = datetimeToStr(now);
-  
+
       await txn.insert('visits', {
         "car": vtr,
         "fk_property_id": widget.property_id,
@@ -60,7 +60,15 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
         "updatedAt": datetimeStr
       });
 
-      List<Map> visits = await txn.query('visits', orderBy: "createdAt DESC", limit: 1);
+      String table = 'visits';
+      List<Map> list =
+          await txn.query(table, where: "fk_property_id = '${widget.property_id}' AND car = '${vtr}'", orderBy: "createdAt DESC", limit: 1);
+      Map elem = list[0];
+      await txn.insert('database_updates',
+          {'reference_table': table, 'updated_id': elem["_id"]});
+
+      List<Map> visits =
+          await txn.query('visits', orderBy: "createdAt DESC", limit: 1);
       Map visit = visits[0];
 
       for (var user in garrison) {
@@ -70,6 +78,13 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
           "createdAt": datetimeStr,
           "updatedAt": datetimeStr
         });
+
+        String table = 'user_visits';
+        List<Map> list =
+            await txn.query(table, where: "fk_visit_id = '${visit["_id"]}' AND fk_user_id = '${user["key"]}'", orderBy: "createdAt DESC", limit: 1);
+        Map elem = list[0];
+        await txn.insert('database_updates',
+            {'reference_table': table, 'updated_id': elem["_id"]});
       }
     });
 

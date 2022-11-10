@@ -30,14 +30,11 @@ class _AditionalInfoState extends State<AditionalInfo> {
 
   // Save propertie
   void _savePropertie() async {
-
     // Retrieve form data
     Map formData = widget.formData;
 
     // Set new form data
-    Map pageFormData = {
-      "observations": _observations.text
-    };
+    Map pageFormData = {"observations": _observations.text};
 
     // Merge form
     formData.addAll(pageFormData);
@@ -56,8 +53,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
           lastname: formData["lastname"],
           cpf: formData["cpf"],
           phone1: formData["phone1"],
-          phone2: formData["phone2"]
-      );
+          phone2: formData["phone2"]);
       owner.id = await owner.save(transaction: txn);
 
       // Get property type
@@ -103,6 +99,15 @@ class _AditionalInfoState extends State<AditionalInfo> {
           };
 
           txn.insert('property_vehicles', vehiclesMap);
+
+          String vehicle_key = vehicle["key"];
+
+          String table = 'property_vehicles';
+          List<Map> list =
+              await txn.query(table, where: "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle_key}'", orderBy: "createdAt DESC", limit: 1);
+          Map elem = list[0];
+          await txn.insert('database_updates',
+              {'reference_table': table, 'updated_id': elem["_id"]});
         }
       }
 
@@ -119,6 +124,13 @@ class _AditionalInfoState extends State<AditionalInfo> {
           };
 
           txn.insert('property_agricultural_machines', machinesMap);
+
+          String table = 'property_agricultural_machines';
+          List<Map> list =
+              await txn.query(table, where: "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${machine["key"]}'", orderBy: "createdAt DESC", limit: 1);
+          Map elem = list[0];
+          await txn.insert('database_updates',
+              {'reference_table': table, 'updated_id': elem["_id"]});
         }
       }
 
@@ -135,13 +147,20 @@ class _AditionalInfoState extends State<AditionalInfo> {
         inspect(requestModelMap);
 
         await txn.insert('requests', requestModelMap);
+
+        String table = 'requests';
+          List<Map> list =
+              await txn.query(table, where: "fk_property_id = '${property_id}' AND agency = '${_department.text}'", orderBy: "createdAt DESC", limit: 1);
+          Map elem = list[0];
+          await txn.insert('database_updates',
+              {'reference_table': table, 'updated_id': elem["_id"]});
       }
     });
 
     print("Propriedade Salva com Sucesso!");
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ConfirmVisit(property!.id)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ConfirmVisit(property!.id)));
   }
 
   // show departments info when select 'Já usou o programa para alguma urgência / emergência?'

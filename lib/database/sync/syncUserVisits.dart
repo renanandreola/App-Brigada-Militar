@@ -182,12 +182,12 @@ sendNewUserVisitData(db) async {
   String uri = "http://novo-rumo-api.herokuapp.com/api/sync/user-visits";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: user_visitsJson);
 
-  if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
+  if (jsonDecode is Map && jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
     return sendNewUserVisitData(db);
   }
 
-  if (response.statusCode == 201 && jsonDecode(response.body).containsKey("updated")) {
+  if (response.statusCode == 200 || (response.statusCode == 201 && jsonDecode(response.body).containsKey("updated"))) {
     await db.rawDelete("DELETE FROM database_updates WHERE reference_table = 'user_visits'");
   
     return true;

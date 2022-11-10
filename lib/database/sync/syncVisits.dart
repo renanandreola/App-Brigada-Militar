@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:app_brigada_militar/database/sync/apiToken.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
@@ -188,11 +189,13 @@ sendNewVisitData(db) async {
     return sendNewVisitData(db);
   }
 
+  inspect(jsonDecode(response.body));
+
   if (response.statusCode == 201 && jsonDecode(response.body).containsKey("updated")) {
     await db.rawDelete("DELETE FROM database_updates WHERE reference_table = 'visits'");
   
     return true;
   }
 
-  throw Exception("Não foi possível sincronizar os veículos");
+  throw Exception("Não foi possível sincronizar as visitas");
 }

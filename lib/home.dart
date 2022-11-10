@@ -150,14 +150,14 @@ class _HomeAppState extends State<HomeApp> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        child: Image.asset(
-                            'assets/images/new-icon-properties.png'),
-                        onTap: _openProperties,
-                      ),
-                      GestureDetector(
                         child: Image.asset('assets/images/new-icon-visit.png'),
                         onTap: _newVisit,
-                      )
+                      ),
+                      GestureDetector(
+                        child:
+                            Image.asset('assets/images/new-icon-garrison.png'),
+                        onTap: _editGarrison,
+                      ),
                     ]),
               ),
 
@@ -168,14 +168,13 @@ class _HomeAppState extends State<HomeApp> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       GestureDetector(
-                        child:
-                            Image.asset('assets/images/new-icon-garrison.png'),
-                        onTap: _editGarrison,
-                      ),
-                      GestureDetector(
                         child: Image.asset('assets/images/new-icon-sync.png'),
                         onTap: _openSync,
-                      )
+                      ),
+                      GestureDetector(
+                        child: Image.asset('assets/images/new-icon-7ways.png'),
+                        onTap: _update7ways,
+                      ),
                     ]),
               ),
 
@@ -185,10 +184,6 @@ class _HomeAppState extends State<HomeApp> {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      GestureDetector(
-                        child: Image.asset('assets/images/new-icon-7ways.png'),
-                        onTap: _update7ways,
-                      ),
                       GestureDetector(
                         child: Image.asset('assets/images/new-icon-logout.png'),
                         onTap: _openLogOut,

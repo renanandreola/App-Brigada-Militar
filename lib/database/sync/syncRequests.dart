@@ -93,7 +93,7 @@ receiveNewRequestData(db) async {
         Map<String, dynamic> requestSqlite = {
           '_id': request["_id"],
           'agency':  request["agency"],
-          'has_succes': request["has_success"],
+          'has_success': request["has_success"],
           'fk_property_id': request["fk_property_id"],
           'createdAt': request["created_at"],
           'updatedAt': request["updated_at"],

@@ -19,68 +19,89 @@ syncAll(var db) async {
     if (query != null) {
       txn.execute(query);
     }
+    print("Usuários Sincronizados!");
 
     // Sync Owners
     query = await syncOwners();
     if (query != null) {
       txn.execute(query);
     }
+    print("Proprietários Sincronizados!");
 
     // Sync PropertyTypes
     query = await syncPropertyTypes();
     if (query != null) {
       txn.execute(query);
     }
+    print("Tipos de Propriedades Sincronizadas!");
+
 
     // Sync Properties
     query = await syncProperties();
     if (query != null) {
       txn.execute(query);
     }
+    print("Propriedades Sincronizadas!");
+
 
     // Sync Vehicles
     query = await syncVehicles();
     if (query != null) {
       txn.execute(query);
     }
+    print("Veículos de Propriedades Sincronizadas!");
+
 
     // Sync Agricultural Machines
     query = await syncAgriculturalMachines();
     if (query != null) {
       txn.execute(query);
     }
+    print("Máquinas Agrícolas de Propriedades Sincronizadas!");
+
 
     // Sync Visits
     query = await syncVisits();
     if (query != null) {
       txn.execute(query);
     }
+    print("Visitas Sincronizadas!");
+
 
     // Sync User Visits
     query = await syncUserVisits();
     if (query != null) {
       txn.execute(query);
     }
+    print("Visitas de Usuários Sincronizadas!");
+
 
     // Sync Requests
     query = await syncRequests();
     if (query != null) {
       txn.execute(query);
     }
+    print("Solicitações Sincronizadas!");
 
     // Sync Property Vehicles
     query = await syncPropertyVehicles();
     if (query != null) {
       txn.execute(query);
     }
+    print("Veículos das Propriedades Sincronizadas!");
+
 
     // Sync Property Agricultural Machines
     query = await syncPropertyAgriculturalMachines();
     if (query != null) {
       txn.execute(query);
     }
+    print("Máquinas Agrícolas das Propriedades Sincronizadas!");
+
 
     txn.execute(await lastSyncUpdate());
+
+    print("Banco sincronizado com sucesso!");
   });
 }
 
@@ -122,12 +143,15 @@ Future<bool> updateSyncAll() async {
       await updatePropertyAgriculturalMachines(txn);
       print("Máquinas Agrícolas das Propriedades atualizados");
 
+      // return false;
+
       txn.execute(await lastSyncUpdate());
       print("Última sincronização atualizada!");
     });
 
     return true;
   } catch (err) {
+    print(err);
     return false;
   }
 }
