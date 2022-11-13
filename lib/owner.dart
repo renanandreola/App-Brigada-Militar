@@ -11,7 +11,6 @@ class Owner extends StatefulWidget {
 }
 
 class _OwnerState extends State<Owner> {
-
   TextEditingController _respName = TextEditingController();
   TextEditingController _respLastName = TextEditingController();
   TextEditingController _respCPF = TextEditingController();
@@ -19,20 +18,19 @@ class _OwnerState extends State<Owner> {
   TextEditingController? _respPhone2 = TextEditingController();
 
   void _gotoNewProperty() {
-      // Create new form data
-      Map formData = {
-        'firstname': _respName.text,
-        'lastname': _respLastName.text,
-        'cpf': _respCPF.text,
-        'phone1': _respPhone1.text,
-        'phone2': _respPhone2 != null ? _respPhone2!.text : null
-      };
+    // Create new form data
+    Map formData = {
+      'firstname': _respName.text,
+      'lastname': _respLastName.text,
+      'cpf': _respCPF.text,
+      'phone1': _respPhone1.text,
+      'phone2': _respPhone2 != null ? _respPhone2!.text : null
+    };
 
-      inspect(formData);
+    inspect(formData);
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => NewProperty(formData)));
-
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => NewProperty(formData)));
   }
 
   @override
@@ -166,7 +164,8 @@ class _OwnerState extends State<Owner> {
                             color: Color.fromARGB(255, 177, 177, 177)),
                       ),
                     ),
-                    keyboardType: TextInputType.name,
+                    // keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.number,
                     controller: _respCPF,
                   ),
                 ),
@@ -199,7 +198,8 @@ class _OwnerState extends State<Owner> {
                             color: Color.fromARGB(255, 177, 177, 177)),
                       ),
                     ),
-                    keyboardType: TextInputType.name,
+                    // keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.number,
                     controller: _respPhone1,
                   ),
                 ),
@@ -226,7 +226,8 @@ class _OwnerState extends State<Owner> {
                             color: Color.fromARGB(255, 177, 177, 177)),
                       ),
                     ),
-                    keyboardType: TextInputType.name,
+                    // keyboardType: TextInputType.name,
+                    keyboardType: TextInputType.number,
                     controller: _respPhone2,
                   ),
                 ),

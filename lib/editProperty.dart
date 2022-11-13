@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/editMachines.dart';
 import 'package:app_brigada_militar/editPlaceDescription.dart';
 import 'package:app_brigada_militar/machines.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
@@ -30,7 +31,8 @@ class _EditPropertyState extends State<EditProperty> {
     final db = await DB.instance.database;
 
     String property_type_id = property["fk_property_type_id"];
-    List<Map> property_types = await db.query('property_types', where: "_id = '${property_type_id}'");
+    List<Map> property_types =
+        await db.query('property_types', where: "_id = '${property_type_id}'");
     Map property_type = property_types[0];
 
     setState(() {
@@ -60,9 +62,8 @@ class _EditPropertyState extends State<EditProperty> {
   String _lng = "";
 
   void _goToMachinesOrPlaceDescription() {
-
     Map formData = widget.formData;
-  
+
     // Set new form data
     Map pageFormData = {
       'qty_people': _quantityResidents.text,
@@ -71,19 +72,25 @@ class _EditPropertyState extends State<EditProperty> {
       'has_phone_signal': _hasPhoneSignal,
       'has_internet': _hasNetwork,
       'property_type': _dropDownValue,
-      'latitude': _currentLocalData != null ? _currentLocalData!.latitude.toString() : _lat,
-      'longitude': _currentLocalData != null ? _currentLocalData!.longitude.toString() : _lng,
+      'latitude': _currentLocalData != null
+          ? _currentLocalData!.latitude.toString()
+          : _lat,
+      'longitude': _currentLocalData != null
+          ? _currentLocalData!.longitude.toString()
+          : _lng,
     };
 
     // Merge form
     formData.addAll(pageFormData);
 
     if (_hasMachines) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Machines(formData)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => EditMachines(formData)));
     } else {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => EditPlaceDescription(formData)));
+          context,
+          MaterialPageRoute(
+              builder: (context) => EditPlaceDescription(formData)));
     }
   }
 
@@ -162,9 +169,9 @@ class _EditPropertyState extends State<EditProperty> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: DropdownButtonFormField(
                       decoration: InputDecoration(
-                        // filled: true,
-                        fillColor: Colors.black,
-                        labelText: 'Tipo de Propriedade'),
+                          // filled: true,
+                          fillColor: Colors.black,
+                          labelText: 'Tipo de Propriedade'),
                       hint: _dropDownValue == null || _dropDownValue == ""
                           ? Text('',
                               style: TextStyle(

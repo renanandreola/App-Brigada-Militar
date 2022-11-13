@@ -1,5 +1,6 @@
 import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/editVehicle.dart';
 import 'package:app_brigada_militar/vehicle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -14,7 +15,6 @@ class EditPlaceDescription extends StatefulWidget {
 }
 
 class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -27,15 +27,18 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
     final db = await DB.instance.database;
     var property_id = property["_id"];
-    List<Map> property_vehicles = await db.query('property_vehicles', where: "fk_property_id = '${property_id}'");
+    List<Map> property_vehicles = await db.query('property_vehicles',
+        where: "fk_property_id = '${property_id}'");
 
     setState(() {
-      _quantityDefensive.text = property["qty_agricultural_defensives"].toString();
+      _quantityDefensive.text =
+          property["qty_agricultural_defensives"].toString();
       numberDefensives = property["qty_agricultural_defensives"] == 0 ? 0 : 1;
-      _hasDefensive = property["qty_agricultural_defensives"] == 0 ? false : true;
+      _hasDefensive =
+          property["qty_agricultural_defensives"] == 0 ? false : true;
       _hasGun = property["has_gun"] == "true" ? true : false;
       _hasGunPlace = property["has_gun_local"] == "true" ? true : false;
-      _hasVehicle =  !property_vehicles.isEmpty;
+      _hasVehicle = !property_vehicles.isEmpty;
     });
   }
 
@@ -65,8 +68,8 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
     formData.addAll(pageFormData);
 
     if (_hasVehicle) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Vehicle(formData)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => EditVehicle(formData)));
     } else {
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
