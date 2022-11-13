@@ -1,24 +1,24 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:app_brigada_militar/editVehicle.dart';
 import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
-class Vehicle extends StatefulWidget {
+class EditVehicle extends StatefulWidget {
   // const Vehicle({Key? key}) : super(key: key);
   Map formData;
-  Vehicle(this.formData);
+  EditVehicle(this.formData);
 
   @override
-  State<Vehicle> createState() => _VehicleState();
+  State<EditVehicle> createState() => _EditVehicleState();
 }
 
 List _carList = [];
 List<Map<String?, String?>> vehiclesInfo = [];
 
-class _VehicleState extends State<Vehicle> {
+class _EditVehicleState extends State<EditVehicle> {
   @override
   void initState() {
     // TODO: implement initState
@@ -41,6 +41,47 @@ class _VehicleState extends State<Vehicle> {
 
     setState(() {
       _carList = list;
+    });
+
+    populateScreen();
+  }
+
+  populateScreen() async {
+    Map property = await SessionManager().get('edit_property');
+
+    final db = await DB.instance.database;
+    var property_id = property["_id"];
+
+    print(property_id);
+
+    List<Map> vehicles_filtered = await db.query('property_vehicles',
+        where: "fk_property_id = '${property_id}'");
+    var vehicles = [];
+
+    // var a = vehicles_filtered[0]['fk_vehicle_id'];
+
+    for (var i = 0; i < vehicles_filtered.length; i++) {
+      vehicles.add(await db.query('vehicles',
+          where: "_id = '${vehicles_filtered[i]['fk_vehicle_id']}'"));
+    }
+
+    print(vehicles);
+
+    var j = 0;
+    for (var vehicleFinal in vehicles) {
+      _vehicleType.add({"name": "", "key": ""});
+
+      setState(() {
+        _vehicleType[j]["name"] = vehicleFinal[j]["name"];
+        _vehicleType[j]["key"] = vehicleFinal[j]["_id"];
+      });
+
+      j++;
+    }
+
+    setState(() {
+      _vehicleType.removeLast();
+      numberVehicles = vehicles.length - 1;
     });
   }
 

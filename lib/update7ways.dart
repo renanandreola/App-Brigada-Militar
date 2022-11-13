@@ -30,12 +30,13 @@ class _Update7waysState extends State<Update7ways> {
     Directory directory;
 
     try {
-      if (await _requestPermission(Permission.manageExternalStorage, Permission.storage)) {
+      if (await _requestPermission(
+          Permission.manageExternalStorage, Permission.storage)) {
         var directory = await getExternalStorageDirectory();
         print(directory!.path);
 
         String newPath = "";
-        List<String> folders = directory!.path.split("/");
+        List<String> folders = directory.path.split("/");
 
         for (int x = 1; x < folders.length; x++) {
           String folder = folders[x];
@@ -77,14 +78,16 @@ class _Update7waysState extends State<Update7ways> {
     return false;
   }
 
-  Future<bool> _requestPermission(Permission permission, Permission permission2) async {
+  Future<bool> _requestPermission(
+      Permission permission, Permission permission2) async {
     if (await permission.isGranted && await permission2.isGranted) {
       return true;
     } else {
       var result = await permission.request();
       var result2 = await permission2.request();
 
-      if (result == PermissionStatus.granted && result2 == PermissionStatus.granted) {
+      if (result == PermissionStatus.granted &&
+          result2 == PermissionStatus.granted) {
         return true;
       } else {
         return false;
@@ -106,8 +109,8 @@ class _Update7waysState extends State<Update7ways> {
       print("Problem Downloading File");
     }
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => InitialPage()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => InitialPage()));
 
     setState(() {
       loading = false;

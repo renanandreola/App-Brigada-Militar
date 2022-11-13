@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/database/utils/datetimeToStr.dart';
 import 'package:app_brigada_militar/home.dart';
@@ -35,7 +35,7 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
 
       for (var item in garrison) {
         var nameItem = item["name"];
-        _policesNames += "• ${nameItem}\n";
+        _policesNames += "- ${nameItem}\n";
       }
     });
     print(_policesNames);
@@ -61,8 +61,10 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
       });
 
       String table = 'visits';
-      List<Map> list =
-          await txn.query(table, where: "fk_property_id = '${widget.property_id}' AND car = '${vtr}'", orderBy: "createdAt DESC", limit: 1);
+      List<Map> list = await txn.query(table,
+          where: "fk_property_id = '${widget.property_id}' AND car = '${vtr}'",
+          orderBy: "createdAt DESC",
+          limit: 1);
       Map elem = list[0];
       await txn.insert('database_updates',
           {'reference_table': table, 'updated_id': elem["_id"]});
@@ -80,8 +82,11 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
         });
 
         String table = 'user_visits';
-        List<Map> list =
-            await txn.query(table, where: "fk_visit_id = '${visit["_id"]}' AND fk_user_id = '${user["key"]}'", orderBy: "createdAt DESC", limit: 1);
+        List<Map> list = await txn.query(table,
+            where:
+                "fk_visit_id = '${visit["_id"]}' AND fk_user_id = '${user["key"]}'",
+            orderBy: "createdAt DESC",
+            limit: 1);
         Map elem = list[0];
         await txn.insert('database_updates',
             {'reference_table': table, 'updated_id': elem["_id"]});
@@ -134,7 +139,94 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
                     child: Row(
                       children: [
-                        Text("Guarnição",
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              WidgetSpan(child: Icon(Icons.group)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+
+                Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32),
+                    child: Row(
+                      children: [
+                        Text("Guarnição:",
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: "RobotoFlex")),
+                      ],
+                    )),
+
+                // Padding(
+                //     padding: EdgeInsets.only(left: 32, right: 32, top: 10),
+                //     child: Row(
+                //       children: [
+                //         Text(_policesNames,
+                //             style: TextStyle(
+                //                 fontSize: 15,
+                //                 fontStyle: FontStyle.normal,
+                //                 fontWeight: FontWeight.bold,
+                //                 fontFamily: "RobotoFlex")),
+                //       ],
+                //     )),
+
+                Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32, top: 10),
+                    child: Card(
+                      child: Container(
+                        padding: EdgeInsets.all(50.0),
+                        child: Column(
+                          children: [
+                            Text(_policesNames,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                    fontFamily: "RobotoFlex"))
+                          ],
+                        ),
+                      ),
+                    )),
+
+                // Padding(
+                //     padding: EdgeInsets.only(left: 32, right: 32, top: 10),
+                //     child: Row(
+                //       children: [
+                //         Text("Viatura: ${_vtrCode}",
+                //             style: TextStyle(
+                //                 fontSize: 15,
+                //                 fontStyle: FontStyle.normal,
+                //                 fontWeight: FontWeight.bold,
+                //                 fontFamily: "RobotoFlex")),
+                //       ],
+                //     )),
+
+                Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32, top: 20),
+                    child: Row(
+                      children: [
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              WidgetSpan(
+                                  child: Icon(Icons.directions_car_rounded)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )),
+
+                Padding(
+                    padding: EdgeInsets.only(left: 32, right: 32),
+                    child: Row(
+                      children: [
+                        Text("Viatura utilizada:",
                             style: TextStyle(
                                 fontSize: 15,
                                 fontStyle: FontStyle.normal,
@@ -145,28 +237,21 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
 
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 10),
-                    child: Row(
-                      children: [
-                        Text(_policesNames,
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "RobotoFlex")),
-                      ],
-                    )),
-
-                Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32, top: 10),
-                    child: Row(
-                      children: [
-                        Text("Viatura: ${_vtrCode}",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "RobotoFlex")),
-                      ],
+                    child: Card(
+                      child: Container(
+                        padding: EdgeInsets.all(50.0),
+                        child: Column(
+                          children: [
+                            Text(_vtrCode,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontStyle: FontStyle.normal,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                    fontFamily: "RobotoFlex"))
+                          ],
+                        ),
+                      ),
                     )),
 
                 Padding(
