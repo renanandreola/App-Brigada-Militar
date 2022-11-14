@@ -1,5 +1,7 @@
 import 'package:app_brigada_militar/database/sync/sync.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_gifs/loading_gifs.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class Sync extends StatefulWidget {
   const Sync({Key? key}) : super(key: key);
@@ -49,9 +51,14 @@ class _SyncState extends State<Sync> {
         children: [
           // Spinner
           Padding(
-            padding: EdgeInsets.only(left: 0, right: 0, top: 0),
-            child: Image.asset('assets/images/spinner.gif'),
-          ),
+              padding: EdgeInsets.only(left: 0, right: 0, top: 0),
+              // child: Image.asset('assets/images/spinner.gif'),
+              child: Center(
+                child: LoadingAnimationWidget.fourRotatingDots(
+                  color: Color.fromARGB(137, 20, 49, 25),
+                  size: 180,
+                ),
+              )),
 
           // Text sync
           Container(
@@ -68,7 +75,7 @@ class _SyncState extends State<Sync> {
                         color: Color.fromARGB(255, 0, 0, 0))),
               ),
             ),
-          )
+          ),
         ],
       ));
     }
