@@ -19,6 +19,8 @@ class EditProperty extends StatefulWidget {
 }
 
 class _EditPropertyState extends State<EditProperty> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -62,35 +64,44 @@ class _EditPropertyState extends State<EditProperty> {
   String _lng = "";
 
   void _goToMachinesOrPlaceDescription() {
-    Map formData = widget.formData;
+    if (_formKey.currentState!.validate()) {
+      if (_dropDownValue == "" || _dropDownValue == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Tipo de propriedade não selecionado!')),
+        );
+        return;
+      }
 
-    // Set new form data
-    Map pageFormData = {
-      'qty_people': _quantityResidents.text,
-      'has_geo_board': false,
-      'has_cams': _hasCams,
-      'has_phone_signal': _hasPhoneSignal,
-      'has_internet': _hasNetwork,
-      'property_type': _dropDownValue,
-      'latitude': _currentLocalData != null
-          ? _currentLocalData!.latitude.toString()
-          : _lat,
-      'longitude': _currentLocalData != null
-          ? _currentLocalData!.longitude.toString()
-          : _lng,
-    };
+      Map formData = widget.formData;
 
-    // Merge form
-    formData.addAll(pageFormData);
+      // Set new form data
+      Map pageFormData = {
+        'qty_people': _quantityResidents.text,
+        'has_geo_board': false,
+        'has_cams': _hasCams,
+        'has_phone_signal': _hasPhoneSignal,
+        'has_internet': _hasNetwork,
+        'property_type': _dropDownValue,
+        'latitude': _currentLocalData != null
+            ? _currentLocalData!.latitude.toString()
+            : _lat,
+        'longitude': _currentLocalData != null
+            ? _currentLocalData!.longitude.toString()
+            : _lng,
+      };
 
-    if (_hasMachines) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EditMachines(formData)));
-    } else {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => EditPlaceDescription(formData)));
+      // Merge form
+      formData.addAll(pageFormData);
+
+      if (_hasMachines) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditMachines(formData)));
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditPlaceDescription(formData)));
+      }
     }
   }
 
@@ -131,38 +142,42 @@ class _EditPropertyState extends State<EditProperty> {
                       ],
                     )),
 
-                // Quantity of peoples
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha o número de residentes';
-                      }
-                      return null;
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: "Quantidade de residentes",
-                      labelStyle: TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 1),
-                          fontSize: 15,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                          fontFamily: "RobotoFlex"),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
+                Form(
+                    key: _formKey,
+                    child: Column(children: [
+                      // Quantity of peoples
+                      Padding(
+                        padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Preencha o número de residentes';
+                            }
+                            return null;
+                          },
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            labelText: "Quantidade de residentes",
+                            labelStyle: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 1),
+                                fontSize: 15,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "RobotoFlex"),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          controller: _quantityResidents,
+                        ),
                       ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                            color: Color.fromARGB(255, 177, 177, 177)),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    controller: _quantityResidents,
-                  ),
-                ),
+                    ])),
 
                 // Type of Home
                 Padding(

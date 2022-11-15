@@ -47,6 +47,7 @@ dependencies:
   dio: ^4.0.6
   loading_gifs: ^0.3.0
   loading_animation_widget: ^1.2.0+3
+  dropdown_plus: ^0.0.9
   # flutter_downloader: ^1.9.1
 
 dev_dependencies:

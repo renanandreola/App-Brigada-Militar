@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:dropdown_plus/dropdown_plus.dart';
 
 class NewVisit extends StatefulWidget {
   const NewVisit({Key? key}) : super(key: key);
@@ -17,6 +18,8 @@ class NewVisit extends StatefulWidget {
 }
 
 class _NewVisitState extends State<NewVisit> {
+  final _formKey = GlobalKey<FormState>();
+
   bool _hasBoard = false;
   int _numberInput = 0;
   List<String> _propertyCodes = [];
@@ -39,11 +42,21 @@ class _NewVisitState extends State<NewVisit> {
   }
 
   void _goToNextPage() async {
+    print(code);
+    // if (_formKey.currentState!.validate()) {
+    if (_hasBoard && (code == "" || code == null)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Código de propriedade não selecionado!')),
+      );
+      return;
+    }
+
     if (_hasBoard) {
       final db = await DB.instance.database;
 
       // Get property
-      List<Map> properties = await db.query('properties',
+      List<Map> properties = await db.query(
+        'properties',
         where: "code = '${code}'",
       );
       Map property = properties[0];
@@ -51,9 +64,7 @@ class _NewVisitState extends State<NewVisit> {
 
       // Get owner
       var owner_id = property["fk_owner_id"];
-      List<Map> owners = await db.query('owners',
-        where: "_id = '${owner_id}'"
-      );
+      List<Map> owners = await db.query('owners', where: "_id = '${owner_id}'");
       Map owner = owners[0];
       await SessionManager().set('edit_owner', jsonEncode(owner));
 
@@ -63,6 +74,7 @@ class _NewVisitState extends State<NewVisit> {
     }
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => OwnerPage.Owner()));
+    // }
   }
 
   @override
@@ -77,6 +89,31 @@ class _NewVisitState extends State<NewVisit> {
   Widget _geoBoard() {
     List<DropdownSearch> componentes = [];
     for (int i = 1; i <= _numberInput; i++) {
+      // componentes.add(
+      //   TextDropdownFormField(
+      //     options: _propertyCodes,
+      //     validator: (value) {
+      //       if (value == null || value.isEmpty) {
+      //         return 'Preencha uma localidade';
+      //       }
+      //       return null;
+      //     },
+      //     decoration: InputDecoration(
+      //         border: OutlineInputBorder(),
+      //         fillColor: Colors.black,
+      //         focusColor: Colors.green,
+      //         hoverColor: Colors.black,
+      //         iconColor: Colors.black,
+      //         suffixIcon: Icon(Icons.arrow_drop_down),
+      //         labelText: "Código da Propriedade"),
+      //     dropdownHeight: 420,
+      //     onChanged: (val) {
+      //       setState(() {
+      //         code = val;
+      //       });
+      //     },
+      //   ),
+      // );
       componentes.add(DropdownSearch<String>(
         popupProps: PopupProps.menu(
           showSelectedItems: true,
@@ -100,6 +137,12 @@ class _NewVisitState extends State<NewVisit> {
     return Column(
       children: componentes,
     );
+
+    // return Form(
+    //     key: _formKey,
+    //     child: Column(
+    //       children: componentes,
+    //     ));
   }
 
   @override
@@ -157,6 +200,15 @@ class _NewVisitState extends State<NewVisit> {
                           .leading, //  <-- leading Checkbox
                     )),
                 // Title
+
+                // TextDropdownFormField(
+                //   options: ["Marlon", "Renan", "saco"],
+                //   decoration: InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       suffixIcon: Icon(Icons.arrow_drop_down),
+                //       labelText: "Gender"),
+                //   dropdownHeight: 120,
+                // ),
 
                 // ResponsibleName
                 Padding(

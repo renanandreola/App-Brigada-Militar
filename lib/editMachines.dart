@@ -59,9 +59,11 @@ class _EditMachinesState extends State<EditMachines> {
     // var a = machinesFiltered[0]['fk_vehicle_id'];
 
     for (var i = 0; i < machinesFiltered.length; i++) {
-      agricultural_machines.add(await db.query('agricultural_machines',
+      List<Map> agricultural_machine_list = await db.query(
+          'agricultural_machines',
           where:
-              "_id = '${machinesFiltered[i]['fk_agricultural_machine_id']}'"));
+              "_id = '${machinesFiltered[i]['fk_agricultural_machine_id']}'");
+      agricultural_machines.add(agricultural_machine_list[0]);
     }
 
     print(agricultural_machines);
@@ -71,8 +73,8 @@ class _EditMachinesState extends State<EditMachines> {
       _machineType.add({"name": "", "key": ""});
 
       setState(() {
-        _machineType[j]["name"] = machineFinal[j]["name"];
-        _machineType[j]["key"] = machineFinal[j]["_id"];
+        _machineType[j]["name"] = machineFinal["name"];
+        _machineType[j]["key"] = machineFinal["_id"];
       });
 
       j++;
@@ -104,6 +106,13 @@ class _EditMachinesState extends State<EditMachines> {
 
   // Go to page that have the description of the place
   void _goToPlaceDescription() async {
+    if (_machineType[0]['name'] == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhuma máquina selecionada!')),
+      );
+      return;
+    }
+
     await SessionManager().set('machines', jsonEncode(_machineType));
 
     Navigator.push(
