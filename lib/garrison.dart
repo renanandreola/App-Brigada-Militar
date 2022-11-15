@@ -18,6 +18,8 @@ class Garrison extends StatefulWidget {
 class _GarrisonState extends State<Garrison> {
   TextEditingController _codeVTR = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   List<Map<String?, String?>> _peopleType = [];
   int numberPeople = 0;
 
@@ -40,7 +42,7 @@ class _GarrisonState extends State<Garrison> {
       usersInfo.add({"name": user.name, "key": user.id});
       list.add(user.name!);
     }
-    
+
     Map user = await SessionManager().get('user');
 
     setState(() {
@@ -52,15 +54,17 @@ class _GarrisonState extends State<Garrison> {
 
   // Go to initial menu
   void gotoInitialMenu() async {
-    // Save garrison in session
-    var garrison = jsonEncode(_peopleType);
-    var vtr = jsonEncode(_codeVTR.text);
+    if (_formKey.currentState!.validate()) {
+      // Save garrison in session
+      var garrison = jsonEncode(_peopleType);
+      var vtr = jsonEncode(_codeVTR.text);
 
-    await SessionManager().set('garrison', garrison);
-    await SessionManager().set('vtr', vtr);
+      await SessionManager().set('garrison', garrison);
+      await SessionManager().set('vtr', vtr);
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
+    }
   }
 
   // Increments the number of people
@@ -130,17 +134,20 @@ class _GarrisonState extends State<Garrison> {
                     );
                   },
                 ).toList(),
-                onChanged: i != 0 ? (val) {
-                  setState(
-                    () {
-                      Map currentUser = usersInfo
-                          .where((element) => element["name"] == val.toString())
-                          .first;
-                      _peopleType[i]["name"] = val.toString();
-                      _peopleType[i]["key"] = currentUser["key"];
-                    },
-                  );
-                } : null,
+                onChanged: i != 0
+                    ? (val) {
+                        setState(
+                          () {
+                            Map currentUser = usersInfo
+                                .where((element) =>
+                                    element["name"] == val.toString())
+                                .first;
+                            _peopleType[i]["name"] = val.toString();
+                            _peopleType[i]["key"] = currentUser["key"];
+                          },
+                        );
+                      }
+                    : null,
               )),
         ],
       ));
@@ -267,63 +274,68 @@ class _GarrisonState extends State<Garrison> {
                   ),
                 ),
               ),
+              Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      // Code VTR
+                      Padding(
+                        padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Preencha o código da viatura utilizada';
+                            }
+                            return null;
+                          },
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            labelText: "Viatura Utilizada",
+                            labelStyle: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 1),
+                                fontSize: 15,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "RobotoFlex"),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          controller: _codeVTR,
+                        ),
+                      ),
 
-              // Code VTR
-              Padding(
-                padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Preencha o código da viatura utilizada';
-                    }
-                    return null;
-                  },
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelText: "Viatura Utilizada",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 1),
-                        fontSize: 15,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "RobotoFlex"),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.name,
-                  controller: _codeVTR,
-                ),
-              ),
-
-              // Login
-              Padding(
-                padding: EdgeInsets.only(left: 32, right: 32, top: 35),
-                child: ElevatedButton(
-                  child: Text(
-                    'Continuar',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w600,
-                        fontFamily: "RobotoFlex"),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 27, 75, 27),
-                    elevation: 2,
-                    fixedSize: Size(330, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: gotoInitialMenu,
-                ),
-              ),
+                      // Login
+                      Padding(
+                        padding: EdgeInsets.only(left: 32, right: 32, top: 35),
+                        child: ElevatedButton(
+                          child: Text(
+                            'Continuar',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "RobotoFlex"),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color.fromARGB(255, 27, 75, 27),
+                            elevation: 2,
+                            fixedSize: Size(330, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          onPressed: gotoInitialMenu,
+                        ),
+                      ),
+                    ],
+                  ))
             ],
           ),
         ),

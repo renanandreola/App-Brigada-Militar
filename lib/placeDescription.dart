@@ -13,6 +13,8 @@ class PlaceDescription extends StatefulWidget {
 }
 
 class _PlaceDescriptionState extends State<PlaceDescription> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController _quantityDefensive = TextEditingController();
   TextEditingController _gunPlaceDescription = TextEditingController();
 
@@ -48,36 +50,40 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
   }
 
   Widget qtdDefensives() {
-    List<TextFormField> filhos = [];
+    List<Form> filhos = [];
     for (int i = 1; i <= numberDefensives; i++) {
-      filhos.add(
-        TextFormField(
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Preencha o número de defensivos agrícolas';
-            }
-            return null;
-          },
-          cursorColor: Colors.black,
-          decoration: InputDecoration(
-            labelText: "Quantidade de defensivos agrícolas",
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 1),
-                fontSize: 15,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w400,
-                fontFamily: "RobotoFlex"),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+      filhos.add(Form(
+          key: _formKey,
+          child: Column(children: [
+            TextFormField(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Preencha o número de defensivos agrícolas';
+                }
+                return null;
+              },
+              cursorColor: Colors.black,
+              decoration: InputDecoration(
+                labelText: "Quantidade de defensivos agrícolas",
+                labelStyle: TextStyle(
+                    color: Color.fromARGB(255, 0, 0, 1),
+                    fontSize: 15,
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "RobotoFlex"),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide:
+                      BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                ),
+              ),
+              keyboardType: TextInputType.number,
+              controller: _quantityDefensive,
             ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
-            ),
-          ),
-          keyboardType: TextInputType.number,
-          controller: _quantityDefensive,
-        ),
-      );
+          ])));
     }
     return Column(
       children: filhos,

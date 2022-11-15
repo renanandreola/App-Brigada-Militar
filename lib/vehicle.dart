@@ -64,6 +64,12 @@ class _VehicleState extends State<Vehicle> {
   }
 
   void _goToAditionalInfo() async {
+    if (_vehicleType[0]['name'] == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhum veículo selecionado!')),
+      );
+      return;
+    }
     await SessionManager().set('vehicles', jsonEncode(_vehicleType));
 
     Navigator.push(

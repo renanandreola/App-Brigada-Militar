@@ -61,8 +61,9 @@ class _EditVehicleState extends State<EditVehicle> {
     // var a = vehicles_filtered[0]['fk_vehicle_id'];
 
     for (var i = 0; i < vehicles_filtered.length; i++) {
-      vehicles.add(await db.query('vehicles',
-          where: "_id = '${vehicles_filtered[i]['fk_vehicle_id']}'"));
+      List<Map> vehicle_list = await db.query('vehicles',
+          where: "_id = '${vehicles_filtered[i]['fk_vehicle_id']}'");
+      vehicles.add(vehicle_list[0]);
     }
 
     print(vehicles);
@@ -72,8 +73,9 @@ class _EditVehicleState extends State<EditVehicle> {
       _vehicleType.add({"name": "", "key": ""});
 
       setState(() {
-        _vehicleType[j]["name"] = vehicleFinal[j]["name"];
-        _vehicleType[j]["key"] = vehicleFinal[j]["_id"];
+        _vehicleType[j]["name"] =
+            vehicleFinal["name"] + ' - ' + vehicleFinal["brand"];
+        _vehicleType[j]["key"] = vehicleFinal["_id"];
       });
 
       j++;
@@ -105,6 +107,12 @@ class _EditVehicleState extends State<EditVehicle> {
   }
 
   void _goToAditionalInfo() async {
+    if (_vehicleType[0]['name'] == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhum veículo selecionado!')),
+      );
+      return;
+    }
     await SessionManager().set('vehicles', jsonEncode(_vehicleType));
 
     Navigator.push(

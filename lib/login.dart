@@ -28,25 +28,28 @@ class _LoginState extends State<Login> {
   }
 
   void _voidLogin() async {
-    // Will return true or false
-    final response =
-        await UsersTable().authenticate(_email.text, _password.text);
-    if (response) {
-      final users = await UsersTable().find(email: _email.text);
-      User user = users[0];
+    if (_formKey.currentState!.validate()) {
+      // Se o form for válido exibe um a snackbar
 
-      String userJson = jsonEncode(user.toMap());
+      // Will return true or false
+      final response =
+          await UsersTable().authenticate(_email.text, _password.text);
+      if (response) {
+        final users = await UsersTable().find(email: _email.text);
+        User user = users[0];
 
-      await SessionManager().set('user', userJson);
+        String userJson = jsonEncode(user.toMap());
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => Garrison(user.name!)));
-      return;
+        await SessionManager().set('user', userJson);
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Garrison(user.name!)));
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login inválido')),
+      );
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Login inválido')),
-    );
   }
 
   // Future<http.Response> sendLogin(_email, _password) async {

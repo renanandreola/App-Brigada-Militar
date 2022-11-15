@@ -34,7 +34,7 @@ class _MachinesState extends State<Machines> {
     List list = [];
     for (var machine in machines) {
       list.add(machine["name"]);
-      machinesInfo.add({ "name": machine["name"], "key": machine["_id"] });
+      machinesInfo.add({"name": machine["name"], "key": machine["_id"]});
     }
 
     setState(() {
@@ -62,6 +62,13 @@ class _MachinesState extends State<Machines> {
 
   // Go to page that have the description of the place
   void _goToPlaceDescription() async {
+    // print(_machineType);
+    if (_machineType[0]['name'] == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhuma máquina selecionada!')),
+      );
+      return;
+    }
     await SessionManager().set('machines', jsonEncode(_machineType));
 
     Navigator.push(
@@ -82,7 +89,8 @@ class _MachinesState extends State<Machines> {
           Container(
               width: MediaQuery.of(context).size.width * 0.8,
               child: DropdownButtonFormField(
-                hint: _machineType[i]["name"] == null || _machineType[i]["name"] == ""
+                hint: _machineType[i]["name"] == null ||
+                        _machineType[i]["name"] == ""
                     ? Text('Máquina Agrícola ${i}',
                         style: TextStyle(
                             color: Color.fromARGB(255, 0, 0, 1),
@@ -122,8 +130,10 @@ class _MachinesState extends State<Machines> {
                 onChanged: (val) {
                   setState(
                     () {
-                      Map currentMachine = machinesInfo.where((element) => element["name"] == val.toString()).first;
-                      
+                      Map currentMachine = machinesInfo
+                          .where((element) => element["name"] == val.toString())
+                          .first;
+
                       _machineType[i]["name"] = val.toString();
                       _machineType[i]["key"] = currentMachine["key"];
                     },
