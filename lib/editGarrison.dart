@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:app_brigada_militar/confirmVisit.dart';
 import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class EditGarrison extends StatefulWidget {
   // const Garrison({Key? key}) : super(key: key);
   late String userName;
-  EditGarrison(this.userName);
+  late String fromPage;
+  EditGarrison(this.userName, this.fromPage);
 
   @override
   State<EditGarrison> createState() => _EditGarrisonState();
@@ -80,6 +82,14 @@ class _EditGarrisonState extends State<EditGarrison> {
 
       await SessionManager().set('garrison', garrison);
       await SessionManager().set('vtr', vtr);
+
+      if (widget.fromPage == 'from_page_confirm') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConfirmVisit(widget.userName)));
+        return;
+      }
 
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
