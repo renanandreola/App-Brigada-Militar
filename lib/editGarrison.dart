@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:app_brigada_militar/confirmVisit.dart';
 import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:app_brigada_militar/home.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +10,16 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class EditGarrison extends StatefulWidget {
   // const Garrison({Key? key}) : super(key: key);
   late String userName;
-  EditGarrison(this.userName);
+  late String fromPage;
+  EditGarrison(this.userName, this.fromPage);
 
   @override
   State<EditGarrison> createState() => _EditGarrisonState();
 }
 
 class _EditGarrisonState extends State<EditGarrison> {
+  final _formKey = GlobalKey<FormState>();
+
   TextEditingController _codeVTR = TextEditingController();
 
   List<Map<String?, String?>> _peopleType = [];
@@ -71,15 +75,25 @@ class _EditGarrisonState extends State<EditGarrison> {
 
   // Go to initial menu
   void gotoInitialMenu() async {
-    // Save garrison in session
-    var garrison = jsonEncode(_peopleType);
-    var vtr = jsonEncode(_codeVTR.text);
+    if (_formKey.currentState!.validate()) {
+      // Save garrison in session
+      var garrison = jsonEncode(_peopleType);
+      var vtr = jsonEncode(_codeVTR.text);
 
-    await SessionManager().set('garrison', garrison);
-    await SessionManager().set('vtr', vtr);
+      await SessionManager().set('garrison', garrison);
+      await SessionManager().set('vtr', vtr);
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
+      if (widget.fromPage == 'from_page_confirm') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConfirmVisit(widget.userName)));
+        return;
+      }
+
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
+    }
   }
 
   // Increments the number of people
@@ -149,17 +163,20 @@ class _EditGarrisonState extends State<EditGarrison> {
                     );
                   },
                 ).toList(),
-                onChanged: i != 0 ? (val) {
-                  setState(
-                    () {
-                      Map currentUser = usersInfo
-                          .where((element) => element["name"] == val.toString())
-                          .first;
-                      _peopleType[i]["name"] = val.toString();
-                      _peopleType[i]["key"] = currentUser["key"];
-                    },
-                  );
-                } : null,
+                onChanged: i != 0
+                    ? (val) {
+                        setState(
+                          () {
+                            Map currentUser = usersInfo
+                                .where((element) =>
+                                    element["name"] == val.toString())
+                                .first;
+                            _peopleType[i]["name"] = val.toString();
+                            _peopleType[i]["key"] = currentUser["key"];
+                          },
+                        );
+                      }
+                    : null,
               )),
         ],
       ));
@@ -281,38 +298,42 @@ class _EditGarrisonState extends State<EditGarrison> {
                 ),
               ),
 
-              // Code VTR
-              Padding(
-                padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Preencha o código da viatura utilizada';
-                    }
-                    return null;
-                  },
-                  cursorColor: Colors.black,
-                  decoration: InputDecoration(
-                    labelText: "Viatura Utilizada",
-                    labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 1),
-                        fontSize: 15,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "RobotoFlex"),
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+              Form(
+                  key: _formKey,
+                  child: Column(children: [
+                    // Code VTR
+                    Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Preencha o código da viatura utilizada';
+                          }
+                          return null;
+                        },
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          labelText: "Viatura Utilizada",
+                          labelStyle: TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 1),
+                              fontSize: 15,
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: "RobotoFlex"),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 177, 177, 177)),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 177, 177, 177)),
+                          ),
+                        ),
+                        keyboardType: TextInputType.name,
+                        controller: _codeVTR,
+                      ),
                     ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
-                    ),
-                  ),
-                  keyboardType: TextInputType.name,
-                  controller: _codeVTR,
-                ),
-              ),
+                  ])),
 
               // Login
               Padding(

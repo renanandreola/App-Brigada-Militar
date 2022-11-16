@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/editAditionalInfo.dart';
 import 'package:app_brigada_militar/editVehicle.dart';
 import 'package:app_brigada_militar/vehicle.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class EditPlaceDescription extends StatefulWidget {
 }
 
 class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -55,61 +58,91 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
   int numberGun = 0;
 
   void _goToAdditionalInfoOrVehicle() {
-    // Retrieve form data
-    Map formData = widget.formData;
+    if (_hasDefensive) {
+      if (_formKey.currentState!.validate()) {
+        // Retrieve form data
+        Map formData = widget.formData;
 
-    // Set new form data
-    Map pageFormData = {
-      'qty_agricultural_defensives': _hasDefensive && int.tryParse(_quantityDefensive.text) != null ? int.tryParse(_quantityDefensive.text) : 0,
-      'has_gun': _hasGun,
-      'has_gun_local': _hasGunPlace,
-      'gun_local_description': _gunPlaceDescription.text,
-    };
+        // Set new form data
+        Map pageFormData = {
+          'qty_agricultural_defensives': _hasDefensive && int.tryParse(_quantityDefensive.text) != null ? int.tryParse(_quantityDefensive.text) : 0,
+          'has_gun': _hasGun,
+          'has_gun_local': _hasGunPlace,
+          'gun_local_description': _gunPlaceDescription.text,
+        };
 
-    // Merge form
-    formData.addAll(pageFormData);
+        // Merge form
+        formData.addAll(pageFormData);
 
-    inspect(formData);
-
-    if (_hasVehicle) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EditVehicle(formData)));
+        if (_hasVehicle) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => EditVehicle(formData)));
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => EditAditionalInfo(formData)));
+        }
+      }
     } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+      // Retrieve form data
+      Map formData = widget.formData;
+
+      // Set new form data
+      Map pageFormData = {
+        'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
+        'has_gun': _hasGun,
+        'has_gun_local': _hasGunPlace,
+        'gun_local_description': _gunPlaceDescription.text,
+      };
+
+      // Merge form
+      formData.addAll(pageFormData);
+
+      if (_hasVehicle) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EditVehicle(formData)));
+      } else {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+      }
     }
   }
 
   Widget qtdDefensives() {
-    List<TextFormField> filhos = [];
+    List<Form> filhos = [];
     for (int i = 1; i <= numberDefensives; i++) {
       filhos.add(
-        TextFormField(
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Preencha o número de defensivos agrícolas';
-            }
-            return null;
-          },
-          cursorColor: Colors.black,
-          decoration: InputDecoration(
-            labelText: "Quantidade de defensivos agrícolas",
-            labelStyle: TextStyle(
-                color: Color.fromARGB(255, 0, 0, 1),
-                fontSize: 15,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w400,
-                fontFamily: "RobotoFlex"),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
-            ),
-          ),
-          keyboardType: TextInputType.number,
-          controller: _quantityDefensive,
-        ),
+        Form(
+            key: _formKey,
+            child: Column(children: [
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha o número de defensivos agrícolas';
+                  }
+                  return null;
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "Quantidade de defensivos agrícolas",
+                  labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 1),
+                      fontSize: 15,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "RobotoFlex"),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+                controller: _quantityDefensive,
+              ),
+            ])),
       );
     }
     return Column(

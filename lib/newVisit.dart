@@ -87,52 +87,53 @@ class _NewVisitState extends State<NewVisit> {
   String? code = "";
 
   Widget _geoBoard() {
-    List<DropdownSearch> componentes = [];
+    List<TextDropdownFormField> componentes = [];
     for (int i = 1; i <= _numberInput; i++) {
-      // componentes.add(
-      //   TextDropdownFormField(
-      //     options: _propertyCodes,
-      //     validator: (value) {
-      //       if (value == null || value.isEmpty) {
-      //         return 'Preencha uma localidade';
-      //       }
-      //       return null;
-      //     },
-      //     decoration: InputDecoration(
-      //         border: OutlineInputBorder(),
-      //         fillColor: Colors.black,
-      //         focusColor: Colors.green,
-      //         hoverColor: Colors.black,
-      //         iconColor: Colors.black,
-      //         suffixIcon: Icon(Icons.arrow_drop_down),
-      //         labelText: "Código da Propriedade"),
-      //     dropdownHeight: 420,
-      //     onChanged: (val) {
-      //       setState(() {
-      //         code = val;
-      //       });
-      //     },
+      componentes.add(
+        TextDropdownFormField(
+          options: _propertyCodes,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Preencha uma localidade';
+            }
+            return null;
+          },
+          decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              fillColor: Colors.black,
+              focusColor: Colors.green,
+              hoverColor: Colors.black,
+              iconColor: Colors.black,
+              suffixIcon: Icon(Icons.arrow_drop_down),
+              labelText: "Código da Propriedade"),
+          dropdownHeight: 420,
+          onChanged: (dynamic val) {
+            setState(() {
+              // print("Marlon ${val}");
+              code = val.toString();
+            });
+          },
+        ),
+      );
+      // componentes.add(DropdownSearch<String>(
+      //   popupProps: PopupProps.menu(
+      //     showSelectedItems: true,
+      //     disabledItemFn: (String s) => s.startsWith('I'),
       //   ),
-      // );
-      componentes.add(DropdownSearch<String>(
-        popupProps: PopupProps.menu(
-          showSelectedItems: true,
-          disabledItemFn: (String s) => s.startsWith('I'),
-        ),
-        items: _propertyCodes,
-        dropdownDecoratorProps: DropDownDecoratorProps(
-          dropdownSearchDecoration: InputDecoration(
-            labelText: "Código da Propriedade",
-            hintText: "",
-          ),
-        ),
-        onChanged: (val) {
-          setState(() {
-            code = val;
-          });
-        },
-        //selectedItem: "Brazil",
-      ));
+      //   items: _propertyCodes,
+      //   dropdownDecoratorProps: DropDownDecoratorProps(
+      //     dropdownSearchDecoration: InputDecoration(
+      //       labelText: "Código da Propriedade",
+      //       hintText: "",
+      //     ),
+      //   ),
+      //   onChanged: (val) {
+      //     setState(() {
+      //       code = val;
+      //     });
+      //   },
+      //   //selectedItem: "Brazil",
+      // ));
     }
     return Column(
       children: componentes,
