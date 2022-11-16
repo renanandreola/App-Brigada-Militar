@@ -26,26 +26,52 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
   int numberGun = 0;
 
   void _goToAdditionalInfoOrVehicle() {
-    // Retrieve form data
-    Map formData = widget.formData;
+    if (_hasDefensive) {
+      if (_formKey.currentState!.validate()) {
+        // Retrieve form data
+        Map formData = widget.formData;
 
-    // Set new form data
-    Map pageFormData = {
-      'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
-      'has_gun': _hasGun,
-      'has_gun_local': _hasGunPlace,
-      'gun_local_description': _gunPlaceDescription.text,
-    };
+        // Set new form data
+        Map pageFormData = {
+          'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
+          'has_gun': _hasGun,
+          'has_gun_local': _hasGunPlace,
+          'gun_local_description': _gunPlaceDescription.text,
+        };
 
-    // Merge form
-    formData.addAll(pageFormData);
+        // Merge form
+        formData.addAll(pageFormData);
 
-    if (_hasVehicle) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Vehicle(formData)));
+        if (_hasVehicle) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => Vehicle(formData)));
+        } else {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+        }
+      }
     } else {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+      // Retrieve form data
+      Map formData = widget.formData;
+
+      // Set new form data
+      Map pageFormData = {
+        'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
+        'has_gun': _hasGun,
+        'has_gun_local': _hasGunPlace,
+        'gun_local_description': _gunPlaceDescription.text,
+      };
+
+      // Merge form
+      formData.addAll(pageFormData);
+
+      if (_hasVehicle) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => Vehicle(formData)));
+      } else {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+      }
     }
   }
 

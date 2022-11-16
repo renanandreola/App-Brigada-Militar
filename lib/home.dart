@@ -21,7 +21,6 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
-  
   @override
   void initState() {
     // TODO: implement initState
@@ -49,8 +48,11 @@ class _HomeAppState extends State<HomeApp> {
   }
 
   void _editGarrison() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => EditGarrison(widget.userName)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                EditGarrison(widget.userName, 'from_page_home')));
   }
 
   // void _editPropertie() {

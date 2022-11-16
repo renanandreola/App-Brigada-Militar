@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:app_brigada_militar/editGarrison.dart';
 import 'package:cupertino_icons/cupertino_icons.dart';
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/database/utils/datetimeToStr.dart';
@@ -97,6 +98,13 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
         context, MaterialPageRoute(builder: (context) => HomeApp("nome")));
   }
 
+  void _changeGarrison() async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditGarrison('', 'from_page_confirm')));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,19 +154,18 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
                             ],
                           ),
                         ),
-                      ],
-                    )),
-
-                Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32),
-                    child: Row(
-                      children: [
-                        Text("Guarnição:",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "RobotoFlex")),
+                        Padding(
+                            padding: EdgeInsets.only(left: 10, right: 32),
+                            child: Row(
+                              children: [
+                                Text("Guarnição:",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "RobotoFlex")),
+                              ],
+                            )),
                       ],
                     )),
 
@@ -219,19 +226,18 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
                             ],
                           ),
                         ),
-                      ],
-                    )),
-
-                Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32),
-                    child: Row(
-                      children: [
-                        Text("Viatura utilizada:",
-                            style: TextStyle(
-                                fontSize: 15,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "RobotoFlex")),
+                        Padding(
+                            padding: EdgeInsets.only(left: 10, right: 32),
+                            child: Row(
+                              children: [
+                                Text("Viatura utilizada:",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: "RobotoFlex")),
+                              ],
+                            )),
                       ],
                     )),
 
@@ -255,18 +261,35 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
                     )),
 
                 Padding(
-                    padding: EdgeInsets.only(left: 32, right: 32, top: 20),
-                    child: Row(
-                      children: [
-                        Text("Alterar Guarnição",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 27, 75, 27),
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "RobotoFlex")),
-                      ],
-                    )),
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 25),
+                  child: GestureDetector(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Text("Alterar Guarnição",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Color.fromARGB(255, 27, 75, 27),
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "RobotoFlex")),
+                    ),
+                    onTap: _changeGarrison,
+                  ),
+                ),
+
+                // Padding(
+                //     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
+                //     child: Row(
+                //       children: [
+                //         Text("Alterar Guarnição",
+                //             style: TextStyle(
+                //                 fontSize: 15,
+                //                 color: Color.fromARGB(255, 27, 75, 27),
+                //                 fontStyle: FontStyle.normal,
+                //                 fontWeight: FontWeight.bold,
+                //                 fontFamily: "RobotoFlex")),
+                //       ],
+                //     )),
 
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 35),

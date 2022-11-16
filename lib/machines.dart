@@ -140,6 +140,58 @@ class _MachinesState extends State<Machines> {
                   );
                 },
               )),
+          // child: DropdownButtonFormField(
+          //   hint: _machineType[i]["name"] == null ||
+          //           _machineType[i]["name"] == ""
+          //       ? Text('Máquina Agrícola ${i}',
+          //           style: TextStyle(
+          //               color: Color.fromARGB(255, 0, 0, 1),
+          //               fontSize: 15,
+          //               fontStyle: FontStyle.normal,
+          //               fontWeight: FontWeight.w400,
+          //               fontFamily: "RobotoFlex"))
+          //       : Text(
+          //           _machineType[i]["name"],
+          //           style: TextStyle(
+          //               color: Color.fromARGB(255, 0, 0, 1),
+          //               fontSize: 15,
+          //               fontStyle: FontStyle.normal,
+          //               fontWeight: FontWeight.w400,
+          //               fontFamily: "RobotoFlex"),
+          //         ),
+          //   decoration: InputDecoration(
+          //       // filled: true,
+          //       fillColor: Colors.black,
+          //       labelText: 'Máquina Agrícola ${i}'),
+          //   isExpanded: true,
+          //   iconSize: 30.0,
+          //   style: TextStyle(
+          //       color: Color.fromARGB(255, 0, 0, 1),
+          //       fontSize: 15,
+          //       fontStyle: FontStyle.normal,
+          //       fontWeight: FontWeight.w400,
+          //       fontFamily: "RobotoFlex"),
+          //   items: _machineList.map(
+          //     (val) {
+          //       return DropdownMenuItem<String>(
+          //         value: val,
+          //         child: Text(val),
+          //       );
+          //     },
+          //   ).toList(),
+          //   onChanged: (val) {
+          //     setState(
+          //       () {
+          //         Map currentMachine = machinesInfo
+          //             .where((element) => element["name"] == val.toString())
+          //             .first;
+
+          //         _machineType[i]["name"] = val.toString();
+          //         _machineType[i]["key"] = currentMachine["key"];
+          //       },
+          //     );
+          //   },
+          // )),
         ],
       ));
     }
