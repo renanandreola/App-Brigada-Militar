@@ -31,7 +31,7 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
 
     // Set new form data
     Map pageFormData = {
-      'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
+      'qty_agricultural_defensives': _hasDefensive && int.tryParse(_quantityDefensive.text) != null ? int.tryParse(_quantityDefensive.text) : 0,
       'has_gun': _hasGun,
       'has_gun_local': _hasGunPlace,
       'gun_local_description': _gunPlaceDescription.text,

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/editVehicle.dart';
@@ -58,7 +60,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
     // Set new form data
     Map pageFormData = {
-      'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
+      'qty_agricultural_defensives': _hasDefensive && int.tryParse(_quantityDefensive.text) != null ? int.tryParse(_quantityDefensive.text) : 0,
       'has_gun': _hasGun,
       'has_gun_local': _hasGunPlace,
       'gun_local_description': _gunPlaceDescription.text,
@@ -66,6 +68,8 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
     // Merge form
     formData.addAll(pageFormData);
+
+    inspect(formData);
 
     if (_hasVehicle) {
       Navigator.push(context,
@@ -178,7 +182,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Descrição do Local"),
+        title: Text("Alterar Descrição do Local"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},
@@ -200,7 +204,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Descrição do Local",
+                        Text("Alterar Descrição do Local",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,

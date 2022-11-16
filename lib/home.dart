@@ -41,6 +41,12 @@ class _HomeAppState extends State<HomeApp> {
     await SessionManager().remove('edit_property');
     //Edit Owner
     await SessionManager().remove('edit_owner');
+    //Edit Agricultural Machines
+    await SessionManager().remove('edit_agricultural_machines');
+    //Edit Vehicles
+    await SessionManager().remove('edit_vehicles');
+    //Edit requests
+    await SessionManager().remove('edit_requests');
   }
 
   void _openProperties() {
