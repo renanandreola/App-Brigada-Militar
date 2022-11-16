@@ -44,9 +44,9 @@ class _EditPropertyState extends State<EditProperty> {
       _lng = property["longitude"];
       _quantityResidents.text = property["qty_people"].toString();
       _hasGeoBoard = true;
-      _hasCams = property["has_cams"] == 'true' ? true : false;
-      _hasPhoneSignal = property["has_phone_signal"] == 'true' ? true : false;
-      _hasNetwork = property["has_internet"] == 'true' ? true : false;
+      _hasCams = (property["has_cams"] == 'true' || property["has_cams"] == 1) ? true : false;
+      _hasPhoneSignal = (property["has_phone_signal"] == 'true' || property["has_phone_signal"] == 1) ? true : false;
+      _hasNetwork = (property["has_internet"] == 'true' || property["has_internet"] == 1)  ? true : false;
       _dropDownValue = property_type["name"];
       _hasMachines = property_machines.length == 0 ? false : true;
     });

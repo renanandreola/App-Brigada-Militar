@@ -249,8 +249,8 @@ Future<bool> updateSyncAll() async {
       await updatePropertyAgriculturalMachines(txn);
       print("Máquinas Agrícolas das Propriedades atualizados");
 
-      deleteAll(txn);
-      syncAll(txn, true);
+      await deleteAll(txn);
+      await syncAll(txn, true);
       print("Todos os dados recebidos novamente!");
 
       txn.execute(await lastSyncUpdate());
