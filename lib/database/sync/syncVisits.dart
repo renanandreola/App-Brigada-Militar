@@ -12,7 +12,7 @@ Future<String?> syncVisits () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/visits";
+  String uri = "https://novorumo-api.fly.dev/api/sync/visits";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -50,7 +50,7 @@ Future<String?> syncVisits () async {
 
 updateVisits(db) async {
   await sendNewVisitData(db);
-  await receiveNewVisitData(db);
+  // await receiveNewVisitData(db);
 }
 
 receiveNewVisitData(db) async {
@@ -71,7 +71,7 @@ receiveNewVisitData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/visits?last_date=${lastSyncDate}";
+  String uri = "https://novorumo-api.fly.dev/api/sync/visits?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -181,7 +181,7 @@ sendNewVisitData(db) async {
 
   String visitsJson = jsonEncode(allChanges);
 
-  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/visits";
+  String uri = "https://novorumo-api.fly.dev/api/sync/visits";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: visitsJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {

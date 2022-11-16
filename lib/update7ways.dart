@@ -101,7 +101,7 @@ class _Update7waysState extends State<Update7ways> {
     });
 
     bool downloaded = await saveFile(
-        "https://novo-rumo-api.herokuapp.com/7ways/file.txt", "file.txt");
+        "https://novorumo-api.fly.dev/7ways/file.txt", "file.txt");
 
     if (downloaded) {
       print("File Downloaded");

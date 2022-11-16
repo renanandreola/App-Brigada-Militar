@@ -24,7 +24,7 @@ dynamic getToken() async {
  * Create a new API Token
  */
 dynamic generateToken() async {
-  String uri = "https://novo-rumo-api.herokuapp.com/api/auth/login";
+  String uri = "https://novorumo-api.fly.dev/api/auth/login";
 
   final response = await http.post(Uri.parse(uri), body: { "email": "tracey.gulgowski@hotmail.com", "password": "r`.o=rv*31v" });
 

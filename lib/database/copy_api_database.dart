@@ -34,7 +34,7 @@ void copyAPIDatabase(db, version) async {
   await db.execute(_propertyAgriculturalMachineIdTrigger);
   await db.execute(_vehicleIdTrigger);
   await db.execute(_propertyVehicleIdTrigger);
-  await syncAll(db);
+  await syncAll(db, null);
 }
 /**
  * Create Users Table

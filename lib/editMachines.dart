@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 import 'package:app_brigada_militar/database/db.dart';
+import 'package:app_brigada_militar/editPlaceDescription.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
@@ -66,8 +67,6 @@ class _EditMachinesState extends State<EditMachines> {
       agricultural_machines.add(agricultural_machine_list[0]);
     }
 
-    print(agricultural_machines);
-
     var j = 0;
     for (var machineFinal in agricultural_machines) {
       _machineType.add({"name": "", "key": ""});
@@ -82,12 +81,24 @@ class _EditMachinesState extends State<EditMachines> {
 
     setState(() {
       _machineType.removeLast();
-      numberMachines = agricultural_machines.length - 1;
+      numberMachines = agricultural_machines.length;
     });
+
+    if (_machineType.length > 0 && _machineType.last["name"] == "") {
+      setState(() {
+        _machineType.removeLast();
+      });
+    }
+
+    if (agricultural_machines.length > 0) {
+      numberMachines--;
+    }
+
+    // print(agricultural_machines);
   }
 
   List _machineType = [];
-  int numberMachines = 0;
+  int numberMachines = 1;
 
   // Increments the number of machines on click '+ Máquinas Agrícolas'
   void addNewMachine() {
@@ -98,27 +109,31 @@ class _EditMachinesState extends State<EditMachines> {
 
   // Remove all machines
   void removeMachines() {
-    setState(() {
-      _machineType.removeLast();
-      numberMachines -= 1;
-    });
+    if (numberMachines >= 0) {
+      setState(() {
+        _machineType.removeLast();
+        numberMachines -= 1;
+      });
+    }
   }
 
   // Go to page that have the description of the place
   void _goToPlaceDescription() async {
-    if (_machineType[0]['name'] == "") {
+    if (numberMachines < 0 || _machineType[0]['name'] == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Nenhuma máquina selecionada!')),
       );
       return;
     }
 
-    await SessionManager().set('machines', jsonEncode(_machineType));
+    await SessionManager().set('edit_agricultural_machines', jsonEncode(_machineType));
+
+    inspect(await SessionManager().get('edit_agricultural_machines'));
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PlaceDescription(widget.formData)));
+            builder: (context) => EditPlaceDescription(widget.formData)));
   }
 
   // Show the dropdown on click '+ Máquinas Agrícolas'
@@ -198,7 +213,7 @@ class _EditMachinesState extends State<EditMachines> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Nova propriedade"),
+        title: Text("Alterar Propriedade"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},

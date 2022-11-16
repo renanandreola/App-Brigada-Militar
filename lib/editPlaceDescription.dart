@@ -44,6 +44,8 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
       _hasGun = property["has_gun"] == "true" ? true : false;
       _hasGunPlace = property["has_gun_local"] == "true" ? true : false;
       _hasVehicle = !property_vehicles.isEmpty;
+      numberGun = 1;
+      _gunPlaceDescription.text = property["gun_local_description"];
     });
   }
 
@@ -73,6 +75,8 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
         // Merge form
         formData.addAll(pageFormData);
+
+        inspect(formData);
 
         if (_hasVehicle) {
           Navigator.push(context,

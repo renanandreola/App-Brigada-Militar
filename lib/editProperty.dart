@@ -37,6 +37,8 @@ class _EditPropertyState extends State<EditProperty> {
         await db.query('property_types', where: "_id = '${property_type_id}'");
     Map property_type = property_types[0];
 
+    List<Map> property_machines = await db.query('property_agricultural_machines', where: "fk_property_id = '${property["_id"]}'");
+
     setState(() {
       _lat = property["latitude"];
       _lng = property["longitude"];
@@ -46,6 +48,7 @@ class _EditPropertyState extends State<EditProperty> {
       _hasPhoneSignal = property["has_phone_signal"] == 'true' ? true : false;
       _hasNetwork = property["has_internet"] == 'true' ? true : false;
       _dropDownValue = property_type["name"];
+      _hasMachines = property_machines.length == 0 ? false : true;
     });
   }
 
@@ -93,6 +96,8 @@ class _EditPropertyState extends State<EditProperty> {
       // Merge form
       formData.addAll(pageFormData);
 
+      inspect(formData);
+
       if (_hasMachines) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => EditMachines(formData)));
@@ -111,7 +116,7 @@ class _EditPropertyState extends State<EditProperty> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: Text("Nova propriedade"),
+        title: Text("Alterar Propriedade"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
         leading: GestureDetector(
           onTap: () {/* Write listener code here */},
@@ -133,7 +138,7 @@ class _EditPropertyState extends State<EditProperty> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 5),
                     child: Row(
                       children: [
-                        Text("Nova Propriedade",
+                        Text("Alterar Propriedade",
                             style: TextStyle(
                                 fontSize: 20,
                                 fontStyle: FontStyle.normal,

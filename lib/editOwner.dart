@@ -54,8 +54,6 @@ class _EditOwnerState extends State<EditOwner> {
         'phone2': _respPhone2 != null ? _respPhone2!.text : null
       };
 
-      inspect(formData);
-
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => EditProperty(formData)));
     }

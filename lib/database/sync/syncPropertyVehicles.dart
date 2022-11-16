@@ -11,7 +11,7 @@ Future<String?> syncPropertyVehicles () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-vehicles";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ Future<String?> syncPropertyVehicles () async {
 
 updatePropertyVehicles(db) async {
   await sendNewPropertyVehicleData(db);
-  await receiveNewPropertyVehicleData(db);
+  // await receiveNewPropertyVehicleData(db);
 }
 
 receiveNewPropertyVehicleData(db) async {
@@ -70,7 +70,7 @@ receiveNewPropertyVehicleData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-vehicles?last_date=${lastSyncDate}";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -120,19 +120,7 @@ receiveNewPropertyVehicleData(db) async {
 
 
       for (var del in deleted) {
-        var current_property_vehicle = await db.query(
-          'property_vehicles',
-          where: "_id = '${del["_id"]}'",
-          limit: 1
-        );
-
-        if (current_property_vehicle.length > 0) {
-          await db.delete(
-            'property_vehicles',
-            where: "_id = '${del["deleted_id"]}'",
-          );
-        }
-
+        await db.rawDelete("DELETE FROM property_vehicles WHERE _id = ?", [del["deleted_id"]]);
       }
 
       return true;
@@ -180,7 +168,7 @@ sendNewPropertyVehicleData(db) async {
 
   String property_vehiclesJson = jsonEncode(allChanges);
 
-  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/property-vehicles";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: property_vehiclesJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {

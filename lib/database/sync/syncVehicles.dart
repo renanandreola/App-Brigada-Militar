@@ -11,7 +11,7 @@ Future<String?> syncVehicles () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/vehicles";
+  String uri = "https://novorumo-api.fly.dev/api/sync/vehicles";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ Future<String?> syncVehicles () async {
 
 updateVehicles(db) async {
   await sendNewVehicleData(db);
-  await receiveNewVehicleData(db);
+  // await receiveNewVehicleData(db);
 }
 
 receiveNewVehicleData(db) async {
@@ -70,7 +70,7 @@ receiveNewVehicleData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/vehicles?last_date=${lastSyncDate}";
+  String uri = "https://novorumo-api.fly.dev/api/sync/vehicles?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -179,7 +179,7 @@ sendNewVehicleData(db) async {
 
   String vehiclesJson = jsonEncode(allChanges);
 
-  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/vehicles";
+  String uri = "https://novorumo-api.fly.dev/api/sync/vehicles";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: vehiclesJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {

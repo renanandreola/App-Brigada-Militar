@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:app_brigada_militar/editAditionalInfo.dart';
 import 'package:app_brigada_militar/editVehicle.dart';
 import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/database/db.dart';
@@ -83,13 +84,23 @@ class _EditVehicleState extends State<EditVehicle> {
 
     setState(() {
       _vehicleType.removeLast();
-      numberVehicles = vehicles.length - 1;
+      numberVehicles = vehicles.length;
     });
+
+    if (_vehicleType.length > 0 && _vehicleType.last["name"] == "") {
+      setState(() {
+        _vehicleType.removeLast();
+      });
+    }
+
+    if (vehicles.length > 0) {
+      numberVehicles--;
+    }
   }
 
   String _vehicleType1 = '';
   List _vehicleType = [];
-  int numberVehicles = 0;
+  int numberVehicles = 1;
 
   // Add new vehicle
   void addNewVehicle() {
@@ -100,25 +111,29 @@ class _EditVehicleState extends State<EditVehicle> {
 
   // Remove all machines
   void removeVehicles() {
-    setState(() {
-      _vehicleType.removeLast();
-      numberVehicles -= 1;
-    });
+    if (numberVehicles >= 0) {
+      setState(() {
+        _vehicleType.removeLast();
+        numberVehicles -= 1;
+      });
+    }
   }
 
   void _goToAditionalInfo() async {
-    if (_vehicleType[0]['name'] == "") {
+    if (numberVehicles < 0 || _vehicleType[0]['name'] == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Nenhum veículo selecionado!')),
       );
       return;
     }
-    await SessionManager().set('vehicles', jsonEncode(_vehicleType));
+    await SessionManager().set('edit_vehicles', jsonEncode(_vehicleType));
+
+    inspect(await SessionManager().get('edit_vehicles'));
 
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AditionalInfo(widget.formData)));
+            builder: (context) => EditAditionalInfo(widget.formData)));
   }
 
   Widget vehicleType1() {

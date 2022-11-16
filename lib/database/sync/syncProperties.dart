@@ -11,7 +11,7 @@ Future<String?> syncProperties () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/properties";
+  String uri = "https://novorumo-api.fly.dev/api/sync/properties";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -65,7 +65,7 @@ Future<String?> syncProperties () async {
 
 updateProperties(db) async {
   await sendNewPropertyData(db);
-  await receiveNewPropertyData(db);
+  // await receiveNewPropertyData(db);
 }
 
 receiveNewPropertyData(db) async {
@@ -86,7 +86,7 @@ receiveNewPropertyData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/properties?last_date=${lastSyncDate}";
+  String uri = "https://novorumo-api.fly.dev/api/sync/properties?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -220,7 +220,7 @@ sendNewPropertyData(db) async {
 
   String propertiesJson = jsonEncode(allChanges);
 
-  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/properties";
+  String uri = "https://novorumo-api.fly.dev/api/sync/properties";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: propertiesJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {

@@ -11,7 +11,7 @@ Future<String?> syncPropertyAgriculturalMachines () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-agricultural-machines";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-agricultural-machines";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ Future<String?> syncPropertyAgriculturalMachines () async {
 
 updatePropertyAgriculturalMachines(db) async {
   await sendNewPropertyAgriculturalMachineData(db);
-  await receiveNewPropertyAgriculturalMachineData(db);
+  // await receiveNewPropertyAgriculturalMachineData(db);
 }
 
 receiveNewPropertyAgriculturalMachineData(db) async {
@@ -70,7 +70,7 @@ receiveNewPropertyAgriculturalMachineData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-agricultural-machines?last_date=${lastSyncDate}";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-agricultural-machines?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -179,7 +179,7 @@ sendNewPropertyAgriculturalMachineData(db) async {
 
   String property_agricultural_machinesJson = jsonEncode(allChanges);
 
-  String uri = "http://novo-rumo-api.herokuapp.com/api/sync/property-agricultural-machines";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-agricultural-machines";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: property_agricultural_machinesJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
