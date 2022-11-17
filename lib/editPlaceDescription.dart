@@ -106,7 +106,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
             MaterialPageRoute(builder: (context) => EditVehicle(formData)));
       } else {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+            MaterialPageRoute(builder: (context) => EditAditionalInfo(formData)));
       }
     }
   }

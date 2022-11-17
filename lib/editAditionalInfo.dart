@@ -233,7 +233,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
                   {"reference_table": table, "deleted_id": p_vehicle["_id"]});
             }
           } else {
-            List<Map> property_vehicles = await db.query('property_vehicles',
+            List<Map> property_vehicles = await txn.query('property_vehicles',
                 where: "fk_property_id = '${property_id}'");
 
             if (property_vehicles.length > 0) {
@@ -509,7 +509,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
                 {"reference_table": table, "deleted_id": p_vehicle["_id"]});
           }
         } else {
-          List<Map> property_vehicles = await db.query('property_vehicles',
+          List<Map> property_vehicles = await txn.query('property_vehicles',
               where: "fk_property_id = '${property_id}'");
 
           if (property_vehicles.length > 0) {
