@@ -44,8 +44,8 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
       _hasGun = (property["has_gun"] == "true" || property["has_gun"] == 1) ? true : false;
       _hasGunPlace = (property["has_gun_local"] == "true" || property["has_gun_local"] == 1) ? true : false;
       _hasVehicle = !property_vehicles.isEmpty;
-      numberGun = 1;
-      _gunPlaceDescription.text = property["gun_local_description"];
+      numberGun = _hasGun == true ? 1 : 0;
+      _gunPlaceDescription.text = property["gun_local_description"] != 'null' ? property["gun_local_description"]  : "";
     });
   }
 

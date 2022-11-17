@@ -43,7 +43,8 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
 
     setState(() {
       _department.text = requests.isNotEmpty ? request!["agency"] : "";
-      _observations.text = property["observations"];
+      _observations.text =
+          property["observations"] != 'null' ? property["observations"] : "";
       _usedProgram = requests.isNotEmpty;
       _usedProgramSuccess = requests.isNotEmpty
           ? (request!["has_success"] == true || request["has_success"] == 1)
@@ -84,8 +85,10 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
         Map property = await SessionManager().get('edit_property');
 
         await db.transaction((txn) async {
-          // First add the owner
+          final DateTime now = DateTime.now();
+          String datetimeStr = datetimeToStr(now);
 
+          // First add the owner
           String property_id = property["_id"];
 
           List<Map> owners = await txn.query('owners',
@@ -162,6 +165,90 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
           table = 'properties';
           await txn.insert('database_updates',
               {'reference_table': table, 'updated_id': property["_id"]});
+
+          //List vehicles
+          var vehicles = await SessionManager().get('edit_vehicles');
+
+          if (vehicles != null) {
+            //Store in a variable all current property vehicles before save
+            List<String> vehicles_ids = [];
+
+            var all_current_vehicles = await txn.query(
+              'property_vehicles',
+              where: "fk_property_id = '${property_id}'",
+            );
+
+            for (var vehicle in all_current_vehicles) {
+              vehicles_ids.add(vehicle["fk_vehicle_id"]);
+            }
+
+            //Verify each vehicle if it's already in the database (same property and same vehicle)
+            for (var vehicle in vehicles) {
+              List<Map> property_vehicles = await txn.query('property_vehicles',
+                  where:
+                      "fk_vehicle_id = '${vehicle["key"]}' AND fk_property_id = '${property_id}'");
+              // if exists
+              if (property_vehicles.length > 0) {
+                //  ignore and remove id from vehicles_ids
+                vehicles_ids.remove(property_vehicles[0]["fk_vehicle_id"]);
+              } else {
+                // if not exists
+                // insert into database
+                await txn.insert('property_vehicles', {
+                  "color": "Preto",
+                  "fk_property_id": property_id,
+                  "fk_vehicle_id": vehicle["key"],
+                  "createdAt": datetimeStr,
+                  "updatedAt": datetimeStr,
+                });
+
+                List<Map> p_vehicles = await txn.query(
+                  'property_vehicles',
+                  where:
+                      "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle["key"]}'",
+                );
+                Map p_vehicle = p_vehicles[0];
+
+                table = 'property_vehicles';
+                await txn.insert('database_updates',
+                    {'reference_table': table, 'updated_id': p_vehicle["_id"]});
+              }
+            }
+
+            //remove all non used vehicles
+            for (var id in vehicles_ids) {
+              List<Map> p_vehicles = await txn.query(
+                'property_vehicles',
+                where:
+                    "fk_property_id = '${property_id}' AND fk_vehicle_id = '${id}'",
+              );
+              Map p_vehicle = p_vehicles[0];
+
+              await txn.delete('property_vehicles',
+                  where:
+                      "fk_property_id = '${property_id}' AND fk_vehicle_id = '${id}'");
+
+              table = 'property_vehicles';
+              await txn.insert('garbages',
+                  {"reference_table": table, "deleted_id": p_vehicle["_id"]});
+            }
+          } else {
+            List<Map> property_vehicles = await db.query('property_vehicles',
+                where: "fk_property_id = '${property_id}'");
+
+            if (property_vehicles.length > 0) {
+              for (var property_vehicle in property_vehicles) {
+                table = 'property_vehicles';
+                await txn.insert('garbages', {
+                  "reference_table": table,
+                  "deleted_id": property_vehicle["_id"]
+                });
+
+                await txn.delete('property_vehicles',
+                    where: "_id = '${property_vehicle["_id"]}'");
+              }
+            }
+          }
 
           //   String property_id = property!.id!;
 
@@ -271,133 +358,266 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
       //Create a transaction to avoid atomicity errors
       final db = await DB.instance.database;
 
-      Property? property = null;
+      Map property = await SessionManager().get('edit_property');
 
       await db.transaction((txn) async {
-        // First add the owner
-        Owner owner = new Owner(
-            firstname: formData["firstname"],
-            lastname: formData["lastname"],
-            cpf: formData["cpf"],
-            phone1: formData["phone1"],
-            phone2: formData["phone2"]);
-        owner.id = await owner.save(transaction: txn);
-
-        // Get property type
-        List<PropertyType> propertyTypes = await PropertyTypesTable()
-            .find(name: formData["property_type"], transaction: txn);
-        PropertyType propertyType = propertyTypes[0];
-
-        // Add the property
-        property = new Property(
-            qty_people: int.tryParse(formData["qty_people"]),
-            has_geo_board: formData["has_geo_board"],
-            has_cams: formData["has_cams"],
-            has_phone_signal: formData["has_phone_signal"],
-            has_internet: formData["has_internet"],
-            has_gun: formData["has_gun"],
-            has_gun_local: formData["has_gun_local"],
-            gun_local_description: formData["gun_local_description"],
-            qty_agricultural_defensives:
-                formData["qty_agricultural_defensives"],
-            observations: formData["observations"],
-            latitude: formData["latitude"],
-            longitude: formData["longitude"],
-            fk_owner_id: owner.id!,
-            fk_property_type_id: propertyType.id!);
-
-        property!.id = await property!.save(transaction: txn);
-
-        String property_id = property!.id!;
-
         final DateTime now = DateTime.now();
         String datetimeStr = datetimeToStr(now);
 
-        //Vehicles
-        var vehicles = await SessionManager().get('vehicles');
+        // First add the owner
+        String property_id = property["_id"];
+
+        List<Map> owners = await txn.query('owners',
+            where:
+                "firstname = '${formData["firstname"]}' AND lastname = '${formData["lastname"]}'");
+
+        String? owner_id = null;
+        if (owners.length > 0) {
+          Map owner = owners[0];
+
+          // Update owner
+          await txn.update(
+              'owners',
+              {
+                "_id": owner["_id"],
+                "firstname": formData["firstname"],
+                "lastname": formData["lastname"],
+                "cpf": formData["cpf"],
+                "phone1": formData["phone1"],
+                "phone2": formData["phone2"],
+                "createdAt": owner["createdAt"],
+                "updatedAt": owner["updatedAt"],
+              },
+              where: "_id = '${owner["_id"]}'");
+
+          owner_id = owner["_id"];
+        } else {
+          Owner owner = new Owner(
+              firstname: formData["firstname"],
+              lastname: formData["lastname"],
+              cpf: formData["cpf"],
+              phone1: formData["phone1"],
+              phone2: formData["phone2"]);
+
+          owner.id = await owner.save(transaction: txn);
+          owner_id = owner.id;
+        }
+
+        String table = 'owners';
+        await txn.insert('database_updates',
+            {'reference_table': table, 'updated_id': owner_id});
+
+        List<Map> property_types = await txn.query('property_types',
+            where: "name = '${formData["property_type"]}'");
+        Map property_type = property_types[0];
+
+        String property_type_id = property_type["_id"];
+
+        await txn.update(
+            'properties',
+            {
+              "_id": property["_id"],
+              "code": property["code"],
+              "has_geo_board": true,
+              "qty_people": formData["qty_people"],
+              "has_cams": formData["has_cams"],
+              "has_phone_signal": formData["has_phone_signal"],
+              "has_internet": formData["has_internet"],
+              "has_gun": formData["has_gun"],
+              "has_gun_local": formData["has_gun_local"],
+              "gun_local_description": formData["gun_local_description"],
+              "qty_agricultural_defensives":
+                  formData["qty_agricultural_defensives"],
+              "observations": formData["observations"],
+              "latitude": property["latitude"],
+              "longitude": property["longitude"],
+              "fk_owner_id": owner_id,
+              "fk_property_type_id": property_type_id,
+              "createdAt": property["createdAt"],
+              "updatedAt": property["updatedAt"],
+            },
+            where: "_id = '${property["_id"]}'");
+
+        table = 'properties';
+        await txn.insert('database_updates',
+            {'reference_table': table, 'updated_id': property["_id"]});
+
+        //List vehicles
+        var vehicles = await SessionManager().get('edit_vehicles');
 
         if (vehicles != null) {
+          //Store in a variable all current property vehicles before save
+          List<String> vehicles_ids = [];
+
+          var all_current_vehicles = await txn.query(
+            'property_vehicles',
+            where: "fk_property_id = '${property_id}'",
+          );
+
+          for (var vehicle in all_current_vehicles) {
+            vehicles_ids.add(vehicle["fk_vehicle_id"]);
+          }
+
+          //Verify each vehicle if it's already in the database (same property and same vehicle)
           for (var vehicle in vehicles) {
-            Map<String, dynamic> vehiclesMap = {
-              "fk_property_id": property_id,
-              "fk_vehicle_id": vehicle["key"],
-              "color": "Preto",
-              "updatedAt": datetimeStr,
-              "createdAt": datetimeStr
-            };
-
-            txn.insert('property_vehicles', vehiclesMap);
-
-            String vehicle_key = vehicle["key"];
-
-            String table = 'property_vehicles';
-            List<Map> list = await txn.query(table,
+            List<Map> property_vehicles = await txn.query('property_vehicles',
                 where:
-                    "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle_key}'",
-                orderBy: "createdAt DESC",
-                limit: 1);
-            Map elem = list[0];
-            await txn.insert('database_updates',
-                {'reference_table': table, 'updated_id': elem["_id"]});
-          }
-        }
+                    "fk_vehicle_id = '${vehicle["key"]}' AND fk_property_id = '${property_id}'");
+            // if exists
+            if (property_vehicles.length > 0) {
+              //  ignore and remove id from vehicles_ids
+              vehicles_ids.remove(property_vehicles[0]["fk_vehicle_id"]);
+            } else {
+              // if not exists
+              // insert into database
+              await txn.insert('property_vehicles', {
+                "color": "Preto",
+                "fk_property_id": property_id,
+                "fk_vehicle_id": vehicle["key"],
+                "createdAt": datetimeStr,
+                "updatedAt": datetimeStr,
+              });
 
-        //Agricultural Machines
-        var machines = await SessionManager().get('machines');
-
-        if (machines != null) {
-          for (var machine in machines) {
-            Map<String, dynamic> machinesMap = {
-              "fk_property_id": property_id,
-              "fk_agricultural_machine_id": machine["key"],
-              "updatedAt": datetimeStr,
-              "createdAt": datetimeStr
-            };
-
-            txn.insert('property_agricultural_machines', machinesMap);
-
-            String table = 'property_agricultural_machines';
-            List<Map> list = await txn.query(table,
+              List<Map> p_vehicles = await txn.query(
+                'property_vehicles',
                 where:
-                    "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${machine["key"]}'",
-                orderBy: "createdAt DESC",
-                limit: 1);
-            Map elem = list[0];
-            await txn.insert('database_updates',
-                {'reference_table': table, 'updated_id': elem["_id"]});
+                    "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle["key"]}'",
+              );
+              Map p_vehicle = p_vehicles[0];
+
+              table = 'property_vehicles';
+              await txn.insert('database_updates',
+                  {'reference_table': table, 'updated_id': p_vehicle["_id"]});
+            }
           }
-        }
 
-        //Create request if necessary
-        if (_usedProgram) {
-          Map<String, dynamic> requestModelMap = {
-            "agency": _department.text,
-            "has_success": _usedProgramSuccess,
-            "fk_property_id": property_id,
-            "updatedAt": datetimeStr,
-            "createdAt": datetimeStr
-          };
-
-          inspect(requestModelMap);
-
-          await txn.insert('requests', requestModelMap);
-
-          String table = 'requests';
-          List<Map> list = await txn.query(table,
+          //remove all non used vehicles
+          for (var id in vehicles_ids) {
+            List<Map> p_vehicles = await txn.query(
+              'property_vehicles',
               where:
-                  "fk_property_id = '${property_id}' AND agency = '${_department.text}'",
-              orderBy: "createdAt DESC",
-              limit: 1);
-          Map elem = list[0];
-          await txn.insert('database_updates',
-              {'reference_table': table, 'updated_id': elem["_id"]});
+                  "fk_property_id = '${property_id}' AND fk_vehicle_id = '${id}'",
+            );
+            Map p_vehicle = p_vehicles[0];
+
+            await txn.delete('property_vehicles',
+                where:
+                    "fk_property_id = '${property_id}' AND fk_vehicle_id = '${id}'");
+
+            table = 'property_vehicles';
+            await txn.insert('garbages',
+                {"reference_table": table, "deleted_id": p_vehicle["_id"]});
+          }
+        } else {
+          List<Map> property_vehicles = await db.query('property_vehicles',
+              where: "fk_property_id = '${property_id}'");
+
+          if (property_vehicles.length > 0) {
+            for (var property_vehicle in property_vehicles) {
+              table = 'property_vehicles';
+              await txn.insert('garbages', {
+                "reference_table": table,
+                "deleted_id": property_vehicle["_id"]
+              });
+
+              await txn.delete('property_vehicles',
+                  where: "_id = '${property_vehicle["_id"]}'");
+            }
+          }
         }
+
+        //   String property_id = property!.id!;
+
+        //   final DateTime now = DateTime.now();
+        //   String datetimeStr = datetimeToStr(now);
+
+        //   //Vehicles
+        //   var vehicles = await SessionManager().get('vehicles');
+
+        //   if (vehicles != null) {
+        //     for (var vehicle in vehicles) {
+        //       Map<String, dynamic> vehiclesMap = {
+        //         "fk_property_id": property_id,
+        //         "fk_vehicle_id": vehicle["key"],
+        //         "color": "Preto",
+        //         "updatedAt": datetimeStr,
+        //         "createdAt": datetimeStr
+        //       };
+
+        //       txn.insert('property_vehicles', vehiclesMap);
+
+        //       String vehicle_key = vehicle["key"];
+
+        //       String table = 'property_vehicles';
+        //       List<Map> list = await txn.query(table,
+        //           where:
+        //               "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle_key}'",
+        //           orderBy: "createdAt DESC",
+        //           limit: 1);
+        //       Map elem = list[0];
+        //       await txn.insert('database_updates',
+        //           {'reference_table': table, 'updated_id': elem["_id"]});
+        //     }
+        //   }
+
+        //   //Agricultural Machines
+        //   var machines = await SessionManager().get('machines');
+
+        //   if (machines != null) {
+        //     for (var machine in machines) {
+        //       Map<String, dynamic> machinesMap = {
+        //         "fk_property_id": property_id,
+        //         "fk_agricultural_machine_id": machine["key"],
+        //         "updatedAt": datetimeStr,
+        //         "createdAt": datetimeStr
+        //       };
+
+        //       txn.insert('property_agricultural_machines', machinesMap);
+
+        //       String table = 'property_agricultural_machines';
+        //       List<Map> list = await txn.query(table,
+        //           where:
+        //               "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${machine["key"]}'",
+        //           orderBy: "createdAt DESC",
+        //           limit: 1);
+        //       Map elem = list[0];
+        //       await txn.insert('database_updates',
+        //           {'reference_table': table, 'updated_id': elem["_id"]});
+        //     }
+        //   }
+
+        //   //Create request if necessary
+        //   if (_usedProgram) {
+        //     Map<String, dynamic> requestModelMap = {
+        //       "agency": _department.text,
+        //       "has_success": _usedProgramSuccess,
+        //       "fk_property_id": property_id,
+        //       "updatedAt": datetimeStr,
+        //       "createdAt": datetimeStr
+        //     };
+
+        //     inspect(requestModelMap);
+
+        //     await txn.insert('requests', requestModelMap);
+
+        //     String table = 'requests';
+        //     List<Map> list = await txn.query(table,
+        //         where:
+        //             "fk_property_id = '${property_id}' AND agency = '${_department.text}'",
+        //         orderBy: "createdAt DESC",
+        //         limit: 1);
+        //     Map elem = list[0];
+        //     await txn.insert('database_updates',
+        //         {'reference_table': table, 'updated_id': elem["_id"]});
+        //   }
       });
 
-      print("Propriedade Salva com Sucesso!");
+      // print("Propriedade Salva com Sucesso!");
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ConfirmVisit(property!.id)));
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => ConfirmVisit(property!.id)));
     }
   }
 

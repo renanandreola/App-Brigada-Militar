@@ -163,7 +163,19 @@ sendNewPropertyVehicleData(db) async {
     property_vehicleChanges.add(property_vehicle);
   }
 
-  var allChanges = {'property_vehicles': property_vehicleChanges};
+  // Check if database has deleted
+  var deleted = await db.query(
+    'garbages',
+    where: "reference_table = 'property_vehicles'",
+  );
+
+  List propertyVehiclesDeleted = [];
+
+  for (var del in deleted) {
+    propertyVehiclesDeleted.add(del["deleted_id"]);
+  }
+
+  var allChanges = {'property_vehicles': property_vehicleChanges, 'deleted': propertyVehiclesDeleted};
 
   String property_vehiclesJson = jsonEncode(allChanges);
 
@@ -186,6 +198,8 @@ sendNewPropertyVehicleData(db) async {
       jsonDecode(response.body).containsKey("updated")) {
     await db.rawDelete(
         "DELETE FROM database_updates WHERE reference_table = 'property_vehicles'");
+
+    await db.rawDelete("DELETE FROM garbages WHERE reference_table = 'property_vehicles'");
 
     return true;
   }
