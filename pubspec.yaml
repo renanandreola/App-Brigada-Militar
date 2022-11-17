@@ -36,6 +36,7 @@ dependencies:
   sqflite: ^2.0.3+1
   flutter_bcrypt: ^1.0.7
   flutter_native_splash: ^2.2.9
+  flutter_launcher_icons: ^0.11.0
   http: ^0.13.5
   intl:
   dropdown_search: ^5.0.3
@@ -108,3 +109,7 @@ flutter_native_splash:
   android_12:
     color: "#ffffff"
     image: assets\images\splash.png
+
+flutter_icons:
+  image_path: assets\images\splash.png
+  android: true
