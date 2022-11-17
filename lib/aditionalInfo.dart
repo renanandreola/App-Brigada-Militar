@@ -34,7 +34,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
   void _savePropertie() async {
     if (_usedProgram) {
       if (_formKey.currentState!.validate()) {
-// Retrieve form data
+        // Retrieve form data
         Map formData = widget.formData;
 
         // Set new form data

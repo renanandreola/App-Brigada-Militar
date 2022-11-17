@@ -3,26 +3,27 @@ import 'package:app_brigada_militar/database/sync/apiToken.dart';
 import 'package:http/http.dart' as http;
 import 'package:sqflite/sqflite.dart';
 
-Future<String?> syncPropertyVehicles () async {
-
+Future<String?> syncPropertyVehicles() async {
   var token = await getToken();
 
   if (token == null) {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
-  final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
+  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-vehicles";
+  final response = await http
+      .get(Uri.parse(uri), headers: {"Authorization": "Bearer ${token}"});
 
   if (response.statusCode == 200) {
-    
-    String query = "INSERT INTO property_vehicles (_id, color, fk_vehicle_id, fk_property_id, createdAt, updatedAt) VALUES";
+    String query =
+        "INSERT INTO property_vehicles (_id, fk_vehicle_id, fk_property_id, createdAt, updatedAt) VALUES";
 
     var property_vehicles = jsonDecode(response.body);
 
     try {
       for (var property_vehicle in property_vehicles) {
-        String queryInsertLine = "\n('${property_vehicle["_id"].replaceAll("'", "''")}', '${property_vehicle["color"].replaceAll("'", "''")}', '${property_vehicle["fk_vehicle_id"].replaceAll("'", "''")}', '${property_vehicle["fk_property_id"].replaceAll("'", "''")}', '${property_vehicle["created_at"].replaceAll("'", "''")}', '${property_vehicle["updated_at"].replaceAll("'", "''")}'),";
+        String queryInsertLine =
+            "\n('${property_vehicle["_id"].replaceAll("'", "''")}', '${property_vehicle["fk_vehicle_id"].replaceAll("'", "''")}', '${property_vehicle["fk_property_id"].replaceAll("'", "''")}', '${property_vehicle["created_at"].replaceAll("'", "''")}', '${property_vehicle["updated_at"].replaceAll("'", "''")}'),";
 
         query += queryInsertLine;
       }
@@ -39,7 +40,8 @@ Future<String?> syncPropertyVehicles () async {
     }
   }
 
-  if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
+  if (jsonDecode(response.body).containsKey("status") &&
+      jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
     return syncPropertyVehicles();
   }
@@ -53,10 +55,7 @@ updatePropertyVehicles(db) async {
 }
 
 receiveNewPropertyVehicleData(db) async {
-  var lastSyncDate = await db.query(
-    'sync',
-    limit: 1
-  );
+  var lastSyncDate = await db.query('sync', limit: 1);
 
   if (lastSyncDate.length <= 0) {
     throw Exception("Failed to Update. Cannot find Last sync date information");
@@ -70,11 +69,14 @@ receiveNewPropertyVehicleData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles?last_date=${lastSyncDate}";
-  final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
+  String uri =
+      "https://novorumo-api.fly.dev/api/sync/property-vehicles?last_date=${lastSyncDate}";
+  final response = await http
+      .get(Uri.parse(uri), headers: {"Authorization": "Bearer ${token}"});
 
   if (response.statusCode == 200) {
-    String query = "INSERT INTO property_vehicles (_id, color, fk_vehicle_id, fk_property_id, createdAt, updatedAt) VALUES";
+    String query =
+        "INSERT INTO property_vehicles (_id, color, fk_vehicle_id, fk_property_id, createdAt, updatedAt) VALUES";
 
     var responseBody = jsonDecode(response.body);
     var property_vehicles = responseBody["property_vehicles"];
@@ -83,16 +85,13 @@ receiveNewPropertyVehicleData(db) async {
     try {
       for (var property_vehicle in property_vehicles) {
         // Check if entity is in the Sqlite database
-        var current_property_vehicle = await db.query(
-          'property_vehicles',
-          where: "_id = '${property_vehicle["_id"]}'",
-          limit: 1
-        );
+        var current_property_vehicle = await db.query('property_vehicles',
+            where: "_id = '${property_vehicle["_id"]}'", limit: 1);
 
         // Convert to sqlite table format
         Map<String, dynamic> property_vehicleSqlite = {
           '_id': property_vehicle["_id"],
-          'color':  property_vehicle["color"],
+          'color': property_vehicle["color"],
           'fk_vehicle_id': property_vehicle["fk_vehicle_id"],
           'fk_property_id': property_vehicle["fk_property_id"],
           'createdAt': property_vehicle["created_at"],
@@ -101,15 +100,14 @@ receiveNewPropertyVehicleData(db) async {
 
         // If entity is in the database, do the update
         if (current_property_vehicle.length > 0) {
-
           await db.update(
             'property_vehicles',
             property_vehicleSqlite,
             where: "_id = '${current_property_vehicle[0]["_id"]}'",
             conflictAlgorithm: ConflictAlgorithm.replace,
           );
-
-        } else { // Do insert
+        } else {
+          // Do insert
           await db.insert(
             'property_vehicles',
             property_vehicleSqlite,
@@ -118,9 +116,9 @@ receiveNewPropertyVehicleData(db) async {
         }
       }
 
-
       for (var del in deleted) {
-        await db.rawDelete("DELETE FROM property_vehicles WHERE _id = ?", [del["deleted_id"]]);
+        await db.rawDelete(
+            "DELETE FROM property_vehicles WHERE _id = ?", [del["deleted_id"]]);
       }
 
       return true;
@@ -129,7 +127,8 @@ receiveNewPropertyVehicleData(db) async {
     }
   }
 
-  if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
+  if (jsonDecode(response.body).containsKey("status") &&
+      jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
     return receiveNewPropertyVehicleData(db);
   }
@@ -164,21 +163,30 @@ sendNewPropertyVehicleData(db) async {
     property_vehicleChanges.add(property_vehicle);
   }
 
-  var allChanges = {'property_vehicles': property_vehicleChanges };
+  var allChanges = {'property_vehicles': property_vehicleChanges};
 
   String property_vehiclesJson = jsonEncode(allChanges);
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
-  final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: property_vehiclesJson);
+  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-vehicles";
+  final response = await http.post(Uri.parse(uri),
+      headers: {
+        "Authorization": "Bearer ${token}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: property_vehiclesJson);
 
-  if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {
+  if (jsonDecode(response.body).containsKey("status") &&
+      jsonDecode(response.body)["status"] == "Token is Expired") {
     await generateToken();
     return sendNewPropertyVehicleData(db);
   }
 
-  if (response.statusCode == 201 && jsonDecode(response.body).containsKey("updated")) {
-    await db.rawDelete("DELETE FROM database_updates WHERE reference_table = 'property_vehicles'");
-  
+  if (response.statusCode == 201 &&
+      jsonDecode(response.body).containsKey("updated")) {
+    await db.rawDelete(
+        "DELETE FROM database_updates WHERE reference_table = 'property_vehicles'");
+
     return true;
   }
 
