@@ -175,7 +175,19 @@ sendNewPropertyAgriculturalMachineData(db) async {
     property_agricultural_machineChanges.add(property_agricultural_machine);
   }
 
-  var allChanges = {'property_agricultural_machines': property_agricultural_machineChanges };
+  // Check if database has deleted
+  var deleted = await db.query(
+    'garbages',
+    where: "reference_table = 'property_agricultural_machines'",
+  );
+
+  List propertyAgriculturalMachinesDeleted = [];
+
+  for (var del in deleted) {
+    propertyAgriculturalMachinesDeleted.add(del["deleted_id"]);
+  }
+
+  var allChanges = {'property_agricultural_machines': property_agricultural_machineChanges, 'deleted': propertyAgriculturalMachinesDeleted};
 
   String property_agricultural_machinesJson = jsonEncode(allChanges);
 
@@ -189,6 +201,8 @@ sendNewPropertyAgriculturalMachineData(db) async {
 
   if (response.statusCode == 201 && jsonDecode(response.body).containsKey("updated")) {
     await db.rawDelete("DELETE FROM database_updates WHERE reference_table = 'property_agricultural_machines'");
+
+    await db.rawDelete("DELETE FROM garbages WHERE reference_table = 'property_agricultural_machines'");
   
     return true;
   }
