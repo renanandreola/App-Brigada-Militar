@@ -23,6 +23,7 @@ class _NewVisitState extends State<NewVisit> {
   bool _hasBoard = false;
   int _numberInput = 0;
   List<String> _propertyCodes = [];
+  List<String> _propertyCodes2 = [];
   _insertCodes() async {
     final db = await DB.instance.database;
 
@@ -32,17 +33,35 @@ class _NewVisitState extends State<NewVisit> {
         orderBy: "code ASC");
     // inspect(property_codes);
 
-    setState(() {
-      for (var property_code in property_codes) {
-        print(jsonEncode(property_code));
-        _propertyCodes.add(property_code['code']);
+    print("aaaaaaaaaaaaaaaaaaaa ${property_codes}");
+
+    for (var property_code in property_codes) {
+      List<Map> ownersNames = await db.query('owners',
+          where: "_id = '${property_code['fk_owner_id']}'");
+      print("ownersNames ${ownersNames}");
+
+      if (ownersNames.length > 0) {
+        _propertyCodes2.add(property_code['code'] +
+            ' - ' +
+            ownersNames[0]['firstname'] +
+            ' ' +
+            ownersNames[0]['lastname']);
       }
-      print(_propertyCodes);
+    }
+
+    setState(() {
+      // for (var property_code in property_codes) {
+      // print(jsonEncode(property_code));
+      _propertyCodes = _propertyCodes2;
+      // }
+      // print(_propertyCodes);
     });
   }
 
   void _goToNextPage() async {
     print(code);
+    List<String> codeFormat = code!.split(' - ');
+    code = codeFormat[0];
     // if (_formKey.currentState!.validate()) {
     if (_hasBoard && (code == "" || code == null)) {
       ScaffoldMessenger.of(context).showSnackBar(

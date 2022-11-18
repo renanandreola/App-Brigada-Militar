@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-
+import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:app_brigada_militar/confirmVisit.dart';
 import 'package:app_brigada_militar/database/models/User.dart';
 import 'package:app_brigada_militar/home.dart';
@@ -123,61 +123,99 @@ class _EditGarrisonState extends State<EditGarrison> {
       filhos.add(Row(
         children: [
           Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: DropdownButtonFormField(
-                hint: _peopleType[i]["name"] == null ||
-                        _peopleType[i]["name"] == ""
-                    ? Text('Servidor ${i}',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 1),
-                            fontSize: 15,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "RobotoFlex"))
-                    : Text(
-                        _peopleType[i]["name"]!,
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 1),
-                            fontSize: 15,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "RobotoFlex"),
-                      ),
-                decoration: InputDecoration(
-                    // filled: true,
-                    fillColor: Colors.black,
-                    labelText: 'Servidor ${i}'),
-                isExpanded: true,
-                iconSize: 30.0,
-                style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 1),
-                    fontSize: 15,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "RobotoFlex"),
-                items: usersList.map(
-                  (val) {
-                    return DropdownMenuItem<String>(
-                      value: val,
-                      child: Text(val),
-                    );
+            width: MediaQuery.of(context).size.width * 0.8,
+            // child: DropdownButtonFormField(
+            //   hint: _peopleType[i]["name"] == null ||
+            //           _peopleType[i]["name"] == ""
+            //       ? Text('Servidor ${i}',
+            //           style: TextStyle(
+            //               color: Color.fromARGB(255, 0, 0, 1),
+            //               fontSize: 15,
+            //               fontStyle: FontStyle.normal,
+            //               fontWeight: FontWeight.w400,
+            //               fontFamily: "RobotoFlex"))
+            //       : Text(
+            //           _peopleType[i]["name"]!,
+            //           style: TextStyle(
+            //               color: Color.fromARGB(255, 0, 0, 1),
+            //               fontSize: 15,
+            //               fontStyle: FontStyle.normal,
+            //               fontWeight: FontWeight.w400,
+            //               fontFamily: "RobotoFlex"),
+            //         ),
+            //   decoration: InputDecoration(
+            //       // filled: true,
+            //       fillColor: Colors.black,
+            //       labelText: 'Servidor ${i}'),
+            //   isExpanded: true,
+            //   iconSize: 30.0,
+            //   style: TextStyle(
+            //       color: Color.fromARGB(255, 0, 0, 1),
+            //       fontSize: 15,
+            //       fontStyle: FontStyle.normal,
+            //       fontWeight: FontWeight.w400,
+            //       fontFamily: "RobotoFlex"),
+            //   items: usersList.map(
+            //     (val) {
+            //       return DropdownMenuItem<String>(
+            //         value: val,
+            //         child: Text(val),
+            //       );
+            //     },
+            //   ).toList(),
+            //   onChanged: i != 0
+            //       ? (val) {
+            //           setState(
+            //             () {
+            //               Map currentUser = usersInfo
+            //                   .where((element) =>
+            //                       element["name"] == val.toString())
+            //                   .first;
+            //               _peopleType[i]["name"] = val.toString();
+            //               _peopleType[i]["key"] = currentUser["key"];
+            //             },
+            //           );
+            //         }
+            //       : null,
+            // )
+            child: Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: TextDropdownFormField(
+                  options: usersList,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Preencha uma servidor';
+                    }
+                    return null;
                   },
-                ).toList(),
-                onChanged: i != 0
-                    ? (val) {
-                        setState(
-                          () {
-                            Map currentUser = usersInfo
-                                .where((element) =>
-                                    element["name"] == val.toString())
-                                .first;
-                            _peopleType[i]["name"] = val.toString();
-                            _peopleType[i]["key"] = currentUser["key"];
-                          },
-                        );
-                      }
-                    : null,
-              )),
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      fillColor: Colors.black,
+                      focusColor: Colors.green,
+                      hoverColor: Colors.black,
+                      iconColor: Colors.black,
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                      labelText: _peopleType[i]["name"] == null ||
+                              _peopleType[i]["name"] == ""
+                          ? "Servidor ${i}"
+                          : _peopleType[i]["name"]),
+                  dropdownHeight: 420,
+                  onChanged: i != 0
+                      ? (dynamic val) {
+                          setState(
+                            () {
+                              Map currentUser = usersInfo
+                                  .where((element) =>
+                                      element["name"] == val.toString())
+                                  .first;
+                              _peopleType[i]["name"] = val.toString();
+                              _peopleType[i]["key"] = currentUser["key"];
+                            },
+                          );
+                        }
+                      : null,
+                )),
+          ),
         ],
       ));
     }

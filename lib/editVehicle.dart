@@ -6,6 +6,7 @@ import 'package:app_brigada_militar/aditionalInfo.dart';
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
+import 'package:dropdown_plus/dropdown_plus.dart';
 
 class EditVehicle extends StatefulWidget {
   // const Vehicle({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class EditVehicle extends StatefulWidget {
   State<EditVehicle> createState() => _EditVehicleState();
 }
 
-List _carList = [];
+List<String> _carList = [];
 List<Map<String?, String?>> vehiclesInfo = [];
 
 class _EditVehicleState extends State<EditVehicle> {
@@ -31,7 +32,7 @@ class _EditVehicleState extends State<EditVehicle> {
     final db = await DB.instance.database;
     List<Map> vehicles = await db.query('vehicles');
 
-    List list = [];
+    List<String> list = [];
     for (var vehicle in vehicles) {
       list.add(vehicle["name"] + " - " + vehicle["brand"]);
       vehiclesInfo.add({
@@ -42,6 +43,15 @@ class _EditVehicleState extends State<EditVehicle> {
 
     setState(() {
       _carList = list;
+
+      _carList.map(
+        (val) {
+          return DropdownMenuItem<String>(
+            value: val,
+            child: Text(val),
+          );
+        },
+      ).toList();
     });
 
     populateScreen();
@@ -137,61 +147,103 @@ class _EditVehicleState extends State<EditVehicle> {
   }
 
   Widget vehicleType1() {
-    List<DropdownButtonFormField> filhos = [];
+    List<Row> filhos = [];
     for (int i = 0; i <= numberVehicles; i++) {
       if (_vehicleType.length - 1 < i) {
         _vehicleType.add({"name": "", "key": ""});
       }
-      filhos.add(DropdownButtonFormField(
-        hint: _vehicleType[i]["name"] == null || _vehicleType[i]["name"] == ""
-            ? Text('Veículo ${i}',
-                style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 1),
-                    fontSize: 15,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "RobotoFlex"))
-            : Text(
-                _vehicleType[i]["name"],
-                style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 1),
-                    fontSize: 15,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "RobotoFlex"),
-              ),
-        decoration: InputDecoration(
-            // filled: true,
-            fillColor: Colors.black,
-            labelText: 'Veículo ${i}'),
-        isExpanded: true,
-        iconSize: 30.0,
-        style: TextStyle(
-            color: Color.fromARGB(255, 0, 0, 1),
-            fontSize: 15,
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.w400,
-            fontFamily: "RobotoFlex"),
-        items: _carList.map(
-          (val) {
-            return DropdownMenuItem<String>(
-              value: val,
-              child: Text(val),
-            );
-          },
-        ).toList(),
-        onChanged: (val) {
-          setState(
-            () {
-              Map currentVehicle = vehiclesInfo
-                  .where((element) => element["name"] == val.toString())
-                  .first;
-              _vehicleType[i]["name"] = val.toString();
-              _vehicleType[i]["key"] = currentVehicle["key"];
-            },
+      filhos.add(Row(
+        children: [
+          Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: TextDropdownFormField(
+                    options: _carList,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Preencha uma Veículo';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        fillColor: Colors.black,
+                        focusColor: Colors.green,
+                        hoverColor: Colors.black,
+                        iconColor: Colors.black,
+                        suffixIcon: Icon(Icons.arrow_drop_down),
+                        labelText: _vehicleType[i]["name"] == null ||
+                                _vehicleType[i]["name"] == ''
+                            ? 'Veículo ${i}'
+                            : _vehicleType[i]["name"]),
+                    dropdownHeight: 420,
+                    onChanged: (dynamic val) {
+                      setState(
+                        () {
+                          Map currentVehicle = vehiclesInfo
+                              .where((element) =>
+                                  element["name"] == val.toString())
+                              .first;
+                          _vehicleType[i]["name"] = val.toString();
+                          _vehicleType[i]["key"] = currentVehicle["key"];
+                        },
+                      );
+                    },
+                  )))
+        ],
+      )
+          //   DropdownButtonFormField(
+          //   hint: _vehicleType[i]["name"] == null || _vehicleType[i]["name"] == ""
+          //       ? Text('Veículo ${i}',
+          //           style: TextStyle(
+          //               color: Color.fromARGB(255, 0, 0, 1),
+          //               fontSize: 15,
+          //               fontStyle: FontStyle.normal,
+          //               fontWeight: FontWeight.w400,
+          //               fontFamily: "RobotoFlex"))
+          //       : Text(
+          //           _vehicleType[i]["name"],
+          //           style: TextStyle(
+          //               color: Color.fromARGB(255, 0, 0, 1),
+          //               fontSize: 15,
+          //               fontStyle: FontStyle.normal,
+          //               fontWeight: FontWeight.w400,
+          //               fontFamily: "RobotoFlex"),
+          //         ),
+          //   decoration: InputDecoration(
+          //       // filled: true,
+          //       fillColor: Colors.black,
+          //       labelText: 'Veículo ${i}'),
+          //   isExpanded: true,
+          //   iconSize: 30.0,
+          //   style: TextStyle(
+          //       color: Color.fromARGB(255, 0, 0, 1),
+          //       fontSize: 15,
+          //       fontStyle: FontStyle.normal,
+          //       fontWeight: FontWeight.w400,
+          //       fontFamily: "RobotoFlex"),
+          //   items: _carList.map(
+          //     (val) {
+          //       return DropdownMenuItem<String>(
+          //         value: val,
+          //         child: Text(val),
+          //       );
+          //     },
+          //   ).toList(),
+          //   onChanged: (val) {
+          //     setState(
+          //       () {
+          //         Map currentVehicle = vehiclesInfo
+          //             .where((element) => element["name"] == val.toString())
+          //             .first;
+          //         _vehicleType[i]["name"] = val.toString();
+          //         _vehicleType[i]["key"] = currentVehicle["key"];
+          //       },
+          //     );
+          //   },
+          // )
           );
-        },
-      ));
     }
     return Column(
       children: filhos,

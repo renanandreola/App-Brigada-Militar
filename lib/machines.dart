@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:ui';
 import 'package:dropdown_plus/dropdown_plus.dart';
-
 import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
