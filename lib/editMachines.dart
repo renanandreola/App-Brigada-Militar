@@ -6,6 +6,7 @@ import 'package:app_brigada_militar/editPlaceDescription.dart';
 import 'package:app_brigada_militar/placeDescription.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
+import 'package:dropdown_plus/dropdown_plus.dart';
 
 class EditMachines extends StatefulWidget {
   // const Machines({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class EditMachines extends StatefulWidget {
   State<EditMachines> createState() => _EditMachinesState();
 }
 
-List _machineList = [];
+List<String> _machineList = [];
 List<Map<String?, String?>> machinesInfo = [];
 
 class _EditMachinesState extends State<EditMachines> {
@@ -31,7 +32,7 @@ class _EditMachinesState extends State<EditMachines> {
     final db = await DB.instance.database;
     List<Map> machines = await db.query('agricultural_machines');
 
-    List list = [];
+    List<String> list = [];
     for (var machine in machines) {
       list.add(machine["name"]);
       machinesInfo.add({"name": machine["name"], "key": machine["_id"]});
@@ -39,6 +40,15 @@ class _EditMachinesState extends State<EditMachines> {
 
     setState(() {
       _machineList = list;
+
+      _machineList.map(
+        (val) {
+          return DropdownMenuItem<String>(
+            value: val,
+            child: Text(val),
+          );
+        },
+      ).toList();
     });
 
     populateScreen();
@@ -126,7 +136,8 @@ class _EditMachinesState extends State<EditMachines> {
       return;
     }
 
-    await SessionManager().set('edit_agricultural_machines', jsonEncode(_machineType));
+    await SessionManager()
+        .set('edit_agricultural_machines', jsonEncode(_machineType));
 
     inspect(await SessionManager().get('edit_agricultural_machines'));
 
@@ -147,58 +158,94 @@ class _EditMachinesState extends State<EditMachines> {
         children: [
           Container(
               width: MediaQuery.of(context).size.width * 0.8,
-              child: DropdownButtonFormField(
-                hint: _machineType[i]["name"] == null ||
-                        _machineType[i]["name"] == ""
-                    ? Text('Máquina Agrícola ${i}',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 1),
-                            fontSize: 15,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "RobotoFlex"))
-                    : Text(
-                        _machineType[i]["name"],
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 1),
-                            fontSize: 15,
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: "RobotoFlex"),
-                      ),
-                decoration: InputDecoration(
-                    // filled: true,
-                    fillColor: Colors.black,
-                    labelText: 'Máquina Agrícola ${i}'),
-                isExpanded: true,
-                iconSize: 30.0,
-                style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 1),
-                    fontSize: 15,
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontFamily: "RobotoFlex"),
-                items: _machineList.map(
-                  (val) {
-                    return DropdownMenuItem<String>(
-                      value: val,
-                      child: Text(val),
-                    );
-                  },
-                ).toList(),
-                onChanged: (val) {
-                  setState(
-                    () {
-                      Map currentMachine = machinesInfo
-                          .where((element) => element["name"] == val.toString())
-                          .first;
+              // child: DropdownButtonFormField(
+              //   hint: _machineType[i]["name"] == null ||
+              //           _machineType[i]["name"] == ""
+              //       ? Text('Máquina Agrícola ${i}',
+              //           style: TextStyle(
+              //               color: Color.fromARGB(255, 0, 0, 1),
+              //               fontSize: 15,
+              //               fontStyle: FontStyle.normal,
+              //               fontWeight: FontWeight.w400,
+              //               fontFamily: "RobotoFlex"))
+              //       : Text(
+              //           _machineType[i]["name"],
+              //           style: TextStyle(
+              //               color: Color.fromARGB(255, 0, 0, 1),
+              //               fontSize: 15,
+              //               fontStyle: FontStyle.normal,
+              //               fontWeight: FontWeight.w400,
+              //               fontFamily: "RobotoFlex"),
+              //         ),
+              //   decoration: InputDecoration(
+              //       // filled: true,
+              //       fillColor: Colors.black,
+              //       labelText: 'Máquina Agrícola ${i}'),
+              //   isExpanded: true,
+              //   iconSize: 30.0,
+              //   style: TextStyle(
+              //       color: Color.fromARGB(255, 0, 0, 1),
+              //       fontSize: 15,
+              //       fontStyle: FontStyle.normal,
+              //       fontWeight: FontWeight.w400,
+              //       fontFamily: "RobotoFlex"),
+              //   items: _machineList.map(
+              //     (val) {
+              //       return DropdownMenuItem<String>(
+              //         value: val,
+              //         child: Text(val),
+              //       );
+              //     },
+              //   ).toList(),
+              //   onChanged: (val) {
+              //     setState(
+              //       () {
+              //         Map currentMachine = machinesInfo
+              //             .where((element) => element["name"] == val.toString())
+              //             .first;
 
-                      _machineType[i]["name"] = val.toString();
-                      _machineType[i]["key"] = currentMachine["key"];
+              //         _machineType[i]["name"] = val.toString();
+              //         _machineType[i]["key"] = currentMachine["key"];
+              //       },
+              //     );
+              //   },
+              // )
+              child: Padding(
+                  padding: EdgeInsets.only(top: 20),
+                  child: TextDropdownFormField(
+                    options: _machineList,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Preencha uma Máquina';
+                      }
+                      return null;
                     },
-                  );
-                },
-              )),
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        fillColor: Colors.black,
+                        focusColor: Colors.green,
+                        hoverColor: Colors.black,
+                        iconColor: Colors.black,
+                        suffixIcon: Icon(Icons.arrow_drop_down),
+                        labelText: _machineType[i]["name"] == null ||
+                                _machineType[i]["name"] == ''
+                            ? 'Máquina ${i}'
+                            : _machineType[i]["name"]),
+                    dropdownHeight: 420,
+                    onChanged: (dynamic val) {
+                      setState(
+                        () {
+                          Map currentMachine = machinesInfo
+                              .where((element) =>
+                                  element["name"] == val.toString())
+                              .first;
+
+                          _machineType[i]["name"] = val.toString();
+                          _machineType[i]["key"] = currentMachine["key"];
+                        },
+                      );
+                    },
+                  ))),
         ],
       ));
     }
