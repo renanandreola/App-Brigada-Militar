@@ -215,12 +215,6 @@ class _EditMachinesState extends State<EditMachines> {
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
         title: Text("Alterar Propriedade"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
-        leading: GestureDetector(
-          onTap: () {/* Write listener code here */},
-          child: Icon(
-            Icons.menu,
-          ),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
