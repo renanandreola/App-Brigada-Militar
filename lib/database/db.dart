@@ -32,8 +32,8 @@ class DB {
   _initDatabase() async {
     // return await deleteDatabase(join("/storage/emulated/0/Download", 'defaultdb.db'));
     return await openDatabase(
-      join("/storage/emulated/0/Download", 'testemarlon11.db'),
-      // join(await getDatabasesPath(), 'database.db'),
+      // join("/storage/emulated/0/Download", 'testemarlon13.db'),
+      join(await getDatabasesPath() + "/teste1", 'database.db'),
       version: 1,
       onCreate: copyAPIDatabase,
     );

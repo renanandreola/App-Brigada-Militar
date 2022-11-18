@@ -250,6 +250,101 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
             }
           }
 
+          //List Agricultural Machines
+          var agricultural_machines =
+              await SessionManager().get('edit_agricultural_machines');
+
+          if (agricultural_machines != null) {
+            //Store in a variable all current property agricultural machines before save
+            List<String> agricultural_machines_ids = [];
+
+            var all_current_agricultural_machines = await txn.query(
+              'property_agricultural_machines',
+              where: "fk_property_id = '${property_id}'",
+            );
+
+            for (var agricultural_machine
+                in all_current_agricultural_machines) {
+              agricultural_machines_ids
+                  .add(agricultural_machine["fk_agricultural_machine_id"]);
+            }
+
+            //Verify each agricultural machine if it's already in the database (same property and same agricultural machine)
+            for (var agricultural_machine in agricultural_machines) {
+              List<Map> property_agricultural_machines = await txn.query(
+                  'property_agricultural_machines',
+                  where:
+                      "fk_agricultural_machine_id = '${agricultural_machine["key"]}' AND fk_property_id = '${property_id}'");
+              // if exists
+              if (property_agricultural_machines.length > 0) {
+                //  ignore and remove id from agricultural_machine_ids
+                agricultural_machines_ids.remove(
+                    property_agricultural_machines[0]
+                        ["fk_agricultural_machine_id"]);
+              } else {
+                // if not exists
+                // insert into database
+                await txn.insert('property_agricultural_machines', {
+                  "fk_property_id": property_id,
+                  "fk_agricultural_machine_id": agricultural_machine["key"],
+                  "createdAt": datetimeStr,
+                  "updatedAt": datetimeStr,
+                });
+
+                List<Map> p_agricultural_machines = await txn.query(
+                  'property_agricultural_machines',
+                  where:
+                      "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${agricultural_machine["key"]}'",
+                );
+                Map p_agricultural_machine = p_agricultural_machines[0];
+
+                table = 'property_agricultural_machines';
+                await txn.insert('database_updates', {
+                  'reference_table': table,
+                  'updated_id': p_agricultural_machine["_id"]
+                });
+              }
+            }
+
+            //remove all non used agricultural amchines
+            for (var id in agricultural_machines_ids) {
+              List<Map> p_agricultural_machines = await txn.query(
+                'property_agricultural_machines',
+                where:
+                    "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${id}'",
+              );
+              Map p_agricultural_machine = p_agricultural_machines[0];
+
+              await txn.delete('property_agricultural_machines',
+                  where:
+                      "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${id}'");
+
+              table = 'property_agricultural_machines';
+              await txn.insert('garbages', {
+                "reference_table": table,
+                "deleted_id": p_agricultural_machine["_id"]
+              });
+            }
+          } else {
+            List<Map> property_agricultural_machines = await txn.query(
+                'property_agricultural_machines',
+                where: "fk_property_id = '${property_id}'");
+
+            if (property_agricultural_machines.length > 0) {
+              for (var property_agricultural_machine
+                  in property_agricultural_machines) {
+                table = 'property_agricultural_machines';
+                await txn.insert('garbages', {
+                  "reference_table": table,
+                  "deleted_id": property_agricultural_machine["_id"]
+                });
+
+                await txn.delete('property_agricultural_machines',
+                    where: "_id = '${property_agricultural_machine["_id"]}'");
+              }
+            }
+          }
+
           //   String property_id = property!.id!;
 
           //   final DateTime now = DateTime.now();
@@ -338,10 +433,10 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
 
         // print("Propriedade Salva com Sucesso!");
 
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => ConfirmVisit(property!.id)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ConfirmVisit(property["_id"])));
       }
     } else {
       // Retrieve form data
@@ -526,6 +621,99 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
           }
         }
 
+        //List Agricultural Machines
+        var agricultural_machines =
+            await SessionManager().get('edit_agricultural_machines');
+
+        if (agricultural_machines != null) {
+          //Store in a variable all current property agricultural machines before save
+          List<String> agricultural_machines_ids = [];
+
+          var all_current_agricultural_machines = await txn.query(
+            'property_agricultural_machines',
+            where: "fk_property_id = '${property_id}'",
+          );
+
+          for (var agricultural_machine in all_current_agricultural_machines) {
+            agricultural_machines_ids
+                .add(agricultural_machine["fk_agricultural_machine_id"]);
+          }
+
+          //Verify each agricultural machine if it's already in the database (same property and same agricultural machine)
+          for (var agricultural_machine in agricultural_machines) {
+            List<Map> property_agricultural_machines = await txn.query(
+                'property_agricultural_machines',
+                where:
+                    "fk_agricultural_machine_id = '${agricultural_machine["key"]}' AND fk_property_id = '${property_id}'");
+            // if exists
+            if (property_agricultural_machines.length > 0) {
+              //  ignore and remove id from agricultural_machine_ids
+              agricultural_machines_ids.remove(property_agricultural_machines[0]
+                  ["fk_agricultural_machine_id"]);
+            } else {
+              // if not exists
+              // insert into database
+              await txn.insert('property_agricultural_machines', {
+                "fk_property_id": property_id,
+                "fk_agricultural_machine_id": agricultural_machine["key"],
+                "createdAt": datetimeStr,
+                "updatedAt": datetimeStr,
+              });
+
+              List<Map> p_agricultural_machines = await txn.query(
+                'property_agricultural_machines',
+                where:
+                    "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${agricultural_machine["key"]}'",
+              );
+              Map p_agricultural_machine = p_agricultural_machines[0];
+
+              table = 'property_agricultural_machines';
+              await txn.insert('database_updates', {
+                'reference_table': table,
+                'updated_id': p_agricultural_machine["_id"]
+              });
+            }
+          }
+
+          //remove all non used agricultural amchines
+          for (var id in agricultural_machines_ids) {
+            List<Map> p_agricultural_machines = await txn.query(
+              'property_agricultural_machines',
+              where:
+                  "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${id}'",
+            );
+            Map p_agricultural_machine = p_agricultural_machines[0];
+
+            await txn.delete('property_agricultural_machines',
+                where:
+                    "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${id}'");
+
+            table = 'property_agricultural_machines';
+            await txn.insert('garbages', {
+              "reference_table": table,
+              "deleted_id": p_agricultural_machine["_id"]
+            });
+          }
+        } else {
+          List<Map> property_agricultural_machines = await txn.query(
+              'property_agricultural_machines',
+              where: "fk_property_id = '${property_id}'");
+
+          if (property_agricultural_machines.length > 0) {
+            for (var property_agricultural_machine
+                in property_agricultural_machines) {
+              table = 'property_agricultural_machines';
+              await txn.insert('garbages', {
+                "reference_table": table,
+                "deleted_id": property_agricultural_machine["_id"]
+              });
+
+              await txn.delete('property_agricultural_machines',
+                  where: "_id = '${property_agricultural_machine["_id"]}'");
+            }
+          }
+        }
+
         //   String property_id = property!.id!;
 
         //   final DateTime now = DateTime.now();
@@ -614,10 +802,10 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
 
       // print("Propriedade Salva com Sucesso!");
 
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => ConfirmVisit(property!.id)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ConfirmVisit(property["_id"])));
     }
   }
 
