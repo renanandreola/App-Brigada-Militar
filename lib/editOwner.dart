@@ -67,12 +67,6 @@ class _EditOwnerState extends State<EditOwner> {
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
         title: Text("Alterar Proprietário"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
-        leading: GestureDetector(
-          onTap: () {/* Write listener code here */},
-          child: Icon(
-            Icons.menu, // add custom icons also
-          ),
-        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

@@ -16,12 +16,6 @@ class _Update7waysMenuState extends State<Update7waysMenu> {
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
         title: Text("NOVO RUMO"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
-        leading: GestureDetector(
-          onTap: () {/* Write listener code here */},
-          child: Icon(
-            Icons.menu, // add custom icons also
-          ),
-        ),
       ),
       body: SafeArea(
           child: SingleChildScrollView(

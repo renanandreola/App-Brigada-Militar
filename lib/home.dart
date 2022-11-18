@@ -86,7 +86,9 @@ class _HomeAppState extends State<HomeApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+     return new WillPopScope(
+    onWillPop: () async => false,
+    child:Scaffold(
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
@@ -202,6 +204,6 @@ class _HomeAppState extends State<HomeApp> {
           ),
         ),
       )),
-    );
+    ),);
   }
 }
