@@ -21,6 +21,13 @@ List<String> _carList = [];
 List<Map<String?, String?>> vehiclesInfo = [];
 
 class _EditVehicleState extends State<EditVehicle> {
+  TextEditingController _otherValue = TextEditingController();
+  TextEditingController _otherKey = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  bool _hasOtherVehicle = false;
+  int _numberInput = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -130,6 +137,17 @@ class _EditVehicleState extends State<EditVehicle> {
   }
 
   void _goToAditionalInfo() async {
+    if (_hasOtherVehicle && _otherValue.text != "") {
+      _vehicleType[0]['name'] = _otherValue.text;
+    }
+
+    if (_hasOtherVehicle && _otherValue.text == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhum veículo selecionado!')),
+      );
+      return;
+    }
+
     if (numberVehicles < 0 || _vehicleType[0]['name'] == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Nenhum veículo selecionado!')),
@@ -144,6 +162,73 @@ class _EditVehicleState extends State<EditVehicle> {
         context,
         MaterialPageRoute(
             builder: (context) => EditAditionalInfo(widget.formData)));
+  }
+
+  Widget _otherVehicle() {
+    List<Form> componentes = [];
+    for (int i = 1; i <= _numberInput; i++) {
+      componentes.add(Form(
+          key: _formKey,
+          child: Column(children: [
+            Padding(
+              padding: EdgeInsets.only(left: 0, right: 0, top: 5),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha o nome do veículo';
+                  }
+                  return null;
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "Nome do veículo",
+                  labelStyle: TextStyle(
+                    color: Color.fromARGB(255, 88, 88, 88),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                keyboardType: TextInputType.text,
+                controller: _otherValue,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 0, right: 0, top: 5),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha a marca do veículo';
+                  }
+                  return null;
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "Marca do veículo",
+                  labelStyle: TextStyle(
+                    color: Color.fromARGB(255, 88, 88, 88),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                keyboardType: TextInputType.text,
+                controller: _otherKey,
+              ),
+            ),
+          ])));
+    }
+    return Column(
+      children: componentes,
+    );
   }
 
   Widget vehicleType1() {
@@ -285,6 +370,29 @@ class _EditVehicleState extends State<EditVehicle> {
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
                     child: vehicleType1()),
+
+                Padding(
+                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
+                    child: CheckboxListTile(
+                      title: Text("Outro(a)"),
+                      activeColor: Color.fromARGB(255, 27, 75, 27),
+                      value: _hasOtherVehicle,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _hasOtherVehicle = newValue!;
+                          _hasOtherVehicle
+                              ? _numberInput = 1
+                              : _numberInput = 0;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //  <-- leading Checkbox
+                    )),
+
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                  child: _otherVehicle(),
+                ),
 
                 // Add new vehicle
                 Padding(
