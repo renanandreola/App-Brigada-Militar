@@ -20,6 +20,12 @@ List<String> _machineList = [];
 List<Map<String?, String?>> machinesInfo = [];
 
 class _MachinesState extends State<Machines> {
+  TextEditingController _otherValue = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  bool _hasOtherMachine = false;
+  int _numberInput = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -71,6 +77,17 @@ class _MachinesState extends State<Machines> {
   // Go to page that have the description of the place
   void _goToPlaceDescription() async {
     // print(_machineType);
+    if (_hasOtherMachine && _otherValue.text != "") {
+      _machineType[0]['name'] = _otherValue.text;
+    }
+
+    if (_hasOtherMachine && _otherValue.text == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhuma máquina selecionada!')),
+      );
+      return;
+    }
+
     if (_machineType[0]['name'] == "") {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Nenhuma máquina selecionada!')),
@@ -83,6 +100,46 @@ class _MachinesState extends State<Machines> {
         context,
         MaterialPageRoute(
             builder: (context) => PlaceDescription(widget.formData)));
+  }
+
+  Widget _otherMachine() {
+    List<Form> componentes = [];
+    for (int i = 1; i <= _numberInput; i++) {
+      componentes.add(Form(
+          key: _formKey,
+          child: Column(children: [
+            Padding(
+              padding: EdgeInsets.only(left: 0, right: 0, top: 5),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha a máquina';
+                  }
+                  return null;
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "Nome da máquina",
+                  labelStyle: TextStyle(
+                    color: Color.fromARGB(255, 88, 88, 88),
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black),
+                  ),
+                ),
+                keyboardType: TextInputType.text,
+                controller: _otherValue,
+              ),
+            ),
+          ])));
+    }
+    return Column(
+      children: componentes,
+    );
   }
 
   // Show the dropdown on click '+ Máquinas Agrícolas'
@@ -224,6 +281,29 @@ class _MachinesState extends State<Machines> {
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
                     child: machineType1()),
+
+                Padding(
+                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
+                    child: CheckboxListTile(
+                      title: Text("Outro(a)"),
+                      activeColor: Color.fromARGB(255, 27, 75, 27),
+                      value: _hasOtherMachine,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _hasOtherMachine = newValue!;
+                          _hasOtherMachine
+                              ? _numberInput = 1
+                              : _numberInput = 0;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //  <-- leading Checkbox
+                    )),
+
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                  child: _otherMachine(),
+                ),
 
                 // Add new machine
                 Padding(
