@@ -94,6 +94,10 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
       }
     });
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Visita cadastrada com sucesso!')),
+    );
+
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => HomeApp("nome")));
   }
