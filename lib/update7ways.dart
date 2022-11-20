@@ -14,12 +14,15 @@ class Update7ways extends StatefulWidget {
 }
 
 class _Update7waysState extends State<Update7ways> {
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController _link = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    updateFiles();
+    // updateFiles();
   }
 
   bool loading = false;
@@ -95,42 +98,137 @@ class _Update7waysState extends State<Update7ways> {
     }
   }
 
-  updateFiles() async {
+  _downloadFiles() async {
     setState(() {
       loading = true;
     });
 
-    bool downloaded = await saveFile(
-        "https://novorumo-api.fly.dev/7ways/file.txt", "file.txt");
+    bool downloaded = await saveFile(_link.text, "files.zip");
 
     if (downloaded) {
-      print("File Downloaded");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Atualizado com sucesso')),
+      );
     } else {
-      print("Problem Downloading File");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Houve um erro ao atualizar!')),
+      );
     }
 
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => InitialPage()));
-
-    setState(() {
-      loading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: loading
-            ? Padding(
-                padding: EdgeInsets.all(8.0),
-                child: LinearProgressIndicator(
-                  minHeight: 10,
-                  value: progress,
-                ),
-              )
-            : Text("Erro"),
+      appBar: AppBar(
+        // title: new Center(
+        //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
+        title: Text("Atualizar 7ways"),
+        backgroundColor: Color.fromARGB(255, 27, 75, 27),
       ),
+      body: loading
+          ? Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  Text("Baixando..."),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: LinearProgressIndicator(
+                      color: Colors.green,
+                      backgroundColor: Color.fromARGB(255, 188, 194, 188),
+                      minHeight: 10,
+                      value: progress,
+                    ),
+                  )
+                ]))
+          : Center(
+              child: Column(
+                children: [
+                  // Color bar
+                  Image.asset('assets/images/rectangle.png'),
+
+                  // Title
+                  Padding(
+                      padding: EdgeInsets.only(left: 32, right: 32, top: 20),
+                      child: Row(
+                        children: [
+                          Text("Atualizar 7ways",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "RobotoFlex")),
+                        ],
+                      )),
+                  Form(
+                      key: _formKey,
+                      child: Column(children: [
+                        // ResponsibleName
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: 32, right: 32, top: 10),
+                          child: TextFormField(
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Preencha a URL';
+                              }
+                              return null;
+                            },
+                            cursorColor: Colors.black,
+                            decoration: InputDecoration(
+                              labelText: "URL",
+                              labelStyle: TextStyle(
+                                  color: Color.fromARGB(255, 0, 0, 1),
+                                  fontSize: 15,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: "RobotoFlex"),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 177, 177, 177)),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 177, 177, 177)),
+                              ),
+                            ),
+                            keyboardType: TextInputType.name,
+                            controller: _link,
+                          ),
+                        ),
+
+                        // Login
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: 32, right: 32, top: 35),
+                          child: ElevatedButton(
+                            child: Text(
+                              'Baixar',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: "RobotoFlex"),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color.fromARGB(255, 27, 75, 27),
+                              elevation: 2,
+                              fixedSize: Size(330, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            onPressed: _downloadFiles,
+                          ),
+                        ),
+                      ])),
+                ],
+              ),
+            ),
     );
   }
 }
