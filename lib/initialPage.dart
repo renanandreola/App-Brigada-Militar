@@ -38,13 +38,17 @@ class _InitialPageState extends State<InitialPage> {
         print("Has garrison");
 
         // Go home
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => HomeApp(userLogged["name"]!)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeApp(userLogged["name"]!)));
       } else {
         print("Has not garrison");
         // Go garrison page
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Garrison(userLogged["name"]!)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Garrison(userLogged["name"]!)));
       }
     }
   }
@@ -75,7 +79,7 @@ class _InitialPageState extends State<InitialPage> {
             // Image
             Padding(
               padding: EdgeInsets.only(top: 0, bottom: 16),
-              child: Image.asset("assets/images/head.png"),
+              child: Image.asset("assets/images/Header.png"),
             ),
 
             // Novo Rumo
