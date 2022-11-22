@@ -11,7 +11,8 @@ import 'package:dropdown_plus/dropdown_plus.dart';
 class EditMachines extends StatefulWidget {
   // const Machines({Key? key}) : super(key: key);
   Map formData;
-  EditMachines(this.formData);
+  late String userName;
+  EditMachines(this.formData, this.userName);
 
   @override
   State<EditMachines> createState() => _EditMachinesState();
@@ -161,7 +162,8 @@ class _EditMachinesState extends State<EditMachines> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditPlaceDescription(widget.formData)));
+            builder: (context) =>
+                EditPlaceDescription(widget.formData, widget.userName)));
   }
 
   Widget _otherMachine() {

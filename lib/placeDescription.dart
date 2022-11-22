@@ -6,7 +6,8 @@ import 'dart:developer';
 class PlaceDescription extends StatefulWidget {
   // const PlaceDescription({Key? key}) : super(key: key);
   Map formData;
-  PlaceDescription(this.formData);
+  late String userName;
+  PlaceDescription(this.formData, this.userName);
 
   @override
   State<PlaceDescription> createState() => _PlaceDescriptionState();
@@ -46,11 +47,16 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
         formData.addAll(pageFormData);
 
         if (_hasVehicle) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => Vehicle(formData)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Vehicle(formData, widget.userName)));
         } else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      AditionalInfo(formData, widget.userName)));
         }
       }
     } else {
@@ -72,11 +78,16 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
       formData.addAll(pageFormData);
 
       if (_hasVehicle) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Vehicle(formData)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Vehicle(formData, widget.userName)));
       } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => AditionalInfo(formData)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    AditionalInfo(formData, widget.userName)));
       }
     }
   }

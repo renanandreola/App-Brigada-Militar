@@ -71,6 +71,10 @@ class _GarrisonState extends State<Garrison> {
       await SessionManager().set('garrison', garrison);
       await SessionManager().set('vtr', vtr);
 
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Guarnição cadastrada com sucesso!')),
+      );
+
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
     }

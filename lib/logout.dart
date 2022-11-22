@@ -22,8 +22,12 @@ class _LogOutState extends State<LogOut> {
     await SessionManager().remove("user");
     await SessionManager().remove("garrison");
 
-    Navigator.push(context,
-          MaterialPageRoute(builder: (context) => InitialPage()));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Saindo...')),
+    );
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => InitialPage()));
   }
 
   @override

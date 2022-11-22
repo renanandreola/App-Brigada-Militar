@@ -11,7 +11,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class EditPlaceDescription extends StatefulWidget {
   // const PlaceDescription({Key? key}) : super(key: key);
   Map formData;
-  EditPlaceDescription(this.formData);
+  late String userName;
+  EditPlaceDescription(this.formData, this.userName);
 
   @override
   State<EditPlaceDescription> createState() => _EditPlaceDescriptionState();
@@ -41,11 +42,18 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
       numberDefensives = property["qty_agricultural_defensives"] == 0 ? 0 : 1;
       _hasDefensive =
           property["qty_agricultural_defensives"] == 0 ? false : true;
-      _hasGun = (property["has_gun"] == "true" || property["has_gun"] == 1) ? true : false;
-      _hasGunPlace = (property["has_gun_local"] == "true" || property["has_gun_local"] == 1) ? true : false;
+      _hasGun = (property["has_gun"] == "true" || property["has_gun"] == 1)
+          ? true
+          : false;
+      _hasGunPlace = (property["has_gun_local"] == "true" ||
+              property["has_gun_local"] == 1)
+          ? true
+          : false;
       _hasVehicle = !property_vehicles.isEmpty;
       numberGun = _hasGun == true ? 1 : 0;
-      _gunPlaceDescription.text = property["gun_local_description"] != 'null' ? property["gun_local_description"]  : "";
+      _gunPlaceDescription.text = property["gun_local_description"] != 'null'
+          ? property["gun_local_description"]
+          : "";
     });
   }
 
@@ -67,7 +75,10 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
         // Set new form data
         Map pageFormData = {
-          'qty_agricultural_defensives': _hasDefensive && int.tryParse(_quantityDefensive.text) != null ? int.tryParse(_quantityDefensive.text) : 0,
+          'qty_agricultural_defensives':
+              _hasDefensive && int.tryParse(_quantityDefensive.text) != null
+                  ? int.tryParse(_quantityDefensive.text)
+                  : 0,
           'has_gun': _hasGun,
           'has_gun_local': _hasGunPlace,
           'gun_local_description': _gunPlaceDescription.text,
@@ -79,11 +90,17 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
         inspect(formData);
 
         if (_hasVehicle) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EditVehicle(formData)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      EditVehicle(formData, widget.userName)));
         } else {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => EditAditionalInfo(formData)));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      EditAditionalInfo(formData, widget.userName)));
         }
       }
     } else {
@@ -102,11 +119,16 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
       formData.addAll(pageFormData);
 
       if (_hasVehicle) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EditVehicle(formData)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditVehicle(formData, widget.userName)));
       } else {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EditAditionalInfo(formData)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    EditAditionalInfo(formData, widget.userName)));
       }
     }
   }

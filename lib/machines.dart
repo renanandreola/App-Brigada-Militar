@@ -10,7 +10,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class Machines extends StatefulWidget {
   // const Machines({Key? key}) : super(key: key);
   Map formData;
-  Machines(this.formData);
+  late String userName;
+  Machines(this.formData, this.userName);
 
   @override
   State<Machines> createState() => _MachinesState();
@@ -99,7 +100,8 @@ class _MachinesState extends State<Machines> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PlaceDescription(widget.formData)));
+            builder: (context) =>
+                PlaceDescription(widget.formData, widget.userName)));
   }
 
   Widget _otherMachine() {

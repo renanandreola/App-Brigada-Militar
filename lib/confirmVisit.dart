@@ -10,7 +10,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class ConfirmVisit extends StatefulWidget {
   // const ConfirmVisit({Key? key}) : super(key: key);
   String? property_id;
-  ConfirmVisit(this.property_id);
+  late String userName;
+  ConfirmVisit(this.property_id, this.userName);
 
   @override
   State<ConfirmVisit> createState() => _ConfirmVisitState();
@@ -98,15 +99,16 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
       const SnackBar(content: Text('Visita cadastrada com sucesso!')),
     );
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomeApp("nome")));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));
   }
 
   void _changeGarrison() async {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditGarrison('', 'from_page_confirm')));
+            builder: (context) =>
+                EditGarrison(widget.userName, 'from_page_confirm')));
   }
 
   @override

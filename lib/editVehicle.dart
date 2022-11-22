@@ -11,7 +11,8 @@ import 'package:dropdown_plus/dropdown_plus.dart';
 class EditVehicle extends StatefulWidget {
   // const Vehicle({Key? key}) : super(key: key);
   Map formData;
-  EditVehicle(this.formData);
+  late String userName;
+  EditVehicle(this.formData, this.userName);
 
   @override
   State<EditVehicle> createState() => _EditVehicleState();
@@ -161,7 +162,8 @@ class _EditVehicleState extends State<EditVehicle> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EditAditionalInfo(widget.formData)));
+            builder: (context) =>
+                EditAditionalInfo(widget.formData, widget.userName)));
   }
 
   Widget _otherVehicle() {

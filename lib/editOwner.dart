@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 
 class EditOwner extends StatefulWidget {
-  const EditOwner({super.key});
+  late String userName;
+  EditOwner(this.userName);
 
   @override
   State<EditOwner> createState() => _EditOwnerState();
@@ -54,8 +55,10 @@ class _EditOwnerState extends State<EditOwner> {
         'phone2': _respPhone2 != null ? _respPhone2!.text : null
       };
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => EditProperty(formData)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EditProperty(formData, widget.userName)));
     }
   }
 
