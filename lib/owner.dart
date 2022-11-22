@@ -4,7 +4,9 @@ import 'package:app_brigada_militar/newProperty.dart';
 import 'package:flutter/material.dart';
 
 class Owner extends StatefulWidget {
-  const Owner({super.key});
+  // const Owner({super.key});
+  late String userName;
+  Owner(this.userName);
 
   @override
   State<Owner> createState() => _OwnerState();
@@ -32,8 +34,10 @@ class _OwnerState extends State<Owner> {
 
       inspect(formData);
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => NewProperty(formData)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NewProperty(formData, widget.userName)));
     }
   }
 

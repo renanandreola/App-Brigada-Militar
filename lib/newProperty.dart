@@ -8,7 +8,8 @@ import 'package:location/location.dart';
 class NewProperty extends StatefulWidget {
   // const NewPropertie({Key? key}) : super(key: key);
   Map formData;
-  NewProperty(this.formData);
+  late String userName;
+  NewProperty(this.formData, this.userName);
 
   @override
   State<NewProperty> createState() => _NewPropertyState();
@@ -90,13 +91,16 @@ class _NewPropertyState extends State<NewProperty> {
       formData.addAll(pageFormData);
 
       if (_hasMachines) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => Machines(formData)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Machines(formData, widget.userName)));
       } else {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => PlaceDescription(formData)));
+                builder: (context) =>
+                    PlaceDescription(formData, widget.userName)));
       }
     }
   }

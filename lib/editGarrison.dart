@@ -84,12 +84,20 @@ class _EditGarrisonState extends State<EditGarrison> {
       await SessionManager().set('vtr', vtr);
 
       if (widget.fromPage == 'from_page_confirm') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Guarnição alterada com sucesso!')),
+        );
+
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ConfirmVisit(widget.userName)));
+                builder: (context) => ConfirmVisit('', widget.userName)));
         return;
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Guarnição alterada com sucesso!')),
+      );
 
       Navigator.push(context,
           MaterialPageRoute(builder: (context) => HomeApp(widget.userName)));

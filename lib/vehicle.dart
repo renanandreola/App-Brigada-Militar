@@ -9,7 +9,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class Vehicle extends StatefulWidget {
   // const Vehicle({Key? key}) : super(key: key);
   Map formData;
-  Vehicle(this.formData);
+  late String userName;
+  Vehicle(this.formData, this.userName);
 
   @override
   State<Vehicle> createState() => _VehicleState();
@@ -102,7 +103,8 @@ class _VehicleState extends State<Vehicle> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AditionalInfo(widget.formData)));
+            builder: (context) =>
+                AditionalInfo(widget.formData, widget.userName)));
   }
 
   Widget _otherVehicle() {

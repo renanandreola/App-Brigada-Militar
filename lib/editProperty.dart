@@ -12,7 +12,8 @@ import 'package:location/location.dart';
 class EditProperty extends StatefulWidget {
   // const NewPropertie({Key? key}) : super(key: key);
   Map formData;
-  EditProperty(this.formData);
+  late String userName;
+  EditProperty(this.formData, this.userName);
 
   @override
   State<EditProperty> createState() => _EditPropertyState();
@@ -37,16 +38,26 @@ class _EditPropertyState extends State<EditProperty> {
         await db.query('property_types', where: "_id = '${property_type_id}'");
     Map property_type = property_types[0];
 
-    List<Map> property_machines = await db.query('property_agricultural_machines', where: "fk_property_id = '${property["_id"]}'");
+    List<Map> property_machines = await db.query(
+        'property_agricultural_machines',
+        where: "fk_property_id = '${property["_id"]}'");
 
     setState(() {
       _lat = property["latitude"];
       _lng = property["longitude"];
       _quantityResidents.text = property["qty_people"].toString();
       _hasGeoBoard = true;
-      _hasCams = (property["has_cams"] == 'true' || property["has_cams"] == 1) ? true : false;
-      _hasPhoneSignal = (property["has_phone_signal"] == 'true' || property["has_phone_signal"] == 1) ? true : false;
-      _hasNetwork = (property["has_internet"] == 'true' || property["has_internet"] == 1)  ? true : false;
+      _hasCams = (property["has_cams"] == 'true' || property["has_cams"] == 1)
+          ? true
+          : false;
+      _hasPhoneSignal = (property["has_phone_signal"] == 'true' ||
+              property["has_phone_signal"] == 1)
+          ? true
+          : false;
+      _hasNetwork =
+          (property["has_internet"] == 'true' || property["has_internet"] == 1)
+              ? true
+              : false;
       _dropDownValue = property_type["name"];
       _hasMachines = property_machines.length == 0 ? false : true;
     });
@@ -99,13 +110,16 @@ class _EditPropertyState extends State<EditProperty> {
       inspect(formData);
 
       if (_hasMachines) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => EditMachines(formData)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditMachines(formData, widget.userName)));
       } else {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => EditPlaceDescription(formData)));
+                builder: (context) =>
+                    EditPlaceDescription(formData, widget.userName)));
       }
     }
   }

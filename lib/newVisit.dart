@@ -11,7 +11,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:dropdown_plus/dropdown_plus.dart';
 
 class NewVisit extends StatefulWidget {
-  const NewVisit({Key? key}) : super(key: key);
+  late String userName;
+  NewVisit(this.userName);
 
   @override
   State<NewVisit> createState() => _NewVisitState();
@@ -87,12 +88,14 @@ class _NewVisitState extends State<NewVisit> {
       Map owner = owners[0];
       await SessionManager().set('edit_owner', jsonEncode(owner));
 
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => EditOwner()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => EditOwner(widget.userName)));
       return;
     }
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => OwnerPage.Owner()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => OwnerPage.Owner(widget.userName)));
     // }
   }
 
@@ -177,7 +180,6 @@ class _NewVisitState extends State<NewVisit> {
           textAlign: TextAlign.center,
         )),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
-        
       ),
       body: SafeArea(
         child: SingleChildScrollView(

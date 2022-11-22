@@ -14,7 +14,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class EditAditionalInfo extends StatefulWidget {
   // const AditionalInfo({Key? key}) : super(key: key);
   Map formData;
-  EditAditionalInfo(this.formData);
+  late String userName;
+  EditAditionalInfo(this.formData, this.userName);
 
   @override
   State<EditAditionalInfo> createState() => _EditAditionalInfoState();
@@ -436,7 +437,8 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ConfirmVisit(property["_id"])));
+                builder: (context) =>
+                    ConfirmVisit(property["_id"], widget.userName)));
       }
     } else {
       // Retrieve form data
@@ -805,7 +807,8 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ConfirmVisit(property["_id"])));
+              builder: (context) =>
+                  ConfirmVisit(property["_id"], widget.userName)));
     }
   }
 

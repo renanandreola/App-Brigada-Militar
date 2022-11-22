@@ -14,7 +14,8 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
 class AditionalInfo extends StatefulWidget {
   // const AditionalInfo({Key? key}) : super(key: key);
   Map formData;
-  AditionalInfo(this.formData);
+  late String userName;
+  AditionalInfo(this.formData, this.userName);
 
   @override
   State<AditionalInfo> createState() => _AditionalInfoState();
@@ -176,7 +177,8 @@ class _AditionalInfoState extends State<AditionalInfo> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ConfirmVisit(property!.id)));
+                builder: (context) =>
+                    ConfirmVisit(property!.id, widget.userName)));
       }
     } else {
       // Retrieve form data
@@ -318,8 +320,11 @@ class _AditionalInfoState extends State<AditionalInfo> {
 
       print("Propriedade Salva com Sucesso!");
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => ConfirmVisit(property!.id)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  ConfirmVisit(property!.id, widget.userName)));
     }
   }
 
