@@ -24,7 +24,7 @@ class _VehicleState extends State<Vehicle> {
   TextEditingController _otherKey = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool _hasOtherVehicle = false;
+  // bool _hasOtherVehicle = false;
   int _numberInput = 0;
 
   @override
@@ -81,16 +81,16 @@ class _VehicleState extends State<Vehicle> {
   }
 
   void _goToAditionalInfo() async {
-    if (_hasOtherVehicle && _otherValue.text != "") {
-      _vehicleType[0]['name'] = _otherValue.text;
-    }
+    // if (_hasOtherVehicle && _otherValue.text != "") {
+    //   _vehicleType[0]['name'] = _otherValue.text;
+    // }
 
-    if (_hasOtherVehicle && _otherValue.text == "") {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nenhum veículo selecionado!')),
-      );
-      return;
-    }
+    // if (_hasOtherVehicle && _otherValue.text == "") {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('Nenhum veículo selecionado!')),
+    //   );
+    //   return;
+    // }
 
     if (_vehicleType[0]['name'] == "") {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -311,28 +311,28 @@ class _VehicleState extends State<Vehicle> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
                     child: vehicleType1()),
 
-                Padding(
-                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
-                    child: CheckboxListTile(
-                      title: Text("Outro(a)"),
-                      activeColor: Color.fromARGB(255, 27, 75, 27),
-                      value: _hasOtherVehicle,
-                      onChanged: (newValue) {
-                        setState(() {
-                          _hasOtherVehicle = newValue!;
-                          _hasOtherVehicle
-                              ? _numberInput = 1
-                              : _numberInput = 0;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity
-                          .leading, //  <-- leading Checkbox
-                    )),
+                // Padding(
+                //     padding: EdgeInsets.only(left: 15, right: 32, top: 5),
+                //     child: CheckboxListTile(
+                //       title: Text("Outro(a)"),
+                //       activeColor: Color.fromARGB(255, 27, 75, 27),
+                //       value: _hasOtherVehicle,
+                //       onChanged: (newValue) {
+                //         setState(() {
+                //           _hasOtherVehicle = newValue!;
+                //           _hasOtherVehicle
+                //               ? _numberInput = 1
+                //               : _numberInput = 0;
+                //         });
+                //       },
+                //       controlAffinity: ListTileControlAffinity
+                //           .leading, //  <-- leading Checkbox
+                //     )),
 
-                Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                  child: _otherVehicle(),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                //   child: _otherVehicle(),
+                // ),
 
                 // Add new vehicle
                 Padding(

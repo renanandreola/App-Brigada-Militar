@@ -33,7 +33,7 @@ class _HomeAppState extends State<HomeApp> {
     //Vehicles
     await SessionManager().remove('vehicles');
     //AgriculturalMachines
-    await SessionManager().remove('agricultural_machines');
+    await SessionManager().remove('machines');
     //Owner
     await SessionManager().remove('owner');
     //Edit Property
