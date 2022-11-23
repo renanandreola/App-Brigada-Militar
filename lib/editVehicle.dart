@@ -49,9 +49,6 @@ class _EditVehicleState extends State<EditVehicle> {
       });
     }
 
-    // list.insert(0, "Outro(a)");
-    // vehiclesInfo.insert(0, {"name": "Outro(a)" + " - " + 'Marca', "key": "0"});
-
     setState(() {
       _carList = list;
 
@@ -376,23 +373,23 @@ class _EditVehicleState extends State<EditVehicle> {
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
                     child: vehicleType1()),
 
-                // Padding(
-                //     padding: EdgeInsets.only(left: 15, right: 32, top: 5),
-                //     child: CheckboxListTile(
-                //       title: Text("Outro(a)"),
-                //       activeColor: Color.fromARGB(255, 27, 75, 27),
-                //       value: _hasOtherVehicle,
-                //       onChanged: (newValue) {
-                //         setState(() {
-                //           _hasOtherVehicle = newValue!;
-                //           _hasOtherVehicle
-                //               ? _numberInput = 1
-                //               : _numberInput = 0;
-                //         });
-                //       },
-                //       controlAffinity: ListTileControlAffinity
-                //           .leading, //  <-- leading Checkbox
-                //     )),
+                Padding(
+                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
+                    child: CheckboxListTile(
+                      title: Text("Outro(a)"),
+                      activeColor: Color.fromARGB(255, 27, 75, 27),
+                      value: _hasOtherVehicle,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _hasOtherVehicle = newValue!;
+                          _hasOtherVehicle
+                              ? _numberInput = 1
+                              : _numberInput = 0;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //  <-- leading Checkbox
+                    )),
 
                 Padding(
                   padding: EdgeInsets.only(left: 32, right: 32, top: 5),
