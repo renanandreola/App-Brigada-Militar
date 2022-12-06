@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:app_brigada_militar/initialPage.dart';
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -68,6 +70,7 @@ class _Update7waysState extends State<Update7ways> {
               progress = downloaded / totalSize;
             });
           });
+          await unarchiveAndSave(saveFile, directory.path);
 
           return true;
         }
@@ -79,6 +82,25 @@ class _Update7waysState extends State<Update7ways> {
     }
 
     return false;
+  }
+
+  unarchiveAndSave(var zippedFile, var directory_path) async {
+    var bytes = zippedFile.readAsBytesSync();
+    var archive = ZipDecoder().decodeBytes(bytes);
+
+    for (var file in archive) {
+      // inspect(file);
+      var fileName = '$directory_path/${file.name}';
+
+      if (file.isFile) {
+        var outFile = File(fileName);
+        print('File:: ' + outFile.path);
+        outFile = await outFile.create(recursive: true);
+        await outFile.writeAsBytes(file.content);
+      } else {
+
+      }
+    }
   }
 
   Future<bool> _requestPermission(

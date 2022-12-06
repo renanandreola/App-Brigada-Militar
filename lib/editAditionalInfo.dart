@@ -143,7 +143,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
               {
                 "_id": property["_id"],
                 "code": property["code"],
-                "has_geo_board": true,
+                "has_geo_board": formData["has_geo_board"],
                 "qty_people": formData["qty_people"],
                 "has_cams": formData["has_cams"],
                 "has_phone_signal": formData["has_phone_signal"],
@@ -515,7 +515,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
             {
               "_id": property["_id"],
               "code": property["code"],
-              "has_geo_board": true,
+              "has_geo_board": formData["has_geo_board"],
               "qty_people": formData["qty_people"],
               "has_cams": formData["has_cams"],
               "has_phone_signal": formData["has_phone_signal"],
@@ -525,6 +525,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
               "gun_local_description": formData["gun_local_description"],
               "qty_agricultural_defensives":
                   formData["qty_agricultural_defensives"],
+              "area": formData["area"].toString(),
               "observations": formData["observations"],
               "latitude": property["latitude"],
               "longitude": property["longitude"],

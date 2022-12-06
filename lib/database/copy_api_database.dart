@@ -123,7 +123,8 @@ String get _properties => '''
     has_gun BOOLEAN,
     has_gun_local BOOLEAN,
     gun_local_description TEXT,
-    qty_agricultural_defensives INT,
+    area VARCHAR(255),
+    qty_agricultural_defensives VARCHAR(255),
     observations TEXT,
     latitude VARCHAR(255),
     longitude VARCHAR(255),
@@ -199,6 +200,7 @@ String get _property_vehicles => '''
   CREATE TABLE property_vehicles (
     _id VARCHAR(255) PRIMARY KEY,
     color VARCHAR(255),
+    identification VARCHAR(255),
     fk_vehicle_id VARCHAR(255) NOT NULL,
     fk_property_id VARCHAR(255) NOT NULL,
     createdAt DATETIME,

@@ -42,10 +42,6 @@ class _LoginState extends State<Login> {
 
         await SessionManager().set('user', userJson);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Entrando...')),
-        );
-
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => Garrison(user.name!)));
         return;

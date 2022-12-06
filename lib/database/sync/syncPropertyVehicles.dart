@@ -10,7 +10,7 @@ Future<String?> syncPropertyVehicles() async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-vehicles";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
   final response = await http
       .get(Uri.parse(uri), headers: {"Authorization": "Bearer ${token}"});
 
@@ -179,7 +179,7 @@ sendNewPropertyVehicleData(db) async {
 
   String property_vehiclesJson = jsonEncode(allChanges);
 
-  String uri = "https://novo-rumo-api.herokuapp.com/api/sync/property-vehicles";
+  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
   final response = await http.post(Uri.parse(uri),
       headers: {
         "Authorization": "Bearer ${token}",

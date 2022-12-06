@@ -29,7 +29,7 @@ class _NewVisitState extends State<NewVisit> {
     final db = await DB.instance.database;
 
     List<Map> property_codes = await db.query('properties',
-        where: "code LIKE '%ERE%'",
+        where: "code LIKE '%%'",
         // columns: ["code"],
         orderBy: "code ASC");
     // inspect(property_codes);
@@ -204,7 +204,7 @@ class _NewVisitState extends State<NewVisit> {
                     padding: EdgeInsets.only(left: 15, right: 32, top: 5),
                     child: CheckboxListTile(
                       title: Text(
-                          "A Propriedade possui placa de georreferenciamento"),
+                          "A Propriedade possui código de georreferenciamento"),
                       activeColor: Color.fromARGB(255, 27, 75, 27),
                       value: _hasBoard,
                       onChanged: (newValue) {

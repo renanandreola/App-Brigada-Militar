@@ -57,12 +57,14 @@ class _NewPropertyState extends State<NewProperty> {
   }
 
   TextEditingController _quantityResidents = TextEditingController();
+  TextEditingController _area = TextEditingController();
 
   String _dropDownValue = '';
   bool _hasCams = false;
   bool _hasPhoneSignal = false;
   bool _hasNetwork = false;
   bool _hasMachines = false;
+  bool _hasGeoBoard = false;
 
   void _goToMachinesOrPlaceDescription() {
     // print(_dropDownValue);
@@ -78,7 +80,8 @@ class _NewPropertyState extends State<NewProperty> {
       // Set new form data
       Map pageFormData = {
         'qty_people': _quantityResidents.text,
-        'has_geo_board': false,
+        'area': _area.text,
+        'has_geo_board': _hasGeoBoard,
         'has_cams': _hasCams,
         'has_phone_signal': _hasPhoneSignal,
         'has_internet': _hasNetwork,
@@ -139,6 +142,37 @@ class _NewPropertyState extends State<NewProperty> {
                 Form(
                     key: _formKey,
                     child: Column(children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Preencha o tamanho da propriedade';
+                            }
+                            return null;
+                          },
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            labelText: "Tamanho da Propriedade (hectares)",
+                            labelStyle: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 1),
+                                fontSize: 15,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "RobotoFlex"),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          controller: _area,
+                        ),
+                      ),
                       // Quantity of peoples
                       Padding(
                         padding: EdgeInsets.only(left: 32, right: 32, top: 5),
@@ -222,6 +256,23 @@ class _NewPropertyState extends State<NewProperty> {
                           },
                         );
                       },
+                    )),
+
+                // Has cams
+                Padding(
+                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
+                    child: CheckboxListTile(
+                      title: Text(
+                          "A propriedade possui placa de georreferenciamento"),
+                      activeColor: Color.fromARGB(255, 27, 75, 27),
+                      value: _hasGeoBoard,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _hasGeoBoard = newValue!;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //  <-- leading Checkbox
                     )),
 
                 // Has cams

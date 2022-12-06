@@ -17,7 +17,8 @@ class Property {
   bool? has_gun;
   bool? has_gun_local;
   String? gun_local_description;
-  int? qty_agricultural_defensives;
+  String? qty_agricultural_defensives;
+  String? area;
   String? observations;
   String latitude;
   String longitude;
@@ -37,6 +38,7 @@ class Property {
     this.has_gun,
     this.has_gun_local,
     this.gun_local_description,
+    this.area,
     this.qty_agricultural_defensives,
     this.observations,
     required this.latitude,
@@ -64,6 +66,7 @@ class Property {
       'has_gun_local': this.has_gun_local,
       'gun_local_description': this.gun_local_description,
       'qty_agricultural_defensives': this.qty_agricultural_defensives,
+      'area': this.area,
       'latitude': this.latitude,
       'longitude': this.longitude,
       'observations': this.observations,
@@ -192,7 +195,8 @@ class PropertyTable {
     bool? has_gun,
     bool? has_gun_local,
     String? gun_local_description,
-    int? qty_agricultural_defensives,
+    String? qty_agricultural_defensives,
+    String? area,
     String? observations,
     int limit = 50,
     String order = 'DESC',
@@ -214,6 +218,7 @@ class PropertyTable {
         'has_gun_local': has_gun_local,
         'gun_local_description': gun_local_description,
         'qty_agricultural_defensives': qty_agricultural_defensives,
+        'area': area,
         'observations': observations,
       };
 
@@ -246,6 +251,7 @@ class PropertyTable {
           has_gun_local: queryProperty['has_gun_local'],
           gun_local_description: queryProperty['gun_local_description'],
           qty_agricultural_defensives: queryProperty['qty_agricultural_defensives'],
+          area: queryProperty['area'],
           latitude: queryProperty['latitude'],
           longitude: queryProperty['longitude'],
           observations: queryProperty['observations'],

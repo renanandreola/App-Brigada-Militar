@@ -223,7 +223,8 @@ class _AditionalInfoState extends State<AditionalInfo> {
             has_gun_local: formData["has_gun_local"],
             gun_local_description: formData["gun_local_description"],
             qty_agricultural_defensives:
-                formData["qty_agricultural_defensives"],
+                formData["qty_agricultural_defensives"].toString(),
+            area: formData["area"].toString(),
             observations: formData["observations"],
             latitude: formData["latitude"],
             longitude: formData["longitude"],

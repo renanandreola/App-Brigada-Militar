@@ -39,7 +39,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
     setState(() {
       _quantityDefensive.text =
           property["qty_agricultural_defensives"].toString();
-      numberDefensives = property["qty_agricultural_defensives"] == 0 ? 0 : 1;
+      numberDefensives = property["qty_agricultural_defensives"] != "0" ? 1 : 0;
       _hasDefensive =
           property["qty_agricultural_defensives"] == 0 ? false : true;
       _hasGun = (property["has_gun"] == "true" || property["has_gun"] == 1)
@@ -109,7 +109,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
       // Set new form data
       Map pageFormData = {
-        'qty_agricultural_defensives': int.tryParse(_quantityDefensive.text),
+        'qty_agricultural_defensives': _quantityDefensive.text,
         'has_gun': _hasGun,
         'has_gun_local': _hasGunPlace,
         'gun_local_description': _gunPlaceDescription.text,
@@ -143,7 +143,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
               TextFormField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Preencha o número de defensivos agrícolas';
+                    return 'Preencha a quantidade de defensivos agrícolas';
                   }
                   return null;
                 },
@@ -165,7 +165,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
                         BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
                   ),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 controller: _quantityDefensive,
               ),
             ])),

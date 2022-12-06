@@ -16,7 +16,7 @@ Future<String?> syncProperties () async {
 
   if (response.statusCode == 200) {
     
-    String query = "INSERT INTO properties (_id, code, has_geo_board, qty_people, has_cams, has_phone_signal, has_internet, has_gun, has_gun_local, gun_local_description, qty_agricultural_defensives, observations, latitude,longitude, fk_owner_id, fk_property_type_id, latitude, longitude, createdAt, updatedAt) VALUES";
+    String query = "INSERT INTO properties (_id, code, has_geo_board, qty_people, has_cams, has_phone_signal, has_internet, has_gun, has_gun_local, gun_local_description, qty_agricultural_defensives, observations, latitude,longitude, fk_owner_id, fk_property_type_id, area, latitude, longitude, createdAt, updatedAt) VALUES";
 
     var properties = jsonDecode(response.body);
 
@@ -30,6 +30,7 @@ Future<String?> syncProperties () async {
           'observations',
           'fk_owner_id',
           'fk_property_type_id',
+          'area',
           'created_at',
           'updated_at'
         ];
@@ -38,7 +39,7 @@ Future<String?> syncProperties () async {
           property[column] = property[column] != null ? property[column].replaceAll("'", "''") : null;
         }
 
-        String queryInsertLine = "\n('${property["_id"]}', '${property["code"]}', '${property["has_geo_board"]}', '${property["qty_people"]}', '${property["has_cams"]}', '${property["has_phone_signal"]}', '${property["has_internet"]}', '${property["has_gun"]}', '${property["has_gun_local"]}', '${property["gun_local_description"]}', '${property["qty_agricultural_defensives"]}', '${property["observations"]}', '${property["latitude"]}', '${property["longitude"]}', '${property["fk_owner_id"]}', '${property["fk_property_type_id"]}', '${property["latitude"]}', '${property["longitude"]}', '${property["created_at"]}', '${property["updated_at"]}'),";
+        String queryInsertLine = "\n('${property["_id"]}', '${property["code"]}', '${property["has_geo_board"]}', '${property["qty_people"]}', '${property["has_cams"]}', '${property["has_phone_signal"]}', '${property["has_internet"]}', '${property["has_gun"]}', '${property["has_gun_local"]}', '${property["gun_local_description"]}', '${property["qty_agricultural_defensives"]}', '${property["observations"]}', '${property["latitude"]}', '${property["longitude"]}', '${property["fk_owner_id"]}', '${property["fk_property_type_id"]}', '${property["area"]}', '${property["latitude"]}', '${property["longitude"]}', '${property["created_at"]}', '${property["updated_at"]}'),";
 
         query += queryInsertLine;
       }
@@ -90,7 +91,7 @@ receiveNewPropertyData(db) async {
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
-    String query = "INSERT INTO properties (_id, code, has_geo_board, qty_people, has_cams, has_phone_signal, has_internet, has_gun, has_gun_local, gun_local_description, qty_agricultural_defensives, observations, latitude, longitude, fk_owner_id, fk_property_type_id, latitude, longitude, createdAt, updatedAt) VALUES";
+    String query = "INSERT INTO properties (_id, code, has_geo_board, qty_people, has_cams, has_phone_signal, has_internet, has_gun, has_gun_local, gun_local_description, qty_agricultural_defensives, observations, latitude, longitude, fk_owner_id, fk_property_type_id, area, latitude, longitude, createdAt, updatedAt) VALUES";
 
     var responseBody = jsonDecode(response.body);
     var properties = responseBody["properties"];
@@ -123,6 +124,7 @@ receiveNewPropertyData(db) async {
           'longitude': property["longitude"],
           'fk_owner_id': property["fk_owner_id"],
           'fk_property_type_id': property["fk_property_type_id"],
+          'area': property["area"],
           'createdAt': property["created_at"],
           'updatedAt': property["updated_at"],
         };

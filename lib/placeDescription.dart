@@ -35,8 +35,8 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
         // Set new form data
         Map pageFormData = {
           'qty_agricultural_defensives':
-              _hasDefensive && int.tryParse(_quantityDefensive.text) != null
-                  ? int.tryParse(_quantityDefensive.text)
+              _hasDefensive && _quantityDefensive.text != null
+                  ? _quantityDefensive.text
                   : 0,
           'has_gun': _hasGun,
           'has_gun_local': _hasGunPlace,
@@ -66,8 +66,8 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
       // Set new form data
       Map pageFormData = {
         'qty_agricultural_defensives':
-            _hasDefensive && int.tryParse(_quantityDefensive.text) != null
-                ? int.tryParse(_quantityDefensive.text)
+            _hasDefensive && _quantityDefensive.text != null
+                ? _quantityDefensive.text
                 : 0,
         'has_gun': _hasGun,
         'has_gun_local': _hasGunPlace,
@@ -101,7 +101,7 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
             TextFormField(
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Preencha o número de defensivos agrícolas';
+                  return 'Preencha a quantidade de defensivos agrícolas';
                 }
                 return null;
               },
@@ -123,7 +123,7 @@ class _PlaceDescriptionState extends State<PlaceDescription> {
                       BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
                 ),
               ),
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.text,
               controller: _quantityDefensive,
             ),
           ])));

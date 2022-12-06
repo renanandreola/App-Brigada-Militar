@@ -46,7 +46,10 @@ class _EditPropertyState extends State<EditProperty> {
       _lat = property["latitude"];
       _lng = property["longitude"];
       _quantityResidents.text = property["qty_people"].toString();
-      _hasGeoBoard = true;
+      _area.text = property["area"].toString();
+      _hasGeoBoard =  (property["has_geo_board"] == 'true' || property["has_geo_board"] == 1)
+          ? true
+          : false;
       _hasCams = (property["has_cams"] == 'true' || property["has_cams"] == 1)
           ? true
           : false;
@@ -66,6 +69,7 @@ class _EditPropertyState extends State<EditProperty> {
   LocationData? _currentLocalData = null;
 
   TextEditingController _quantityResidents = TextEditingController();
+  TextEditingController _area = TextEditingController();
 
   String _dropDownValue = '';
   bool _hasCams = false;
@@ -91,7 +95,8 @@ class _EditPropertyState extends State<EditProperty> {
       // Set new form data
       Map pageFormData = {
         'qty_people': _quantityResidents.text,
-        'has_geo_board': false,
+        'area': _area.text,
+        'has_geo_board': _hasGeoBoard,
         'has_cams': _hasCams,
         'has_phone_signal': _hasPhoneSignal,
         'has_internet': _hasNetwork,
@@ -158,6 +163,37 @@ class _EditPropertyState extends State<EditProperty> {
                 Form(
                     key: _formKey,
                     child: Column(children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 32, right: 32, top: 5),
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Preencha o tamanho da propriedade';
+                            }
+                            return null;
+                          },
+                          cursorColor: Colors.black,
+                          decoration: InputDecoration(
+                            labelText: "Tamanho da Propriedade (hectares)",
+                            labelStyle: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 1),
+                                fontSize: 15,
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "RobotoFlex"),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 177, 177, 177)),
+                            ),
+                          ),
+                          keyboardType: TextInputType.number,
+                          controller: _area,
+                        ),
+                      ),
                       // Quantity of peoples
                       Padding(
                         padding: EdgeInsets.only(left: 32, right: 32, top: 5),
@@ -241,6 +277,23 @@ class _EditPropertyState extends State<EditProperty> {
                           },
                         );
                       },
+                    )),
+
+                // Has cams
+                Padding(
+                    padding: EdgeInsets.only(left: 15, right: 32, top: 5),
+                    child: CheckboxListTile(
+                      title: Text(
+                          "A propriedade possui placa de georreferenciamento"),
+                      activeColor: Color.fromARGB(255, 27, 75, 27),
+                      value: _hasGeoBoard,
+                      onChanged: (newValue) {
+                        setState(() {
+                          _hasGeoBoard = newValue!;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity
+                          .leading, //  <-- leading Checkbox
                     )),
 
                 // Has cams
