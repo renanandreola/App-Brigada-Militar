@@ -91,7 +91,7 @@ class _EditGarrisonState extends State<EditGarrison> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ConfirmVisit('', widget.userName)));
+                builder: (context) => ConfirmVisit(null, widget.userName, null)));
         return;
       }
 

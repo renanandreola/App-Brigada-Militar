@@ -11,7 +11,7 @@ Future<String?> syncUserVisits () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/user-visits";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/user-visits";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -70,7 +70,7 @@ receiveNewUserVisitData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/user-visits?last_date=${lastSyncDate}";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/user-visits?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -179,7 +179,7 @@ sendNewUserVisitData(db) async {
 
   String user_visitsJson = jsonEncode(allChanges);
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/user-visits";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/user-visits";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: user_visitsJson);
 
   if (jsonDecode(response.body) is Map && jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {

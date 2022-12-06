@@ -26,6 +26,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
 
   TextEditingController _department = TextEditingController();
   TextEditingController _observations = TextEditingController();
+  TextEditingController _history = TextEditingController();
 
   bool _usedProgram = false;
   bool _usedProgramSuccess = false;
@@ -39,7 +40,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
         Map formData = widget.formData;
 
         // Set new form data
-        Map pageFormData = {"observations": _observations.text};
+        Map pageFormData = {"observations": _observations.text, "history": _history.text};
 
         // Merge form
         formData.addAll(pageFormData);
@@ -78,6 +79,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
               gun_local_description: formData["gun_local_description"],
               qty_agricultural_defensives:
                   formData["qty_agricultural_defensives"],
+              area: formData["area"],
               observations: formData["observations"],
               latitude: formData["latitude"],
               longitude: formData["longitude"],
@@ -99,7 +101,8 @@ class _AditionalInfoState extends State<AditionalInfo> {
               Map<String, dynamic> vehiclesMap = {
                 "fk_property_id": property_id,
                 "fk_vehicle_id": vehicle["key"],
-                "color": "Preto",
+                "color": vehicle["color"],
+                "identification": vehicle["identification"],
                 "updatedAt": datetimeStr,
                 "createdAt": datetimeStr
               };
@@ -178,14 +181,14 @@ class _AditionalInfoState extends State<AditionalInfo> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ConfirmVisit(property!.id, widget.userName)));
+                    ConfirmVisit(property!.id, widget.userName, widget.formData["history"])));
       }
     } else {
       // Retrieve form data
       Map formData = widget.formData;
 
       // Set new form data
-      Map pageFormData = {"observations": _observations.text};
+      Map pageFormData = {"observations": _observations.text, "history": _history.text};
 
       // Merge form
       formData.addAll(pageFormData);
@@ -246,7 +249,8 @@ class _AditionalInfoState extends State<AditionalInfo> {
             Map<String, dynamic> vehiclesMap = {
               "fk_property_id": property_id,
               "fk_vehicle_id": vehicle["key"],
-              "color": "Preto",
+              "color": vehicle["color"],
+              "identification": vehicle["identification"],
               "updatedAt": datetimeStr,
               "createdAt": datetimeStr
             };
@@ -325,7 +329,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  ConfirmVisit(property!.id, widget.userName)));
+                  ConfirmVisit(property!.id, widget.userName, widget.formData["history"])));
     }
   }
 
@@ -457,7 +461,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
                   child: SizedBox(
                     width: double.infinity,
                     child: Text(
-                      'Histórico',
+                      'Informações Adicionais da Propriedade',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           fontSize: 15,
@@ -483,6 +487,42 @@ class _AditionalInfoState extends State<AditionalInfo> {
                       minLines: 5,
                       maxLines: 5,
                       controller: _observations,
+                    ),
+                  ),
+                ),
+
+                // History
+                Padding(
+                  padding: EdgeInsets.only(left: 30, right: 32, top: 5),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'Histórico da Visita',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          color: Color.fromARGB(255, 120, 120, 120),
+                          fontFamily: "RobotoFlex"),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    child: TextField(
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      minLines: 5,
+                      maxLines: 5,
+                      controller: _history,
                     ),
                   ),
                 ),

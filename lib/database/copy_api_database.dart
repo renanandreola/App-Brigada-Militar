@@ -43,10 +43,10 @@ String get _users => '''
   CREATE TABLE users (
     _id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255)  UNIQUE,
+    password VARCHAR(255) ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL
+    updatedAt DATETIME 
   );
 ''';
 
@@ -56,11 +56,12 @@ String get _users => '''
 String get _visits => '''
   CREATE TABLE visits (
     _id VARCHAR(255) PRIMARY KEY,
-    car VARCHAR(255) NOT NULL,
-    date DATETIME NOT NULL,
-    fk_property_id VARCHAR NOT NULL,
+    car VARCHAR(255) ,
+    date DATETIME ,
+    history VARCHAR(255),
+    fk_property_id VARCHAR ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
+    updatedAt DATETIME ,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id)
   );
 ''';
@@ -71,10 +72,10 @@ String get _visits => '''
 String get _user_visits => '''
   CREATE TABLE user_visits (
     _id VARCHAR(255) PRIMARY KEY,
-    fk_user_id VARCHAR(255) NOT NULL,
-    fk_visit_id VARCHAR NOT NULL,
+    fk_user_id VARCHAR(255) ,
+    fk_visit_id VARCHAR ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
+    updatedAt DATETIME ,
     FOREIGN KEY (fk_user_id) REFERENCES Users (_id),
     FOREIGN KEY (fk_visit_id) REFERENCES Visits (_id)
   );
@@ -86,13 +87,13 @@ String get _user_visits => '''
 String get _owners => '''
   CREATE TABLE owners (
     _id VARCHAR(255) PRIMARY KEY,
-    firstname VARCHAR(255) NOT NULL,
-    lastname VARCHAR(255) NOT NULL,
-    cpf VARCHAR(15) NOT NULL,
-    phone1 VARCHAR(15) NOT NULL,
+    firstname VARCHAR(255) ,
+    lastname VARCHAR(255) ,
+    cpf VARCHAR(15) ,
+    phone1 VARCHAR(15) ,
     phone2 VARCHAR(15),
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL
+    updatedAt DATETIME 
   );
 ''';
 
@@ -102,9 +103,9 @@ String get _owners => '''
 String get _property_types => '''
   CREATE TABLE property_types (
     _id VARCHAR(255) PRIMARY KEY,
-    name VARCHAR (255) NOT NULL,
+    name VARCHAR (255) ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL
+    updatedAt DATETIME 
   );
 ''';
 
@@ -128,10 +129,10 @@ String get _properties => '''
     observations TEXT,
     latitude VARCHAR(255),
     longitude VARCHAR(255),
-    fk_owner_id VARCHAR(255) NOT NULL,
+    fk_owner_id VARCHAR(255) ,
     fk_property_type_id VARCHAR(255),
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
+    updatedAt DATETIME ,
     FOREIGN KEY (fk_owner_id) REFERENCES Owners (_id),
     FOREIGN KEY (fk_property_type_id) REFERENCES Property_types (_id)
   );
@@ -143,11 +144,11 @@ String get _properties => '''
 String get _requests => '''
   CREATE TABLE requests (
     _id VARCHAR(255) PRIMARY KEY,
-    agency VARCHAR(255) NOT NULL,
-    has_success BOOL NOT NULL,
-    fk_property_id VARCHAR(255) NOT NULL,
+    agency VARCHAR(255) ,
+    has_success BOOL ,
+    fk_property_id VARCHAR(255) ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
+    updatedAt DATETIME ,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id)
   );
 ''';
@@ -158,10 +159,10 @@ String get _requests => '''
 String get _agricultural_machines => '''
   CREATE TABLE agricultural_machines (
     _id VARCHAR (255) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) ,
     brand VARCHAR(255),
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL
+    updatedAt DATETIME 
   );
 ''';
 
@@ -171,10 +172,10 @@ String get _agricultural_machines => '''
 String get _property_agricultural_machines => '''
   CREATE TABLE property_agricultural_machines (
     _id VARCHAR(255) PRIMARY KEY,
-    fk_property_id VARCHAR(255) NOT NULL,
-    fk_agricultural_machine_id VARCHAR(255) NOT NULL,
+    fk_property_id VARCHAR(255) ,
+    fk_agricultural_machine_id VARCHAR(255) ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
+    updatedAt DATETIME ,
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id),
     FOREIGN KEY (fk_agricultural_machine_id) REFERENCES Agricultural_machines (_id)
   );
@@ -186,10 +187,10 @@ String get _property_agricultural_machines => '''
 String get _vehicles => '''
   CREATE TABLE vehicles (
     _id VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) ,
     brand VARCHAR(255),
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL
+    updatedAt DATETIME 
   );
 ''';
 
@@ -201,10 +202,10 @@ String get _property_vehicles => '''
     _id VARCHAR(255) PRIMARY KEY,
     color VARCHAR(255),
     identification VARCHAR(255),
-    fk_vehicle_id VARCHAR(255) NOT NULL,
-    fk_property_id VARCHAR(255) NOT NULL,
+    fk_vehicle_id VARCHAR(255) ,
+    fk_property_id VARCHAR(255) ,
     createdAt DATETIME,
-    updatedAt DATETIME NOT NULL,
+    updatedAt DATETIME ,
     FOREIGN KEY (fk_vehicle_id) REFERENCES Vehicles (_id),
     FOREIGN KEY (fk_property_id) REFERENCES Properties (_id)
   );
@@ -232,8 +233,8 @@ String get _sync_insert => '''
  */
 String get _garbages => '''
   CREATE TABLE garbages (
-    reference_table VARCHAR(255) NOT NULL,
-    deleted_id VARCHAR(255) NOT NULL
+    reference_table VARCHAR(255) ,
+    deleted_id VARCHAR(255) 
   );
 ''';
 
@@ -242,8 +243,8 @@ String get _garbages => '''
  */
 String get _databaseUpdates => '''
   CREATE TABLE database_updates (
-    reference_table VARCHAR(255) NOT NULL,
-    updated_id VARCHAR(255) NOT NULL
+    reference_table VARCHAR(255) ,
+    updated_id VARCHAR(255) 
   );
 ''';
 

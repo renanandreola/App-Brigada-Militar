@@ -11,7 +11,7 @@ Future<String?> syncPropertyTypes () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-types";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-types";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -69,7 +69,7 @@ receiveNewPropertyTypeData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-types?last_date=${lastSyncDate}";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-types?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {

@@ -1,4 +1,5 @@
 import 'package:app_brigada_militar/initialPage.dart';
+import 'package:app_brigada_militar/vehicle.dart';
 import 'package:flutter/material.dart';
 
 void main(List<String> args) async {

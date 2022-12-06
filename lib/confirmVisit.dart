@@ -11,7 +11,8 @@ class ConfirmVisit extends StatefulWidget {
   // const ConfirmVisit({Key? key}) : super(key: key);
   String? property_id;
   late String userName;
-  ConfirmVisit(this.property_id, this.userName);
+  String? history;
+  ConfirmVisit(this.property_id, this.userName, this.history);
 
   @override
   State<ConfirmVisit> createState() => _ConfirmVisitState();
@@ -58,6 +59,7 @@ class _ConfirmVisitState extends State<ConfirmVisit> {
         "car": vtr,
         "fk_property_id": widget.property_id,
         "date": datetimeStr,
+        "history": widget.history,
         "createdAt": datetimeStr,
         "updatedAt": datetimeStr
       });

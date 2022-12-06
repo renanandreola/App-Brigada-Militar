@@ -11,7 +11,7 @@ Future<String?> syncOwners () async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/owners";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/owners";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -70,7 +70,7 @@ receiveNewOwnerData(db) async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/owners?last_date=${lastSyncDate}";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/owners?last_date=${lastSyncDate}";
   final response = await http.get(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}" });
 
   if (response.statusCode == 200) {
@@ -194,7 +194,7 @@ sendNewOwnerData(db) async {
 
   String ownersJson = jsonEncode(allChanges);
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/owners";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/owners";
   final response = await http.post(Uri.parse(uri), headers: { "Authorization": "Bearer ${token}", "Content-Type": "application/json", "Accept": "application/json" }, body: ownersJson);
 
   if (jsonDecode(response.body).containsKey("status") && jsonDecode(response.body)["status"] == "Token is Expired") {

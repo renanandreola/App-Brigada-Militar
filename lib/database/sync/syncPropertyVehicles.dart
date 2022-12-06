@@ -10,20 +10,27 @@ Future<String?> syncPropertyVehicles() async {
     throw Exception("Token is empty");
   }
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles";
   final response = await http
       .get(Uri.parse(uri), headers: {"Authorization": "Bearer ${token}"});
 
   if (response.statusCode == 200) {
     String query =
-        "INSERT INTO property_vehicles (_id, fk_vehicle_id, fk_property_id, createdAt, updatedAt) VALUES";
+        "INSERT INTO property_vehicles (_id, fk_vehicle_id, color, identification, fk_property_id, createdAt, updatedAt) VALUES";
 
     var property_vehicles = jsonDecode(response.body);
 
     try {
       for (var property_vehicle in property_vehicles) {
+        property_vehicle["identification"] =
+            property_vehicle["identification"] == null
+                ? ""
+                : property_vehicle["identification"];
+        property_vehicle["color"] =
+            property_vehicle["color"] == null ? "" : property_vehicle["color"];
+
         String queryInsertLine =
-            "\n('${property_vehicle["_id"].replaceAll("'", "''")}', '${property_vehicle["fk_vehicle_id"].replaceAll("'", "''")}', '${property_vehicle["fk_property_id"].replaceAll("'", "''")}', '${property_vehicle["created_at"].replaceAll("'", "''")}', '${property_vehicle["updated_at"].replaceAll("'", "''")}'),";
+            "\n('${property_vehicle["_id"].replaceAll("'", "''")}', '${property_vehicle["fk_vehicle_id"].replaceAll("'", "''")}', '${property_vehicle["color"].replaceAll("'", "''")}', '${property_vehicle["identification"].replaceAll("'", "''")}', '${property_vehicle["fk_property_id"].replaceAll("'", "''")}', '${property_vehicle["created_at"].replaceAll("'", "''")}', '${property_vehicle["updated_at"].replaceAll("'", "''")}'),";
 
         query += queryInsertLine;
       }
@@ -70,7 +77,7 @@ receiveNewPropertyVehicleData(db) async {
   }
 
   String uri =
-      "https://novorumo-api.fly.dev/api/sync/property-vehicles?last_date=${lastSyncDate}";
+      "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles?last_date=${lastSyncDate}";
   final response = await http
       .get(Uri.parse(uri), headers: {"Authorization": "Bearer ${token}"});
 
@@ -175,11 +182,14 @@ sendNewPropertyVehicleData(db) async {
     propertyVehiclesDeleted.add(del["deleted_id"]);
   }
 
-  var allChanges = {'property_vehicles': property_vehicleChanges, 'deleted': propertyVehiclesDeleted};
+  var allChanges = {
+    'property_vehicles': property_vehicleChanges,
+    'deleted': propertyVehiclesDeleted
+  };
 
   String property_vehiclesJson = jsonEncode(allChanges);
 
-  String uri = "https://novorumo-api.fly.dev/api/sync/property-vehicles";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles";
   final response = await http.post(Uri.parse(uri),
       headers: {
         "Authorization": "Bearer ${token}",
@@ -199,7 +209,8 @@ sendNewPropertyVehicleData(db) async {
     await db.rawDelete(
         "DELETE FROM database_updates WHERE reference_table = 'property_vehicles'");
 
-    await db.rawDelete("DELETE FROM garbages WHERE reference_table = 'property_vehicles'");
+    await db.rawDelete(
+        "DELETE FROM garbages WHERE reference_table = 'property_vehicles'");
 
     return true;
   }

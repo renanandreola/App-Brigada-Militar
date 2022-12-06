@@ -20,8 +20,8 @@ List<String> _carList = [];
 List<Map<String?, String?>> vehiclesInfo = [];
 
 class _VehicleState extends State<Vehicle> {
-  TextEditingController _otherValue = TextEditingController();
-  TextEditingController _otherKey = TextEditingController();
+  List<TextEditingController> _vehicleIdentification = [];
+  List<TextEditingController> _vehicleColor = [];
   final _formKey = GlobalKey<FormState>();
 
   // bool _hasOtherVehicle = false;
@@ -76,21 +76,17 @@ class _VehicleState extends State<Vehicle> {
   void removeVehicles() {
     setState(() {
       _vehicleType.removeLast();
+      _vehicleIdentification.removeLast();
+      _vehicleColor.removeLast();
       numberVehicles -= 1;
     });
   }
 
   void _goToAditionalInfo() async {
-    // if (_hasOtherVehicle && _otherValue.text != "") {
-    //   _vehicleType[0]['name'] = _otherValue.text;
-    // }
-
-    // if (_hasOtherVehicle && _otherValue.text == "") {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Nenhum veículo selecionado!')),
-    //   );
-    //   return;
-    // }
+    for (var i = 0; i < _vehicleType.length; i++) {
+      _vehicleType[i]["identification"] = _vehicleIdentification[i].text;
+      _vehicleType[i]["color"] = _vehicleColor[i].text;
+    }
 
     if (_vehicleType[0]['name'] == "") {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -107,168 +103,140 @@ class _VehicleState extends State<Vehicle> {
                 AditionalInfo(widget.formData, widget.userName)));
   }
 
-  Widget _otherVehicle() {
-    List<Form> componentes = [];
-    for (int i = 1; i <= _numberInput; i++) {
-      componentes.add(Form(
-          key: _formKey,
-          child: Column(children: [
-            Padding(
-              padding: EdgeInsets.only(left: 0, right: 0, top: 5),
-              child: TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Preencha o nome do veículo';
-                  }
-                  return null;
-                },
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  labelText: "Nome do veículo",
-                  labelStyle: TextStyle(
-                    color: Color.fromARGB(255, 88, 88, 88),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                ),
-                keyboardType: TextInputType.text,
-                controller: _otherValue,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 0, right: 0, top: 5),
-              child: TextFormField(
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Preencha a marca do veículo';
-                  }
-                  return null;
-                },
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  labelText: "Marca do veículo",
-                  labelStyle: TextStyle(
-                    color: Color.fromARGB(255, 88, 88, 88),
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 88, 88, 88)),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                  ),
-                ),
-                keyboardType: TextInputType.text,
-                controller: _otherKey,
-              ),
-            ),
-          ])));
-    }
-    return Column(
-      children: componentes,
-    );
-  }
-
   Widget vehicleType1() {
     List<Row> filhos = [];
     for (int i = 0; i <= numberVehicles; i++) {
       if (_vehicleType.length - 1 < i) {
-        _vehicleType.add({"name": "", "key": ""});
+        _vehicleType
+            .add({"name": "", "key": "", "identification": "", "color": ""});
       }
+
+      _vehicleIdentification.add(TextEditingController());
+      _vehicleColor.add(TextEditingController());
+
+      // Vehicle name
+      filhos.add(
+        Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Padding(
+                padding: EdgeInsets.only(top: 20),
+                child: TextDropdownFormField(
+                  options: _carList,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Preencha uma Veículo';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      fillColor: Colors.black,
+                      focusColor: Colors.green,
+                      hoverColor: Colors.black,
+                      iconColor: Colors.black,
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                      labelText: "Veículo ${i}"),
+                  dropdownHeight: 420,
+                  onChanged: (dynamic val) {
+                    setState(
+                      () {
+                        Map currentVehicle = vehiclesInfo
+                            .where(
+                                (element) => element["name"] == val.toString())
+                            .first;
+                        _vehicleType[i]["name"] = val.toString();
+                        _vehicleType[i]["key"] = currentVehicle["key"];
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+      // Vehicle identification
       filhos.add(Row(
         children: [
           Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: Padding(
-                  padding: EdgeInsets.only(top: 20),
-                  child: TextDropdownFormField(
-                    options: _carList,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Preencha uma Veículo';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        fillColor: Colors.black,
-                        focusColor: Colors.green,
-                        hoverColor: Colors.black,
-                        iconColor: Colors.black,
-                        suffixIcon: Icon(Icons.arrow_drop_down),
-                        labelText: "Veículo ${i}"),
-                    dropdownHeight: 420,
-                    onChanged: (dynamic val) {
-                      setState(
-                        () {
-                          Map currentVehicle = vehiclesInfo
-                              .where((element) =>
-                                  element["name"] == val.toString())
-                              .first;
-                          _vehicleType[i]["name"] = val.toString();
-                          _vehicleType[i]["key"] = currentVehicle["key"];
-                        },
-                      );
-                    },
-                  )))
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Padding(
+              padding: EdgeInsets.only(top: 5),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha a placa do veículo';
+                  }
+                  return null;
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "Placa do Veículo",
+                  labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 1),
+                      fontSize: 15,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "RobotoFlex"),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                  ),
+                ),
+                keyboardType: TextInputType.name,
+                controller: _vehicleIdentification[i],
+              ),
+            ),
+          )
         ],
-      )
-          //   DropdownButtonFormField(
-          //   hint: _vehicleType[i]["name"] == null || _vehicleType[i]["name"] == ""
-          //       ? Text('Veículo ${i}',
-          //           style: TextStyle(
-          //               color: Color.fromARGB(255, 0, 0, 1),
-          //               fontSize: 15,
-          //               fontStyle: FontStyle.normal,
-          //               fontWeight: FontWeight.w400,
-          //               fontFamily: "RobotoFlex"))
-          //       : Text(
-          //           _vehicleType[i]["name"],
-          //           style: TextStyle(
-          //               color: Color.fromARGB(255, 0, 0, 1),
-          //               fontSize: 15,
-          //               fontStyle: FontStyle.normal,
-          //               fontWeight: FontWeight.w400,
-          //               fontFamily: "RobotoFlex"),
-          //         ),
-          //   decoration: InputDecoration(
-          //       // filled: true,
-          //       fillColor: Colors.black,
-          //       labelText: 'Veículo ${i}'),
-          //   isExpanded: true,
-          //   iconSize: 30.0,
-          //   style: TextStyle(
-          //       color: Color.fromARGB(255, 0, 0, 1),
-          //       fontSize: 15,
-          //       fontStyle: FontStyle.normal,
-          //       fontWeight: FontWeight.w400,
-          //       fontFamily: "RobotoFlex"),
-          //   items: _carList.map(
-          //     (val) {
-          //       return DropdownMenuItem<String>(
-          //         value: val,
-          //         child: Text(val),
-          //       );
-          //     },
-          //   ).toList(),
-          //   onChanged: (val) {
-          //     setState(
-          //       () {
-          //         Map currentVehicle = vehiclesInfo
-          //             .where((element) => element["name"] == val.toString())
-          //             .first;
-          //         _vehicleType[i]["name"] = val.toString();
-          //         _vehicleType[i]["key"] = currentVehicle["key"];
-          //       },
-          //     );
-          //   },
-          // )
-          );
+      ));
+
+      //Vehicle Color  
+      filhos.add(Row(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Padding(
+              padding: EdgeInsets.only(top: 5),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha a cor do veículo';
+                  }
+                  return null;
+                },
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  labelText: "Cor do Veículo",
+                  labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 1),
+                      fontSize: 15,
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "RobotoFlex"),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                  ),
+                ),
+                keyboardType: TextInputType.name,
+                controller: _vehicleColor[i],
+              ),
+            ),
+          )
+        ],
+      ));
     }
     return Column(
       children: filhos,
@@ -310,29 +278,6 @@ class _VehicleState extends State<Vehicle> {
                 Padding(
                     padding: EdgeInsets.only(left: 32, right: 32, top: 20),
                     child: vehicleType1()),
-
-                // Padding(
-                //     padding: EdgeInsets.only(left: 15, right: 32, top: 5),
-                //     child: CheckboxListTile(
-                //       title: Text("Outro(a)"),
-                //       activeColor: Color.fromARGB(255, 27, 75, 27),
-                //       value: _hasOtherVehicle,
-                //       onChanged: (newValue) {
-                //         setState(() {
-                //           _hasOtherVehicle = newValue!;
-                //           _hasOtherVehicle
-                //               ? _numberInput = 1
-                //               : _numberInput = 0;
-                //         });
-                //       },
-                //       controlAffinity: ListTileControlAffinity
-                //           .leading, //  <-- leading Checkbox
-                //     )),
-
-                // Padding(
-                //   padding: EdgeInsets.only(left: 32, right: 32, top: 5),
-                //   child: _otherVehicle(),
-                // ),
 
                 // Add new vehicle
                 Padding(

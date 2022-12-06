@@ -24,7 +24,7 @@ dynamic getToken() async {
  * Create a new API Token
  */
 dynamic generateToken() async {
-  String uri = "https://novorumo-api.fly.dev/api/auth/login";
+  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/auth/login";
 
   final response = await http.post(Uri.parse(uri), body: { "email": "tracey.gulgowski@hotmail.com", "password": "r`.o=rv*31v" });
 

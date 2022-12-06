@@ -41,7 +41,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
           property["qty_agricultural_defensives"].toString();
       numberDefensives = property["qty_agricultural_defensives"] != "0" ? 1 : 0;
       _hasDefensive =
-          property["qty_agricultural_defensives"] == 0 ? false : true;
+          property["qty_agricultural_defensives"] == "0" ? false : true;
       _hasGun = (property["has_gun"] == "true" || property["has_gun"] == 1)
           ? true
           : false;

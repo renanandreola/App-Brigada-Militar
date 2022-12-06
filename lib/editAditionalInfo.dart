@@ -60,6 +60,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
 
   TextEditingController _department = TextEditingController();
   TextEditingController _observations = TextEditingController();
+  TextEditingController _history = TextEditingController();
 
   bool _usedProgram = false;
   bool _usedProgramSuccess = false;
@@ -73,7 +74,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
         Map formData = widget.formData;
 
         // Set new form data
-        Map pageFormData = {"observations": _observations.text};
+        Map pageFormData = {"observations": _observations.text, "history": _history.text};
 
         // Merge form
         formData.addAll(pageFormData);
@@ -196,9 +197,10 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
                 // if not exists
                 // insert into database
                 await txn.insert('property_vehicles', {
-                  "color": "Preto",
+                  "color": vehicle["color"],
                   "fk_property_id": property_id,
                   "fk_vehicle_id": vehicle["key"],
+                  "identification": vehicle["identification"],
                   "createdAt": datetimeStr,
                   "updatedAt": datetimeStr,
                 });
@@ -345,91 +347,6 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
               }
             }
           }
-
-          //   String property_id = property!.id!;
-
-          //   final DateTime now = DateTime.now();
-          //   String datetimeStr = datetimeToStr(now);
-
-          //   //Vehicles
-          //   var vehicles = await SessionManager().get('vehicles');
-
-          //   if (vehicles != null) {
-          //     for (var vehicle in vehicles) {
-          //       Map<String, dynamic> vehiclesMap = {
-          //         "fk_property_id": property_id,
-          //         "fk_vehicle_id": vehicle["key"],
-          //         "color": "Preto",
-          //         "updatedAt": datetimeStr,
-          //         "createdAt": datetimeStr
-          //       };
-
-          //       txn.insert('property_vehicles', vehiclesMap);
-
-          //       String vehicle_key = vehicle["key"];
-
-          //       String table = 'property_vehicles';
-          //       List<Map> list = await txn.query(table,
-          //           where:
-          //               "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle_key}'",
-          //           orderBy: "createdAt DESC",
-          //           limit: 1);
-          //       Map elem = list[0];
-          //       await txn.insert('database_updates',
-          //           {'reference_table': table, 'updated_id': elem["_id"]});
-          //     }
-          //   }
-
-          //   //Agricultural Machines
-          //   var machines = await SessionManager().get('machines');
-
-          //   if (machines != null) {
-          //     for (var machine in machines) {
-          //       Map<String, dynamic> machinesMap = {
-          //         "fk_property_id": property_id,
-          //         "fk_agricultural_machine_id": machine["key"],
-          //         "updatedAt": datetimeStr,
-          //         "createdAt": datetimeStr
-          //       };
-
-          //       txn.insert('property_agricultural_machines', machinesMap);
-
-          //       String table = 'property_agricultural_machines';
-          //       List<Map> list = await txn.query(table,
-          //           where:
-          //               "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${machine["key"]}'",
-          //           orderBy: "createdAt DESC",
-          //           limit: 1);
-          //       Map elem = list[0];
-          //       await txn.insert('database_updates',
-          //           {'reference_table': table, 'updated_id': elem["_id"]});
-          //     }
-          //   }
-
-          //   //Create request if necessary
-          //   if (_usedProgram) {
-          //     Map<String, dynamic> requestModelMap = {
-          //       "agency": _department.text,
-          //       "has_success": _usedProgramSuccess,
-          //       "fk_property_id": property_id,
-          //       "updatedAt": datetimeStr,
-          //       "createdAt": datetimeStr
-          //     };
-
-          //     inspect(requestModelMap);
-
-          //     await txn.insert('requests', requestModelMap);
-
-          //     String table = 'requests';
-          //     List<Map> list = await txn.query(table,
-          //         where:
-          //             "fk_property_id = '${property_id}' AND agency = '${_department.text}'",
-          //         orderBy: "createdAt DESC",
-          //         limit: 1);
-          //     Map elem = list[0];
-          //     await txn.insert('database_updates',
-          //         {'reference_table': table, 'updated_id': elem["_id"]});
-          //   }
         });
 
         // print("Propriedade Salva com Sucesso!");
@@ -438,14 +355,14 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    ConfirmVisit(property["_id"], widget.userName)));
+                    ConfirmVisit(property["_id"], widget.userName, widget.formData["history"])));
       }
     } else {
       // Retrieve form data
       Map formData = widget.formData;
 
       // Set new form data
-      Map pageFormData = {"observations": _observations.text};
+      Map pageFormData = {"observations": _observations.text, "history": _history.text};
 
       // Merge form
       formData.addAll(pageFormData);
@@ -569,9 +486,10 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
               // if not exists
               // insert into database
               await txn.insert('property_vehicles', {
-                "color": "Preto",
+                "color": vehicle["color"],
                 "fk_property_id": property_id,
                 "fk_vehicle_id": vehicle["key"],
+                "identification": vehicle["identification"],
                 "createdAt": datetimeStr,
                 "updatedAt": datetimeStr,
               });
@@ -716,91 +634,6 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
             }
           }
         }
-
-        //   String property_id = property!.id!;
-
-        //   final DateTime now = DateTime.now();
-        //   String datetimeStr = datetimeToStr(now);
-
-        //   //Vehicles
-        //   var vehicles = await SessionManager().get('vehicles');
-
-        //   if (vehicles != null) {
-        //     for (var vehicle in vehicles) {
-        //       Map<String, dynamic> vehiclesMap = {
-        //         "fk_property_id": property_id,
-        //         "fk_vehicle_id": vehicle["key"],
-        //         "color": "Preto",
-        //         "updatedAt": datetimeStr,
-        //         "createdAt": datetimeStr
-        //       };
-
-        //       txn.insert('property_vehicles', vehiclesMap);
-
-        //       String vehicle_key = vehicle["key"];
-
-        //       String table = 'property_vehicles';
-        //       List<Map> list = await txn.query(table,
-        //           where:
-        //               "fk_property_id = '${property_id}' AND fk_vehicle_id = '${vehicle_key}'",
-        //           orderBy: "createdAt DESC",
-        //           limit: 1);
-        //       Map elem = list[0];
-        //       await txn.insert('database_updates',
-        //           {'reference_table': table, 'updated_id': elem["_id"]});
-        //     }
-        //   }
-
-        //   //Agricultural Machines
-        //   var machines = await SessionManager().get('machines');
-
-        //   if (machines != null) {
-        //     for (var machine in machines) {
-        //       Map<String, dynamic> machinesMap = {
-        //         "fk_property_id": property_id,
-        //         "fk_agricultural_machine_id": machine["key"],
-        //         "updatedAt": datetimeStr,
-        //         "createdAt": datetimeStr
-        //       };
-
-        //       txn.insert('property_agricultural_machines', machinesMap);
-
-        //       String table = 'property_agricultural_machines';
-        //       List<Map> list = await txn.query(table,
-        //           where:
-        //               "fk_property_id = '${property_id}' AND fk_agricultural_machine_id = '${machine["key"]}'",
-        //           orderBy: "createdAt DESC",
-        //           limit: 1);
-        //       Map elem = list[0];
-        //       await txn.insert('database_updates',
-        //           {'reference_table': table, 'updated_id': elem["_id"]});
-        //     }
-        //   }
-
-        //   //Create request if necessary
-        //   if (_usedProgram) {
-        //     Map<String, dynamic> requestModelMap = {
-        //       "agency": _department.text,
-        //       "has_success": _usedProgramSuccess,
-        //       "fk_property_id": property_id,
-        //       "updatedAt": datetimeStr,
-        //       "createdAt": datetimeStr
-        //     };
-
-        //     inspect(requestModelMap);
-
-        //     await txn.insert('requests', requestModelMap);
-
-        //     String table = 'requests';
-        //     List<Map> list = await txn.query(table,
-        //         where:
-        //             "fk_property_id = '${property_id}' AND agency = '${_department.text}'",
-        //         orderBy: "createdAt DESC",
-        //         limit: 1);
-        //     Map elem = list[0];
-        //     await txn.insert('database_updates',
-        //         {'reference_table': table, 'updated_id': elem["_id"]});
-        //   }
       });
 
       // print("Propriedade Salva com Sucesso!");
@@ -809,7 +642,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  ConfirmVisit(property["_id"], widget.userName)));
+                  ConfirmVisit(property["_id"], widget.userName, widget.formData["history"])));
     }
   }
 
@@ -941,7 +774,7 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
                   child: SizedBox(
                     width: double.infinity,
                     child: Text(
-                      'Histórico',
+                      'Informações Adicionais da Propriedade',
                       textAlign: TextAlign.start,
                       style: TextStyle(
                           fontSize: 15,
@@ -967,6 +800,42 @@ class _EditAditionalInfoState extends State<EditAditionalInfo> {
                       minLines: 5,
                       maxLines: 5,
                       controller: _observations,
+                    ),
+                  ),
+                ),
+
+                // History
+                Padding(
+                  padding: EdgeInsets.only(left: 30, right: 32, top: 5),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      'Histórico da Visita',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                          color: Color.fromARGB(255, 120, 120, 120),
+                          fontFamily: "RobotoFlex"),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 32, right: 32, top: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    child: TextField(
+                      keyboardType: TextInputType.multiline,
+                      textInputAction: TextInputAction.newline,
+                      minLines: 5,
+                      maxLines: 5,
+                      controller: _history,
                     ),
                   ),
                 ),
