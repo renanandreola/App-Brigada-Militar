@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/editGarrison.dart';
 import 'package:app_brigada_militar/garrison.dart';
 import 'package:app_brigada_militar/newVisit.dart';
@@ -21,6 +22,9 @@ class HomeApp extends StatefulWidget {
 }
 
 class _HomeAppState extends State<HomeApp> {
+  var _imageSync = Image.asset('assets/images/new-icon-sync.png');
+  var _image7ways = Image.asset('assets/images/new-icon-7ways.png');
+
   @override
   void initState() {
     // TODO: implement initState
@@ -46,6 +50,27 @@ class _HomeAppState extends State<HomeApp> {
     await SessionManager().remove('edit_vehicles');
     //Edit requests
     await SessionManager().remove('edit_requests');
+
+    //Verify sync
+    syncStatus();
+  }
+
+  syncStatus() async {
+    final db = await DB.instance.database;
+
+    var database_updates = await db.query('database_updates');
+    var syncTable = await db.query('sync');
+    var syncTableInstance = syncTable[0];
+
+    // DateTime syncDate = DateTime.parse(syncTableInstance["last_sync"]);
+    // DateTime now = DateTime.now();
+    // final later = syncDate.add(const Duration(hours: 24));
+
+    if (database_updates.length > 0) {
+      setState(() {
+        _imageSync = Image.asset('assets/images/new-icon-sync-notify.png');
+      });
+    }
   }
 
   void _openProperties() {
@@ -179,12 +204,11 @@ class _HomeAppState extends State<HomeApp> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GestureDetector(
-                          child: Image.asset('assets/images/new-icon-sync.png'),
+                          child: _imageSync,
                           onTap: _openSync,
                         ),
                         GestureDetector(
-                          child:
-                              Image.asset('assets/images/new-icon-7ways.png'),
+                          child: _image7ways,
                           onTap: _update7ways,
                         ),
                       ]),

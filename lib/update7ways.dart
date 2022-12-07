@@ -25,6 +25,7 @@ class _Update7waysState extends State<Update7ways> {
     super.initState();
 
     // updateFiles();
+    _downloadFiles();
   }
 
   bool loading = false;
@@ -125,7 +126,7 @@ class _Update7waysState extends State<Update7ways> {
       loading = true;
     });
 
-    bool downloaded = await saveFile(_link.text, "files.zip");
+    bool downloaded = await saveFile("https://docs.google.com/uc?export=download&id=1tKLgPXL3bqFNQQWA3B9SzdFs4Yw7tF2r&confirm=t&uuid=c46bf094-12b5-4b7e-b3db-07bedb37c555&at=AGu7sGrepsiC-By_ZP3NjEvMrI4w:1670112238898", "files.zip");
 
     if (downloaded) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -156,7 +157,7 @@ class _Update7waysState extends State<Update7ways> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                  Text("Baixando..."),
+                  Text("Baixando... ${(progress * 100).toStringAsFixed(2)}%"),
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: LinearProgressIndicator(
@@ -167,90 +168,13 @@ class _Update7waysState extends State<Update7ways> {
                     ),
                   )
                 ]))
-          : Center(
+          :  Center(
               child: Column(
-                children: [
-                  // Color bar
-                  Image.asset('assets/images/rectangle.png'),
-
-                  // Title
-                  Padding(
-                      padding: EdgeInsets.only(left: 32, right: 32, top: 20),
-                      child: Row(
-                        children: [
-                          Text("Atualizar 7ways",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "RobotoFlex")),
-                        ],
-                      )),
-                  Form(
-                      key: _formKey,
-                      child: Column(children: [
-                        // ResponsibleName
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 32, right: 32, top: 10),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Preencha a URL';
-                              }
-                              return null;
-                            },
-                            cursorColor: Colors.black,
-                            decoration: InputDecoration(
-                              labelText: "URL",
-                              labelStyle: TextStyle(
-                                  color: Color.fromARGB(255, 0, 0, 1),
-                                  fontSize: 15,
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: "RobotoFlex"),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(255, 177, 177, 177)),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromARGB(255, 177, 177, 177)),
-                              ),
-                            ),
-                            keyboardType: TextInputType.name,
-                            controller: _link,
-                          ),
-                        ),
-
-                        // Login
-                        Padding(
-                          padding:
-                              EdgeInsets.only(left: 32, right: 32, top: 35),
-                          child: ElevatedButton(
-                            child: Text(
-                              'Baixar',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontStyle: FontStyle.normal,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: "RobotoFlex"),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              primary: Color.fromARGB(255, 27, 75, 27),
-                              elevation: 2,
-                              fixedSize: Size(330, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                            ),
-                            onPressed: _downloadFiles,
-                          ),
-                        ),
-                      ])),
-                ],
-              ),
-            ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                  Text("Verificando Arquivos, por favor aguarde..."),
+                ]))
     );
   }
 }

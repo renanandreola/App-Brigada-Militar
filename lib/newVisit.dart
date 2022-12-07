@@ -29,12 +29,12 @@ class _NewVisitState extends State<NewVisit> {
     final db = await DB.instance.database;
 
     List<Map> property_codes = await db.query('properties',
-        where: "code LIKE '%%'",
+        where: "code != 'null'",
         // columns: ["code"],
         orderBy: "code ASC");
     // inspect(property_codes);
 
-    print("aaaaaaaaaaaaaaaaaaaa ${property_codes}");
+    print("${property_codes}");
 
     for (var property_code in property_codes) {
       List<Map> ownersNames = await db.query('owners',
@@ -174,11 +174,7 @@ class _NewVisitState extends State<NewVisit> {
       appBar: AppBar(
         // title: new Center(
         //     child: new Text('NOVO RUMO', textAlign: TextAlign.center)),
-        title: new Center(
-            child: new Text(
-          "Nova Visita",
-          textAlign: TextAlign.center,
-        )),
+        title: Text("Nova Visita"),
         backgroundColor: Color.fromARGB(255, 27, 75, 27),
       ),
       body: SafeArea(

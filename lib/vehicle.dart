@@ -22,6 +22,8 @@ List<Map<String?, String?>> vehiclesInfo = [];
 class _VehicleState extends State<Vehicle> {
   List<TextEditingController> _vehicleIdentification = [];
   List<TextEditingController> _vehicleColor = [];
+  List<TextEditingController> _newVehicleName = [];
+  List<TextEditingController> _newVehicleBrand =  [];
   final _formKey = GlobalKey<FormState>();
 
   // bool _hasOtherVehicle = false;
@@ -46,6 +48,13 @@ class _VehicleState extends State<Vehicle> {
         "key": vehicle["_id"]
       });
     }
+
+    list.add("Outro");
+
+    vehiclesInfo.add({
+      "name": "Outro",
+      "key": "0",
+    });
 
     setState(() {
       _carList = list;
@@ -78,6 +87,8 @@ class _VehicleState extends State<Vehicle> {
       _vehicleType.removeLast();
       _vehicleIdentification.removeLast();
       _vehicleColor.removeLast();
+      _newVehicleName.removeLast();
+      _newVehicleBrand.removeLast();
       numberVehicles -= 1;
     });
   }
@@ -86,6 +97,11 @@ class _VehicleState extends State<Vehicle> {
     for (var i = 0; i < _vehicleType.length; i++) {
       _vehicleType[i]["identification"] = _vehicleIdentification[i].text;
       _vehicleType[i]["color"] = _vehicleColor[i].text;
+
+      if (_vehicleType[i]["key"] == "0") {
+        _vehicleType[i]["name"] = _newVehicleName[i].text;
+        _vehicleType[i]["brand"] = _newVehicleBrand[i].text;
+      }
     }
 
     if (_vehicleType[0]['name'] == "") {
@@ -113,6 +129,8 @@ class _VehicleState extends State<Vehicle> {
 
       _vehicleIdentification.add(TextEditingController());
       _vehicleColor.add(TextEditingController());
+      _newVehicleName.add(TextEditingController());
+      _newVehicleBrand.add(TextEditingController());
 
       // Vehicle name
       filhos.add(
@@ -157,6 +175,88 @@ class _VehicleState extends State<Vehicle> {
           ],
         ),
       );
+
+      if (_vehicleType[i]["name"] == "Outro") {
+        //New Vehicle Name
+        filhos.add(Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Preencha o nome do Veículo';
+                    }
+                    return null;
+                  },
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    labelText: "Nome do Veículo",
+                    labelStyle: TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 1),
+                        fontSize: 15,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "RobotoFlex"),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.name,
+                  controller: _newVehicleName[i],
+                ),
+              ),
+            )
+          ],
+        ));
+
+        //New Vehicle Name
+        filhos.add(Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Preencha a marca do Veículo';
+                    }
+                    return null;
+                  },
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    labelText: "Marca do Veículo",
+                    labelStyle: TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 1),
+                        fontSize: 15,
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                        fontFamily: "RobotoFlex"),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 177, 177, 177)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.name,
+                  controller:  _newVehicleBrand[i],
+                ),
+              ),
+            )
+          ],
+        ));
+      }
 
       // Vehicle identification
       filhos.add(Row(

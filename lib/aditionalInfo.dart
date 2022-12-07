@@ -98,6 +98,24 @@ class _AditionalInfoState extends State<AditionalInfo> {
 
           if (vehicles != null) {
             for (var vehicle in vehicles) {
+
+              // New vehicle
+              if (vehicle["key"] == "0") {
+                await txn.insert('vehicles', {
+                  'name': vehicle["name"],
+                  'brand': vehicle["brand"],
+                  "updatedAt": datetimeStr,
+                  "createdAt": datetimeStr
+                });
+
+                List<Map> vehicles_list = await txn.query('vehicles', where: "name = '${vehicle["name"]}' AND brand = '${vehicle["brand"]}'");
+                Map vehicle_insert = vehicles_list[0];
+                vehicle["key"] = vehicle_insert["_id"];
+
+                await txn.insert('database_updates',
+                {'reference_table': 'vehicles', 'updated_id': vehicle_insert["_id"]});
+              }
+
               Map<String, dynamic> vehiclesMap = {
                 "fk_property_id": property_id,
                 "fk_vehicle_id": vehicle["key"],
@@ -107,7 +125,7 @@ class _AditionalInfoState extends State<AditionalInfo> {
                 "createdAt": datetimeStr
               };
 
-              txn.insert('property_vehicles', vehiclesMap);
+              await txn.insert('property_vehicles', vehiclesMap);
 
               String vehicle_key = vehicle["key"];
 
@@ -246,6 +264,23 @@ class _AditionalInfoState extends State<AditionalInfo> {
 
         if (vehicles != null) {
           for (var vehicle in vehicles) {
+            // New vehicle
+            if (vehicle["key"] == "0") {
+              await txn.insert('vehicles', {
+                'name': vehicle["name"],
+                'brand': vehicle["brand"],
+                "updatedAt": datetimeStr,
+                "createdAt": datetimeStr
+              });
+
+              List<Map> vehicles_list = await txn.query('vehicles', where: "name = '${vehicle["name"]}' AND brand = '${vehicle["brand"]}'");
+              Map vehicle_insert = vehicles_list[0];
+              vehicle["key"] = vehicle_insert["_id"];
+
+              await txn.insert('database_updates',
+                {'reference_table': 'vehicles', 'updated_id': vehicle_insert["_id"]});
+            }
+
             Map<String, dynamic> vehiclesMap = {
               "fk_property_id": property_id,
               "fk_vehicle_id": vehicle["key"],
