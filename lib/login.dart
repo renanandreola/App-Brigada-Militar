@@ -97,7 +97,7 @@ class _LoginState extends State<Login> {
             // Image
             Padding(
               padding: EdgeInsets.only(top: 0, bottom: 16),
-              child: Image.asset("assets/images/Header.png"),
+              child: Image.asset("assets/images/HeaderNew.png"),
             ),
 
             // Welcome Text 1
