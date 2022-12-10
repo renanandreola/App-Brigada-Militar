@@ -89,6 +89,8 @@ class _EditVehicleState extends State<EditVehicle> {
     // var a = vehicles_filtered[0]['fk_vehicle_id'];
 
     for (var i = 0; i < vehicles_filtered.length; i++) {
+      _vehicleIdentification.add(TextEditingController());
+      _vehicleColor.add(TextEditingController());
       List<Map> vehicle_list = await db.query('vehicles',
           where: "_id = '${vehicles_filtered[i]['fk_vehicle_id']}'");
       vehicles.add(vehicle_list[0]);

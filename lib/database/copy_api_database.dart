@@ -7,6 +7,7 @@ import 'package:flutter_session_manager/flutter_session_manager.dart';
  * Manages the tables and inserts needed to start the database
  */
 void copyAPIDatabase(db, version) async {
+  await SessionManager().set("updating", true);
   // Create tables
   await db.execute(_users);
   await db.execute(_visits);
@@ -35,6 +36,7 @@ void copyAPIDatabase(db, version) async {
   await db.execute(_vehicleIdTrigger);
   await db.execute(_propertyVehicleIdTrigger);
   await syncAll(db, null);
+  await SessionManager().set("updating", false);
 }
 /**
  * Create Users Table

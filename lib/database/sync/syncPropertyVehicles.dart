@@ -10,7 +10,8 @@ Future<String?> syncPropertyVehicles() async {
     throw Exception("Token is empty");
   }
 
-  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles";
+  String uri =
+      "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles";
   final response = await http
       .get(Uri.parse(uri), headers: {"Authorization": "Bearer ${token}"});
 
@@ -28,6 +29,27 @@ Future<String?> syncPropertyVehicles() async {
                 : property_vehicle["identification"];
         property_vehicle["color"] =
             property_vehicle["color"] == null ? "" : property_vehicle["color"];
+
+        property_vehicle["_id"] =
+            property_vehicle["_id"] == null ? "" : property_vehicle["_id"];
+
+        property_vehicle["fk_vehicle_id"] =
+            property_vehicle["fk_vehicle_id"] == null
+                ? ""
+                : property_vehicle["fk_vehicle_id"];
+
+        property_vehicle["fk_property_id"] =
+            property_vehicle["fk_property_id"] == null
+                ? ""
+                : property_vehicle["fk_property_id"];
+
+        property_vehicle["created_at"] = property_vehicle["created_at"] == null
+            ? ""
+            : property_vehicle["created_at"];
+
+        property_vehicle["updated_at"] = property_vehicle["updated_at"] == null
+            ? ""
+            : property_vehicle["updated_at"];
 
         String queryInsertLine =
             "\n('${property_vehicle["_id"].replaceAll("'", "''")}', '${property_vehicle["fk_vehicle_id"].replaceAll("'", "''")}', '${property_vehicle["color"].replaceAll("'", "''")}', '${property_vehicle["identification"].replaceAll("'", "''")}', '${property_vehicle["fk_property_id"].replaceAll("'", "''")}', '${property_vehicle["created_at"].replaceAll("'", "''")}', '${property_vehicle["updated_at"].replaceAll("'", "''")}'),";
@@ -189,7 +211,8 @@ sendNewPropertyVehicleData(db) async {
 
   String property_vehiclesJson = jsonEncode(allChanges);
 
-  String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles";
+  String uri =
+      "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/sync/property-vehicles";
   final response = await http.post(Uri.parse(uri),
       headers: {
         "Authorization": "Bearer ${token}",

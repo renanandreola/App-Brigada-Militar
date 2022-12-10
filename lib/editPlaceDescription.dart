@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:app_brigada_militar/aditionalInfo.dart';
@@ -33,8 +34,14 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
     final db = await DB.instance.database;
     var property_id = property["_id"];
-    List<Map> property_vehicles = await db.query('property_vehicles',
+    List<Map> property_vehicles = await db.query('property_vehicles', 
         where: "fk_property_id = '${property_id}'");
+
+    var test = await db.query('property_vehicles');
+
+    for (var testa in test) {
+      inspect(testa);
+    }
 
     setState(() {
       _quantityDefensive.text =

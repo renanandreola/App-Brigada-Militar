@@ -1,18 +1,20 @@
+import 'package:app_brigada_militar/database/db.dart';
 import 'package:app_brigada_militar/database/sync/sync.dart';
 import 'package:app_brigada_militar/home.dart';
+import 'package:app_brigada_militar/initialPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_session_manager/flutter_session_manager.dart';
 import 'package:loading_gifs/loading_gifs.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-class Sync extends StatefulWidget {
-  const Sync({Key? key}) : super(key: key);
+class UpdateInitial extends StatefulWidget {
+  const UpdateInitial({Key? key}) : super(key: key);
 
   @override
-  State<Sync> createState() => _SyncState();
+  State<UpdateInitial> createState() => _UpdateInitialState();
 }
 
-class _SyncState extends State<Sync> {
+class _UpdateInitialState extends State<UpdateInitial> {
   bool isSpinner = true;
   bool isSync = false;
 
@@ -20,29 +22,26 @@ class _SyncState extends State<Sync> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    syncDatabase();
+  }
 
-    // Load new registers
-    updateSyncAll().then((updated) {
-      if (updated) {
-        setState(() {
-          // isSpinner = false;
-          // isSync = false;
+  syncDatabase() async {
+    try {
+      // Call database creation
+      final db = await DB.instance.database;
 
-          isSpinner = false;
-          isSync = true;
-        });
-        print("Banco atualizou com sucesso!");
-      } else {
-        setState(() {
-          // isSpinner = false;
-          // isSync = true;
+      print("Atualizado!");
 
-          isSpinner = false;
-          isSync = false;
-        });
-        print("Houve um erro ao atualizar o banco");
-      }
-    });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => InitialPage()));
+    } catch (e) {
+      print("Não Atualizado!");
+
+      setState(() {
+        isSpinner = false;
+        isSync = false;
+      });
+    }
   }
 
   Widget statusSync() {
@@ -83,59 +82,8 @@ class _SyncState extends State<Sync> {
     }
 
     if (!isSpinner && isSync) {
-      filhos.add(Column(
-        children: [
-          // Spinner
-          Padding(
-            padding: EdgeInsets.only(left: 0, right: 0, top: 0),
-            child: Image.asset('assets/images/success-sync.png'),
-          ),
-
-          // Text sync
-          Container(
-            child: Center(
-              child: Padding(
-                padding: EdgeInsets.only(left: 0, right: 0, top: 20),
-                child: Text("Banco de Dados sincronizado com sucesso!",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: "RobotoFlex",
-                        color: Color.fromARGB(255, 0, 0, 0))),
-              ),
-            ),
-          ),
-          Padding(
-                  padding: EdgeInsets.only(left: 32, right: 32, top: 35),
-                  child: ElevatedButton(
-                    child: Text(
-                      'OK',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: "RobotoFlex"),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 27, 75, 27),
-                      elevation: 2,
-                      fixedSize: Size(330, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    onPressed: () async {
-                      var user = await SessionManager().get('user');
-                      var username = user["name"];
-                      Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => HomeApp(username)));
-                    },
-                  ),
-                ),
-        ],
-      ));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => InitialPage()));
     }
 
     if (!isSpinner && !isSync) {
