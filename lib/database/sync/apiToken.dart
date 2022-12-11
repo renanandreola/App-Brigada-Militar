@@ -26,7 +26,8 @@ dynamic getToken() async {
 dynamic generateToken() async {
   String uri = "http://ec2-107-21-160-174.compute-1.amazonaws.com:8002/api/auth/login";
 
-  final response = await http.post(Uri.parse(uri), body: { "email": "tracey.gulgowski@hotmail.com", "password": "r`.o=rv*31v" });
+  //Change it
+  final response = await http.post(Uri.parse(uri), body: { "email": "bmnovorumo@gmail.com", "password": "r`.o=rv*31v" });
 
   if (response.statusCode == 200) {
     var token = jsonDecode(response.body)["access_token"];

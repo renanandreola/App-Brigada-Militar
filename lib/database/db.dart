@@ -33,7 +33,7 @@ class DB {
     // return await deleteDatabase(join("/storage/emulated/0/Download", 'defaultdb.db'));
     return await openDatabase(
       // join("/storage/emulated/0/Download", 'testemarlonn18.db'),
-      join(await getDatabasesPath() + "/teste000", 'database.db'),
+      join(await getDatabasesPath() + "/database000", 'database.db'),
       version: 1,
       onCreate: copyAPIDatabase,
     );
