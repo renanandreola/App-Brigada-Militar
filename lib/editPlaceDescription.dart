@@ -83,9 +83,9 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
         // Set new form data
         Map pageFormData = {
           'qty_agricultural_defensives':
-              _hasDefensive && int.tryParse(_quantityDefensive.text) != null
-                  ? int.tryParse(_quantityDefensive.text)
-                  : 0,
+            _hasDefensive && _quantityDefensive.text != null
+                ? _quantityDefensive.text
+                : "0",
           'has_gun': _hasGun,
           'has_gun_local': _hasGunPlace,
           'gun_local_description': _gunPlaceDescription.text,
@@ -116,7 +116,7 @@ class _EditPlaceDescriptionState extends State<EditPlaceDescription> {
 
       // Set new form data
       Map pageFormData = {
-        'qty_agricultural_defensives': _quantityDefensive.text,
+        'qty_agricultural_defensives': "0",
         'has_gun': _hasGun,
         'has_gun_local': _hasGunPlace,
         'gun_local_description': _gunPlaceDescription.text,
